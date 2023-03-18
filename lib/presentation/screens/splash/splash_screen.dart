@@ -36,11 +36,14 @@ class SplashScreen extends StatelessWidget {
     }
     return Material(
       child: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF2C3B53), Color(0xFF090F19)]),
+              colors: [
+                Theme.of(context).colorScheme.primary,
+                Theme.of(context).colorScheme.onPrimary
+              ]),
         ),
         child: const Center(
             child: /*  Image.asset(
