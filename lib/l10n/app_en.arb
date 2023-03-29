@@ -1,6 +1,9 @@
 {
   "appName": "Musmula",
-  "@appName": {
-    "description": "The conventional newborn programmer greeting"
-  }
+  "email": "Email",
+  "password": "Password",
+  "name": "Name",
+  "signIn": "Sign In",
+  "signUp": "Sign Up",
+  "signOut": "Sign Out"
 }

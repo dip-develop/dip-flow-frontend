@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../domain/models/models.dart';
 import '../../domain/usecases/usecases.dart';
 import '../resources/themes/theme.dart';
 
@@ -43,13 +44,9 @@ class ApplicationCubit extends Cubit<ApplicationState> {
     _appUseCase.saveThemeMode(ThemeMode.light);
   }
 
-  void loadingShow() {
-    emit(IsLoadingChanged(state, true));
-  }
+  void loadingShow() => emit(IsLoadingChanged(state, true));
 
-  void loadingHide() {
-    emit(IsLoadingChanged(state, false));
-  }
+  void loadingHide() => emit(IsLoadingChanged(state, false));
 
   void switchTheme() =>
       state.themeMode == ThemeMode.dark ? toLightTheme() : toDarkTheme();
@@ -60,4 +57,6 @@ class ApplicationCubit extends Cubit<ApplicationState> {
       emit(ExceptionOccurred(state, exception));
     }
   }
+
+  void auth(AuthState auth) => emit(AuthChanged(state, auth));
 }

@@ -1,0 +1,42 @@
+name: musmula
+version: 1.0.0
+summary: Musmula
+description: Musmula
+
+confinement: strict
+base: core18
+grade: stable
+
+architectures:
+  - build-on: [ amd64 ]
+  - build-on: [ arm64 ]
+
+slots:
+  dbus-protected-person-notes:
+    interface: dbus
+    bus: session
+    name: studio.dipdev.musmula
+
+apps:
+  protected-person-notes:
+    command: musmula
+    extensions: [flutter-stable]
+    plugs:
+      - network
+      - home
+      - desktop
+      - mount-observe
+    slots:
+      - dbus-musmula
+parts:
+  protected-person-notes:
+    source: .
+    plugin: flutter
+    flutter-target: lib/main.dart
+    override-build: |
+      flutter clean
+      flutter pub get
+      flutter pub run build_runner build -d
+      snapcraftctl build
+    #build-packages:
+    #stage-packages:
