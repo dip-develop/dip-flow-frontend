@@ -10,9 +10,8 @@ import 'main.config.dart';
 void _configureDependencies() => GetIt.I.init();
 
 void main() {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  //Paint.enableDithering = true;
   _configureDependencies();
   runApp(const Application());
 }

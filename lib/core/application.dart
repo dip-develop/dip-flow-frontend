@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
@@ -38,10 +40,18 @@ class Application extends StatelessWidget {
               routeInformationParser:
                   GetIt.I.get<AppRoute>().route.routeInformationParser,
               routerDelegate: GetIt.I.get<AppRoute>().route.routerDelegate,
-              title: 'Musmula',
+              onGenerateTitle: (context) =>
+                  AppLocalizations.of(context)!.appName,
               theme: const LightAppThemeImpl().themeData,
               darkTheme: const DarkAppThemeImpl().themeData,
               themeMode: state.themeMode,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
               debugShowCheckedModeBanner: false,
             ),
           );

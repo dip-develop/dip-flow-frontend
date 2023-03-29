@@ -22,7 +22,6 @@ class AppRoute {
 
   AppRoute() {
     _router = GoRouter(
-      redirectLimit: 1,
       routes: <GoRoute>[
         GoRoute(
           name: splashLocationName,
@@ -38,7 +37,7 @@ class AppRoute {
         }
       },
       errorBuilder: (context, state) {
-        return const Center(child: Text('ERROR 404'));
+        return const Center(child: Text('ERROR - Page not found'));
       },
     );
     _router.addListener(_routeListtenner);

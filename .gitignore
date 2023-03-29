@@ -38,5 +38,11 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
-lib/main.config.dart
-*.g.dart
+
+# Generated files
+**.config.dart
+**.g.dart
+**.pbenum.dart
+**.pbjson.dart
+**.pbgrpc.dart
+**.pb.dart

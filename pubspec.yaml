@@ -9,6 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
   cupertino_icons: ^1.0.2
   injectable: ^2.1.0
   get_it: ^7.2.0
@@ -29,25 +32,29 @@ dependencies:
   built_collection: ^5.1.1
   file_picker: ^5.2.4
   path_provider: ^2.0.13
-  build_runner: ^2.3.3
-  injectable_generator: ^2.1.4
-  built_value_generator: ^8.4.3
   msix: ^3.8.2
   flutter_native_splash: ^2.2.18
   grpc: ^3.1.0
   dart_jsonwebtoken: ^2.7.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  build_runner: ^2.3.3
+  hive_generator: ^2.0.0
+  injectable_generator: ^2.1.4
+  built_value_generator: ^8.4.3
 
 flutter:
   uses-material-design: true
+  generate: true
 
 msix_config:
-  display_name: BZBGEAR Video Switcher
-  publisher_display_name: BZBGEAR
+  display_name: Musmula
+  publisher_display_name: DipDev Studio
   identity_name: 48434MySoftware.MyFlutterApp
   publisher: CN=BF212345-5644-46DF-8668-012044C1B138
   msix_version: 1.0.0.0
@@ -55,7 +62,7 @@ msix_config:
   languages: en-us
   store: true
   app_installer:
-    publish_folder_path: d:\
+    publish_folder_path: ./
     automatic_background_task: true
     update_blocks_activation: true
     show_prompt: true
