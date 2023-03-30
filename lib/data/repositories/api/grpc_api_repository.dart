@@ -13,7 +13,7 @@ class GRPCApiRepository implements ApiRepository {
   late final GateServiceClient _stub;
 
   GRPCApiRepository() {
-    final channel = ClientChannel('127.0.0.1',
+    final channel = ClientChannel('musmula.dipdev.studio',
         port: 8080,
         options:
             const ChannelOptions(credentials: ChannelCredentials.insecure()));

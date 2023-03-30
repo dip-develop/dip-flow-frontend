@@ -51,10 +51,13 @@ class ApplicationCubit extends Cubit<ApplicationState> {
   void switchTheme() =>
       state.themeMode == ThemeMode.dark ? toLightTheme() : toDarkTheme();
 
-  void exception(dynamic exception) {
-    if (exception is Exception) {
+  void exception([dynamic exception]) {
+    if (exception == null) {
+      emit(ExceptionOccurred(state));
+    } else if (exception is Exception) {
       debugPrint(onError.toString());
       emit(ExceptionOccurred(state, exception));
+      throw exception;
     }
   }
 

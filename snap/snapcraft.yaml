@@ -23,9 +23,10 @@ apps:
     extensions: [flutter-stable]
     plugs:
       - network
+      - password-manager-service
       - home
-      - desktop
       - mount-observe
+      - desktop
     slots:
       - dbus-musmula
 parts:
@@ -38,5 +39,12 @@ parts:
       flutter pub get
       flutter pub run build_runner build -d
       snapcraftctl build
-    #build-packages:
-    #stage-packages:
+    build-packages:
+      - libsecret-1-dev
+      - libjsoncpp-dev
+    stage-packages:
+      - libjsoncpp-dev
+      - libsecret-1-dev
+      - libgnome-keyring-common
+      - libgnome-keyring0
+      

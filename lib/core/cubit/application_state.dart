@@ -116,9 +116,9 @@ class ExceptionOccurred extends ApplicationState {
   @override
   bool get isLoading => _isLoading;
   @override
-  final Exception exception;
+  final Exception? exception;
 
-  ExceptionOccurred(ApplicationState state, this.exception)
+  ExceptionOccurred(ApplicationState state, [this.exception])
       : _connection = state.connection,
         _themeMode = state.themeMode,
         _theme = state.theme,
@@ -126,7 +126,7 @@ class ExceptionOccurred extends ApplicationState {
         _auth = state.auth;
 
   @override
-  List<Object> get props => [exception];
+  List<Object> get props => [exception != null ? true : false];
 }
 
 class NetworkChanged extends ApplicationState {

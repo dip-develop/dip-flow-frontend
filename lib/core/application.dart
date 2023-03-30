@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:loading_animations/loading_animations.dart';
 
 import '../domain/models/models.dart';
 import '../domain/usecases/usecases.dart';
@@ -62,6 +63,79 @@ class Application extends StatelessWidget {
                 localizationsDelegates: AppLocalizations.localizationsDelegates,
                 supportedLocales: AppLocalizations.supportedLocales,
                 debugShowCheckedModeBanner: false,
+                builder: (context, child) {
+                  return BlocBuilder<ApplicationCubit, ApplicationState>(
+                    buildWhen: (previous, current) =>
+                        current is IsLoadingChanged &&
+                            previous.isLoading != current.isLoading ||
+                        current is ExceptionOccurred,
+                    builder: (context, state) {
+                      /* if (state.exception != null) {
+                        showDialog(
+                          context: context,
+                          builder: (context) => Dialog.fullscreen(
+                            child: Text(state.exception.toString()),
+                          ),
+                        );
+                      } */
+                      return Stack(
+                        children: [
+                          if (child != null) child,
+                          Visibility(
+                              visible: state.exception != null,
+                              child: Center(
+                                child: Card(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .errorContainer,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(16.0),
+                                    constraints:
+                                        const BoxConstraints(maxWidth: 320.0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(AppLocalizations.of(context)!
+                                                .oops),
+                                            IconButton(
+                                                onPressed: () =>
+                                                    GetIt.I<ApplicationCubit>()
+                                                        .exception(),
+                                                icon: const Icon(Icons.close)),
+                                          ],
+                                        ),
+                                        Center(
+                                          child: Text(
+                                            state.exception.toString(),
+                                            style: TextStyle(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .error),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )),
+                          Visibility(
+                              visible: state.isLoading,
+                              child: Center(
+                                child: LoadingBouncingGrid.square(
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                  inverted: true,
+                                ),
+                              )),
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
             );
           },

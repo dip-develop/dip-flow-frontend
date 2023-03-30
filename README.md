@@ -26,3 +26,7 @@ flutter pub run msix:publish
 snapcraft --use-lxd
 snapcraft upload --release=stable musmula_...._amd64.snap
 ```
+
+```bash
+snap connect musmula:password-manager-service :password-manager-service
+```

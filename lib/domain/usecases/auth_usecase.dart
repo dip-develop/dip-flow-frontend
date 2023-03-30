@@ -23,34 +23,53 @@ class AuthUseCaseImpl implements AuthUseCase {
   const AuthUseCaseImpl(this._app, this._api, this._encrypted);
 
   @override
-  Future<bool> get isAuth => _encrypted
-      .readToken()
-      .then((token) => token != null ? _checkAuth(token) : Future.value(false));
+  Future<bool> get isAuth => Future.delayed(
+        Duration.zero,
+        () => _app.loadingShow(),
+      )
+          .then((_) => _encrypted.readToken().then((token) =>
+              token != null ? _checkAuth(token) : Future.value(false)))
+          .whenComplete(() => _app.loadingHide());
 
   @override
   Future<void> signInWithEmail(
           {required String email, required String password}) =>
-      _api
-          .signInWithEmail(email: email, password: password)
-          .then(_checkAuth)
-          .then((_) => Future.value())
-          .catchError(_app.exception);
+      Future.delayed(
+        Duration.zero,
+        () => _app.loadingShow(),
+      )
+          .then((_) => _api
+              .signInWithEmail(email: email, password: password)
+              .then(_checkAuth)
+              .then((_) => Future.value())
+              .catchError(_app.exception))
+          .whenComplete(() => _app.loadingHide());
 
   @override
   Future<void> signUpWithEmail(
           {required String email,
           required String password,
           required String name}) =>
-      _api
-          .signUpWithEmail(email: email, password: password, name: name)
-          .then(_checkAuth)
-          .then((_) => Future.value())
-          .catchError(_app.exception);
+      Future.delayed(
+        Duration.zero,
+        () => _app.loadingShow(),
+      )
+          .then((_) => _api
+              .signUpWithEmail(email: email, password: password, name: name)
+              .then(_checkAuth)
+              .then((_) => Future.value())
+              .catchError(_app.exception))
+          .whenComplete(() => _app.loadingHide());
 
   @override
-  Future<void> signOut() => _encrypted
-      .cleanToken()
-      .whenComplete(() => _app.auth(AuthState.unauthorized));
+  Future<void> signOut() => Future.delayed(
+        Duration.zero,
+        () => _app.loadingShow(),
+      )
+          .then((_) => _encrypted
+              .cleanToken()
+              .whenComplete(() => _app.auth(AuthState.unauthorized)))
+          .whenComplete(() => _app.loadingHide());
 
   Future<bool> _checkAuth(TokenModel token) {
     final jwt = _parseToken(token.accessToken);
