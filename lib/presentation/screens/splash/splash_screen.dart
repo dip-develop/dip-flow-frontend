@@ -33,7 +33,7 @@ class SplashScreen extends StatelessWidget {
     }
 
     FlutterNativeSplash.remove();
-    return Future.delayed(const Duration(seconds: 2));
+    return Future.delayed(Duration.zero);
   }
 
   @override

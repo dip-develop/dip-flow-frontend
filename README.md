@@ -11,7 +11,18 @@ flutter pub get
 
 #### Generate files
 ```bash
-protoc --dart_out=grpc:lib/data/entities/generated -Iprotos protos/gate_service.proto protos/auth_models.proto
+protoc --dart_out=grpc:lib/data/entities/generated -Iprotos \
+    protos/base_models.proto \
+    protos/gate_models.proto \
+    protos/gate_service.proto \
+    protos/auth_models.proto \
+    protos/time_tracking_models.proto \
+    protos/google/api/annotations.proto \
+    protos/google/api/http.proto \
+    protos/google/protobuf/struct.proto \
+    protos/google/protobuf/descriptor.proto \
+    protos/google/protobuf/empty.proto \
+    protos/google/protobuf/timestamp.proto
 flutter pub run build_runner build -d
 flutter gen-l10n
 ```

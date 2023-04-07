@@ -7,4 +7,7 @@ class AuthException extends AppException {
 
   factory AuthException.invalidData(String? reason) =>
       AuthException('Invalid Email or Password', reason);
+
+  factory AuthException.needAuth(String? reason) =>
+      AuthException('Need auth', reason);
 }

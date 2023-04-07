@@ -2,11 +2,13 @@ import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../core/cubit/application_cubit.dart';
+import '../exceptions/auth_exception.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
 
 abstract class AuthUseCase {
   Future<bool> get isAuth;
+  Future<String> getToken();
   Future<void> signInWithEmail(
       {required String email, required String password});
   Future<void> signUpWithEmail(
@@ -16,28 +18,30 @@ abstract class AuthUseCase {
 
 @LazySingleton(as: AuthUseCase)
 class AuthUseCaseImpl implements AuthUseCase {
-  final ApiRepository _api;
+  final AuthApiRepository _api;
   final EncryptedPreferencesRepository _encrypted;
   final ApplicationCubit _app;
 
   const AuthUseCaseImpl(this._app, this._api, this._encrypted);
 
   @override
-  Future<bool> get isAuth => Future.delayed(
-        Duration.zero,
-        () => _app.loadingShow(),
-      )
-          .then((_) => _encrypted.readToken().then((token) =>
-              token != null ? _checkAuth(token) : Future.value(false)))
-          .whenComplete(() => _app.loadingHide());
+  Future<bool> get isAuth => loading
+      .then((_) => _encrypted.readToken().then((token) => _checkAuth(token)))
+      .whenComplete(() => _app.loadingHide());
+
+  @override
+  Future<String> getToken() =>
+      _encrypted.readToken().then((token) => _checkAuth(token).then((isValid) {
+            if (!isValid) {
+              throw AuthException.needAuth('Token invalid');
+            }
+            return 'Bearer ${token!.accessToken}';
+          }));
 
   @override
   Future<void> signInWithEmail(
           {required String email, required String password}) =>
-      Future.delayed(
-        Duration.zero,
-        () => _app.loadingShow(),
-      )
+      loading
           .then((_) => _api
               .signInWithEmail(email: email, password: password)
               .then(_checkAuth)
@@ -50,10 +54,7 @@ class AuthUseCaseImpl implements AuthUseCase {
           {required String email,
           required String password,
           required String name}) =>
-      Future.delayed(
-        Duration.zero,
-        () => _app.loadingShow(),
-      )
+      loading
           .then((_) => _api
               .signUpWithEmail(email: email, password: password, name: name)
               .then(_checkAuth)
@@ -62,28 +63,30 @@ class AuthUseCaseImpl implements AuthUseCase {
           .whenComplete(() => _app.loadingHide());
 
   @override
-  Future<void> signOut() => Future.delayed(
-        Duration.zero,
-        () => _app.loadingShow(),
-      )
-          .then((_) => _encrypted
-              .cleanToken()
-              .whenComplete(() => _app.auth(AuthState.unauthorized)))
-          .whenComplete(() => _app.loadingHide());
+  Future<void> signOut() => loading
+      .then((_) => _encrypted
+          .cleanToken()
+          .whenComplete(() => _app.auth(AuthState.unauthorized)))
+      .whenComplete(() => _app.loadingHide());
 
-  Future<bool> _checkAuth(TokenModel token) {
+  Future<bool> _checkAuth(TokenModel? token) {
+    if (token == null) return Future.value(false);
     final jwt = _parseToken(token.accessToken);
     if (jwt != null) {
       _app.auth(AuthState.authorized);
       return _encrypted.writeToken(token).then((_) => Future.value(true));
-    } else {
+    } else if (_parseToken(token.refreshToken) != null) {
       return _api
           .refreshToken(token.refreshToken)
-          .then((value) => _checkAuth(token))
+          .then((value) => _checkAuth(value))
           .catchError((onError) {
         _app.exception(onError);
+        _app.auth(AuthState.unauthorized);
         return Future.value(false);
       });
+    } else {
+      _app.auth(AuthState.unauthorized);
+      return Future.value(false);
     }
   }
 
@@ -100,4 +103,9 @@ class AuthUseCaseImpl implements AuthUseCase {
         ? jwt
         : null;
   }
+
+  Future<void> get loading => Future.delayed(
+        Duration.zero,
+        () => _app.loadingShow(),
+      );
 }

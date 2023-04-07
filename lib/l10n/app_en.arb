@@ -6,5 +6,7 @@
   "signIn": "Sign In",
   "signUp": "Sign Up",
   "signOut": "Sign Out",
-  "oops": "Oops, something went wrong!"
+  "oops": "Oops, something went wrong!",
+  "edit": "Edit",
+  "delete": "Delete"
 }
