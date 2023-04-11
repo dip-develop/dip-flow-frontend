@@ -40,8 +40,8 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!GetIt.I.isRegistered<PackageInfo>()) {
       _initApp(context).whenComplete(() => GetIt.I<AuthUseCase>().isAuth.then(
-          (isAuth) => context.pushReplacementNamed(
-              isAuth ? AppRoute.dashBoardRouteName : AppRoute.authRouteName)));
+          (isAuth) => context.goNamed(
+              isAuth ? AppRoute.dashboardRouteName : AppRoute.authRouteName)));
     }
     return Material(
       child: Container(

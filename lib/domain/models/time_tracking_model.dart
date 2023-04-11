@@ -7,7 +7,7 @@ part 'time_tracking_model.g.dart';
 abstract class TimeTrackingModel
     implements Built<TimeTrackingModel, TimeTrackingModelBuilder> {
   int? get id;
-  int get userId;
+  int? get userId;
   String? get task;
   String? get title;
   String? get description;
@@ -19,19 +19,8 @@ abstract class TimeTrackingModel
 
   bool get isStarted => tracks.any((element) => element.isStarted);
 
-  String get combineTitle => task?.isEmpty == false && title?.isEmpty == false
-      ? '#$task - $title'
-      : task?.isEmpty == false
-          ? '#$task'
-          : title?.isEmpty == false
-              ? '$title'
-              : '';
-
   Duration get duration {
-    final milliseconds = tracks
-        //.where((element) => element.isFinished)
-        .map((e) => e.duration.inMilliseconds)
-        .sum;
+    final milliseconds = tracks.map((e) => e.duration.inMilliseconds).sum;
     return Duration(milliseconds: milliseconds);
   }
 }

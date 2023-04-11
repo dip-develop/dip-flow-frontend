@@ -80,8 +80,7 @@ class AuthUseCaseImpl implements AuthUseCase {
           .refreshToken(token.refreshToken)
           .then((value) => _checkAuth(value))
           .catchError((onError) {
-        _app.exception(onError);
-        _app.auth(AuthState.unauthorized);
+        signOut();
         return Future.value(false);
       });
     } else {

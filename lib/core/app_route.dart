@@ -7,7 +7,9 @@ import '../domain/models/models.dart';
 import '../presentation/screens/auth/sign_in/sign_in_screen.dart';
 import '../presentation/screens/auth/sign_up/sign_up_screen.dart';
 import '../presentation/screens/dashboard/dashboard_screen.dart';
+import '../presentation/screens/settings/settings_screen.dart';
 import '../presentation/screens/splash/splash_screen.dart';
+import '../presentation/widgets/navigation_widget.dart';
 import 'cubit/application_cubit.dart';
 
 class AppRoute {
@@ -15,7 +17,12 @@ class AppRoute {
   static String authRouteName = 'auth';
   static String signInRouteName = 'signin';
   static String signUpRouteName = 'signup';
-  static String dashBoardRouteName = 'dashboard';
+  static String dashboardRouteName = 'dashboard';
+  static String timeTrackingRouteName = 'timetracking';
+  static String settingsRouteName = 'settings';
+
+  final _rootNavigatorKey = GlobalKey<NavigatorState>();
+  final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
   late final GoRouter _router;
 
@@ -23,14 +30,17 @@ class AppRoute {
 
   AppRoute() {
     _router = GoRouter(
-      routes: <GoRoute>[
+      navigatorKey: _rootNavigatorKey,
+      routes: [
         GoRoute(
+            parentNavigatorKey: _rootNavigatorKey,
             name: splashRouteName,
             path: '/',
             pageBuilder: (context, state) =>
                 _getTransition(state: state, child: const SplashScreen()),
             routes: [
               GoRoute(
+                  parentNavigatorKey: _rootNavigatorKey,
                   name: authRouteName,
                   path: 'auth',
                   redirect: (context, state) {
@@ -41,23 +51,48 @@ class AppRoute {
                   },
                   routes: [
                     GoRoute(
+                      parentNavigatorKey: _rootNavigatorKey,
                       name: signInRouteName,
                       path: 'signin',
                       pageBuilder: (context, state) => _getTransition(
                           state: state, child: const SignInScreen()),
                     ),
                     GoRoute(
+                      parentNavigatorKey: _rootNavigatorKey,
                       name: signUpRouteName,
                       path: 'signup',
                       pageBuilder: (context, state) => _getTransition(
                           state: state, child: const SignUpScreen()),
                     ),
                   ]),
+            ]),
+        ShellRoute(
+            navigatorKey: _shellNavigatorKey,
+            pageBuilder: (context, state, child) {
+              return _getTransition(
+                  state: state, child: NavigationWidget(child: child));
+            },
+            routes: [
               GoRoute(
-                name: dashBoardRouteName,
-                path: 'dashboard',
+                parentNavigatorKey: _shellNavigatorKey,
+                name: dashboardRouteName,
+                path: '/dashboard',
                 pageBuilder: (context, state) => _getTransition(
                     state: state, child: const DashBoardScreen()),
+              ),
+              GoRoute(
+                parentNavigatorKey: _shellNavigatorKey,
+                name: timeTrackingRouteName,
+                path: '/time-tracking',
+                pageBuilder: (context, state) =>
+                    _getTransition(state: state, child: const SettingsScreen()),
+              ),
+              GoRoute(
+                parentNavigatorKey: _shellNavigatorKey,
+                name: settingsRouteName,
+                path: '/settings',
+                pageBuilder: (context, state) =>
+                    _getTransition(state: state, child: const SettingsScreen()),
               ),
             ]),
       ],

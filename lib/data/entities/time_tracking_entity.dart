@@ -23,9 +23,10 @@ class TimeTrackingEntity {
       TimeTrackingEntity(
           id: timeTrack.id,
           userId: timeTrack.userId,
-          task: timeTrack.task,
-          title: timeTrack.title,
-          description: timeTrack.description,
+          task: timeTrack.task.isNotEmpty ? timeTrack.task : null,
+          title: timeTrack.title.isNotEmpty ? timeTrack.title : null,
+          description:
+              timeTrack.description.isNotEmpty ? timeTrack.description : null,
           tracks:
               timeTrack.tracks.map((e) => TrackEntity.fromGrpc(e)).toList());
 

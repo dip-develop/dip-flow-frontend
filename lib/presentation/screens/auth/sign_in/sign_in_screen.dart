@@ -71,8 +71,8 @@ class _SignInScreenState extends State<SignInScreen> {
                               .signInWithEmail(
                                   email: _emailController.text,
                                   password: _passwordController.text)
-                              .then((_) => context.pushReplacementNamed(
-                                  AppRoute.dashBoardRouteName));
+                              .then((_) =>
+                                  context.goNamed(AppRoute.dashboardRouteName));
                         }
                       },
                       child: Text(AppLocalizations.of(context)!.signIn)),

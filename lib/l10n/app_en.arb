@@ -7,6 +7,16 @@
   "signUp": "Sign Up",
   "signOut": "Sign Out",
   "oops": "Oops, something went wrong!",
+  "add": "Add",
   "edit": "Edit",
-  "delete": "Delete"
+  "delete": "Delete",
+  "hide": "Hide",
+  "task": "Task",
+  "title": "Title",
+  "description": "Description",
+  "timeTracking": "Time Tracking",
+  "dashboard": "Dashboard",
+  "settings": "Settings",
+  "theme": "Theme",
+  "darkMode": "Dark Mode"
 }

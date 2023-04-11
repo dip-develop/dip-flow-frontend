@@ -82,8 +82,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   email: _emailController.text,
                                   password: _passwordController.text,
                                   name: _nameController.text)
-                              .then((_) => context.pushReplacementNamed(
-                                  AppRoute.dashBoardRouteName));
+                              .then((_) =>
+                                  context.goNamed(AppRoute.dashboardRouteName));
                         }
                       },
                       child: Text(AppLocalizations.of(context)!.signUp)),
