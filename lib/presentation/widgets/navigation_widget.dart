@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/app_route.dart';
@@ -18,6 +19,23 @@ class _NavigationWidgetState extends State<NavigationWidget> {
   int? _selectedTab;
 
   @override
+  void initState() {
+    super.initState();
+    if (GetIt.I<AppRoute>().route.location ==
+        GetIt.I<AppRoute>().route.namedLocation(AppRoute.dashboardRouteName)) {
+      _selectedTab = 0;
+    } else if (GetIt.I<AppRoute>().route.location ==
+        GetIt.I<AppRoute>()
+            .route
+            .namedLocation(AppRoute.timeTrackingRouteName)) {
+      _selectedTab = 1;
+    } else if (GetIt.I<AppRoute>().route.location ==
+        GetIt.I<AppRoute>().route.namedLocation(AppRoute.settingsRouteName)) {
+      _selectedTab = 2;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return AdaptiveScaffold(
       useDrawer: false,
@@ -28,11 +46,9 @@ class _NavigationWidgetState extends State<NavigationWidget> {
           case 0:
             context.goNamed(AppRoute.dashboardRouteName);
             break;
-
           case 1:
             context.goNamed(AppRoute.timeTrackingRouteName);
             break;
-
           case 2:
             context.goNamed(AppRoute.settingsRouteName);
             break;
@@ -47,6 +63,11 @@ class _NavigationWidgetState extends State<NavigationWidget> {
           icon: const Icon(Icons.dashboard_outlined),
           selectedIcon: const Icon(Icons.dashboard),
           label: AppLocalizations.of(context)!.dashboard,
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.people_outline),
+          selectedIcon: const Icon(Icons.people),
+          label: AppLocalizations.of(context)!.team,
         ),
         NavigationDestination(
           icon: const Icon(Icons.timer_outlined),

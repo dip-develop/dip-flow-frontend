@@ -44,7 +44,7 @@ android {
 
     defaultConfig {
         applicationId "studio.dipdev.musmula"
-        minSdkVersion flutter.minSdkVersion
+        minSdkVersion 18//flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

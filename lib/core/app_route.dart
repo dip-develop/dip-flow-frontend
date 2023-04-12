@@ -9,6 +9,7 @@ import '../presentation/screens/auth/sign_up/sign_up_screen.dart';
 import '../presentation/screens/dashboard/dashboard_screen.dart';
 import '../presentation/screens/settings/settings_screen.dart';
 import '../presentation/screens/splash/splash_screen.dart';
+import '../presentation/screens/time_tracking/time_tracking_screen.dart';
 import '../presentation/widgets/navigation_widget.dart';
 import 'cubit/application_cubit.dart';
 
@@ -84,8 +85,8 @@ class AppRoute {
                 parentNavigatorKey: _shellNavigatorKey,
                 name: timeTrackingRouteName,
                 path: '/time-tracking',
-                pageBuilder: (context, state) =>
-                    _getTransition(state: state, child: const SettingsScreen()),
+                pageBuilder: (context, state) => _getTransition(
+                    state: state, child: const TimeTrackingScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,

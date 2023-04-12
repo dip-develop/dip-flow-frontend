@@ -5,9 +5,9 @@ import 'package:injectable/injectable.dart';
 @module
 abstract class GRPCApiRepositoryModule {
   @lazySingleton
-  ClientChannel clientChannel() =>
-      ClientChannel(FlavorConfig.instance.variables['baseUrl'],
-          port: 8080,
-          options:
-              const ChannelOptions(credentials: ChannelCredentials.insecure()));
+  ClientChannel clientChannel() => ClientChannel(
+      FlavorConfig.instance.variables['baseUrl'] ?? 'musmula.dipdev.studio',
+      port: 8080,
+      options:
+          const ChannelOptions(credentials: ChannelCredentials.insecure()));
 }

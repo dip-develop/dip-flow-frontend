@@ -219,8 +219,12 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                           .bodyMedium),
                               ]),
                             ),
-                            subtitle: timeTrack.description?.isNotEmpty == true
-                                ? Text(timeTrack.description ?? '')
+                            subtitle: timeTrack.description != null
+                                ? Text(
+                                    timeTrack.description ?? '',
+                                    maxLines: isExpanded ? 3 : 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  )
                                 : null,
                             leading: IconButton(
                               onPressed: () => (timeTrack.isStarted
