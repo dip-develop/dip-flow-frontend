@@ -8,7 +8,7 @@ description: |
   Plus, if you are an individual user or a small team, you can use our service for free forever. No hidden fees, no strings attached.
   Join TheTeam today and take your team to the next level.
 confinement: strict
-icon: gui/theteam.png
+icon: snap/gui/theteam.png
 base: core18
 grade: stable
 

@@ -73,8 +73,8 @@ flutter:
 msix_config:
   display_name: TheTeam
   publisher_display_name: DipDev Studio
-  identity_name: 48434MySoftware.MyFlutterApp
-  publisher: CN=BF212345-5644-46DF-8668-012044C1B138
+  identity_name: 55447DipDevStudio.TheTeam
+  publisher: CN=955BA76E-FB46-4452-A55A-44043E2AC134
   msix_version: 1.0.0.0
   logo_path: assets/images/logo.png
   languages: en-us
