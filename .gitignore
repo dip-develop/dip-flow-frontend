@@ -46,3 +46,4 @@ app.*.map.json
 **.pbjson.dart
 **.pbgrpc.dart
 **.pb.dart
+**.snap
