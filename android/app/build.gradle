@@ -43,7 +43,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "studio.dipdev.musmula"
+        applicationId "run.theteam.app"
         minSdkVersion 18//flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()

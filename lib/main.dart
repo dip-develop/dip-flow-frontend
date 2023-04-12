@@ -17,7 +17,7 @@ void main() {
       color: Colors.green,
       location: BannerLocation.bottomStart,
       variables: {
-        'baseUrl': 'musmula.dipdev.studio',
+        'baseUrl': 'theteam.run',
       },
     );
   }

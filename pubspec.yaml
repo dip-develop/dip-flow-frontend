@@ -1,5 +1,5 @@
-name: musmula_frontend
-description: A Musmula Frontend.
+name: theteam_frontend
+description: A TheTeam Frontend.
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -65,7 +65,7 @@ flutter:
   generate: true
 
 msix_config:
-  display_name: Musmula
+  display_name: TheTeam
   publisher_display_name: DipDev Studio
   identity_name: 48434MySoftware.MyFlutterApp
   publisher: CN=BF212345-5644-46DF-8668-012044C1B138

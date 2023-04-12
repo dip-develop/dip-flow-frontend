@@ -15,7 +15,7 @@ class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   Future<void> _initApp(BuildContext context) async {
-    await Hive.initFlutter('musmula').catchError((onError) {});
+    await Hive.initFlutter('theteam').catchError((onError) {});
     if (!GetIt.I.isRegistered<PackageInfo>()) {
       await PackageInfo.fromPlatform().then((value) {
         GetIt.I.registerSingleton<PackageInfo>(value);

@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=Musmula
-Comment=Musmula
-Exec=musmula
-Icon=${SNAP}/meta/gui/musmula.png
-Terminal=false
-Type=Application
-Categories=Utility;

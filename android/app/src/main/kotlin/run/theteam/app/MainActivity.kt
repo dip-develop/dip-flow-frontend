@@ -1,4 +1,4 @@
-package studio.dipdev.musmula
+package run.theteam.app
 
 import io.flutter.embedding.android.FlutterActivity
 

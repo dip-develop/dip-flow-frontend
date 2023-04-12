@@ -1,7 +1,7 @@
-name: musmula
+name: theteam
 version: 1.0.0
-summary: Musmula
-description: Musmula
+summary: TheTeam
+description: TheTeam
 
 confinement: strict
 base: core18
@@ -15,11 +15,11 @@ slots:
   dbus-protected-person-notes:
     interface: dbus
     bus: session
-    name: studio.dipdev.musmula
+    name: run.theteam.app
 
 apps:
   protected-person-notes:
-    command: musmula
+    command: theteam
     extensions: [flutter-stable]
     plugs:
       - network
@@ -28,7 +28,7 @@ apps:
       - mount-observe
       - desktop
     slots:
-      - dbus-musmula
+      - dbus-theteam
 parts:
   protected-person-notes:
     source: .

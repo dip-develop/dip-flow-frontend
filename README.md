@@ -1,6 +1,6 @@
-# Musmula Frontend
+# TheTeam Frontend
 
-A Musmula Frontend Flutter project.
+A TheTeam Frontend Flutter project.
 
 ## Getting Started
 
@@ -35,9 +35,9 @@ flutter pub run msix:publish
 ## Build Snap package for Snap Store
 ```bash
 snapcraft --use-lxd
-snapcraft upload --release=stable musmula_...._amd64.snap
+snapcraft upload --release=stable theteam_...._amd64.snap
 ```
 
 ```bash
-snap connect musmula:password-manager-service :password-manager-service
+snap connect theteam:password-manager-service :password-manager-service
 ```

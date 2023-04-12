@@ -44,6 +44,8 @@ class AppRoute {
                   parentNavigatorKey: _rootNavigatorKey,
                   name: authRouteName,
                   path: 'auth',
+                  pageBuilder: (context, state) =>
+                      _getTransition(state: state, child: const SignInScreen()),
                   redirect: (context, state) {
                     if (state.location == route.namedLocation(authRouteName)) {
                       return route.namedLocation(signInRouteName);
