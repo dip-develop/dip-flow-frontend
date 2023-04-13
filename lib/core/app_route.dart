@@ -2,14 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mixpanel_analytics/mixpanel_analytics.dart';
 
 import '../domain/models/models.dart';
+import '../domain/usecases/usecases.dart';
 import '../presentation/screens/auth/sign_in/sign_in_screen.dart';
 import '../presentation/screens/auth/sign_up/sign_up_screen.dart';
 import '../presentation/screens/dashboard/dashboard_screen.dart';
 import '../presentation/screens/settings/settings_screen.dart';
 import '../presentation/screens/splash/splash_screen.dart';
+import '../presentation/screens/team/team_screen.dart';
 import '../presentation/screens/time_tracking/time_tracking_screen.dart';
 import '../presentation/widgets/navigation_widget.dart';
 import 'cubit/application_cubit.dart';
@@ -20,6 +21,7 @@ class AppRoute {
   static String signInRouteName = 'signin';
   static String signUpRouteName = 'signup';
   static String dashboardRouteName = 'dashboard';
+  static String teamRouteName = 'team';
   static String timeTrackingRouteName = 'timetracking';
   static String settingsRouteName = 'settings';
 
@@ -86,6 +88,13 @@ class AppRoute {
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
+                name: teamRouteName,
+                path: '/team',
+                pageBuilder: (context, state) =>
+                    _getTransition(state: state, child: const TeamScreen()),
+              ),
+              GoRoute(
+                parentNavigatorKey: _shellNavigatorKey,
                 name: timeTrackingRouteName,
                 path: '/time-tracking',
                 pageBuilder: (context, state) => _getTransition(
@@ -101,8 +110,8 @@ class AppRoute {
             ]),
       ],
       redirect: (BuildContext context, GoRouterState state) {
-        GetIt.I<MixpanelAnalytics>()
-            .track(event: 'screen', properties: {'path': state.location});
+        GetIt.I<AnalyticsUseCase>().logScreenView(
+            name: state.path ?? state.location, path: state.location);
         if (state.location != route.namedLocation(splashRouteName) &&
             state.location != route.namedLocation(authRouteName) &&
             state.location != route.namedLocation(signInRouteName) &&

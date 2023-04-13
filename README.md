@@ -46,6 +46,25 @@ flutter gen-l10n
 flutter run
 ```
 
+###### Add flavors to VSCode
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Frontend PROD-Flavor",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "Frontend DEV-Flavor",
+            "program": "lib/main_dev.dart",
+            "request": "launch",
+            "type": "dart"
+        }
+}
+```
+
 ## Create builds
 
 #### Build AppBundle package for Play Store

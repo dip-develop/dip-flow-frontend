@@ -21,17 +21,33 @@ class _NavigationWidgetState extends State<NavigationWidget> {
   @override
   void initState() {
     super.initState();
+    _selectMenu();
+  }
+
+  @override
+  void didUpdateWidget(covariant NavigationWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final oldSelectedTab = _selectedTab;
+    _selectMenu();
+    if (oldSelectedTab != _selectedTab) {
+      setState(() {});
+    }
+  }
+
+  void _selectMenu() {
     if (GetIt.I<AppRoute>().route.location ==
         GetIt.I<AppRoute>().route.namedLocation(AppRoute.dashboardRouteName)) {
       _selectedTab = 0;
-    } else if (GetIt.I<AppRoute>().route.location ==
-        GetIt.I<AppRoute>()
-            .route
-            .namedLocation(AppRoute.timeTrackingRouteName)) {
+    } else if (GetIt.I<AppRoute>().route.location.contains(
+        GetIt.I<AppRoute>().route.namedLocation(AppRoute.teamRouteName))) {
       _selectedTab = 1;
-    } else if (GetIt.I<AppRoute>().route.location ==
-        GetIt.I<AppRoute>().route.namedLocation(AppRoute.settingsRouteName)) {
+    } else if (GetIt.I<AppRoute>().route.location.contains(GetIt.I<AppRoute>()
+        .route
+        .namedLocation(AppRoute.timeTrackingRouteName))) {
       _selectedTab = 2;
+    } else if (GetIt.I<AppRoute>().route.location.contains(
+        GetIt.I<AppRoute>().route.namedLocation(AppRoute.settingsRouteName))) {
+      _selectedTab = 3;
     }
   }
 
@@ -47,9 +63,12 @@ class _NavigationWidgetState extends State<NavigationWidget> {
             context.goNamed(AppRoute.dashboardRouteName);
             break;
           case 1:
-            context.goNamed(AppRoute.timeTrackingRouteName);
+            context.goNamed(AppRoute.teamRouteName);
             break;
           case 2:
+            context.goNamed(AppRoute.timeTrackingRouteName);
+            break;
+          case 3:
             context.goNamed(AppRoute.settingsRouteName);
             break;
           default:

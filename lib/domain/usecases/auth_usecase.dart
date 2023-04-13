@@ -19,10 +19,11 @@ abstract class AuthUseCase {
 @LazySingleton(as: AuthUseCase)
 class AuthUseCaseImpl implements AuthUseCase {
   final AuthApiRepository _api;
+  final AnalyticsRepository _analytics;
   final EncryptedPreferencesRepository _encrypted;
   final ApplicationCubit _app;
 
-  const AuthUseCaseImpl(this._app, this._api, this._encrypted);
+  const AuthUseCaseImpl(this._app, this._analytics, this._api, this._encrypted);
 
   @override
   Future<bool> get isAuth => loading
@@ -44,8 +45,13 @@ class AuthUseCaseImpl implements AuthUseCase {
       loading
           .then((_) => _api
               .signInWithEmail(email: email, password: password)
-              .then(_checkAuth)
-              .then((_) => Future.value())
+              .then((token) => _checkAuth(token).then((isValid) {
+                    if (isValid) {
+                      _analytics
+                          .logSignIn(method: 'email')
+                          .catchError(_app.exception);
+                    }
+                  }))
               .catchError(_app.exception))
           .whenComplete(() => _app.loadingHide());
 
@@ -57,7 +63,13 @@ class AuthUseCaseImpl implements AuthUseCase {
       loading
           .then((_) => _api
               .signUpWithEmail(email: email, password: password, name: name)
-              .then(_checkAuth)
+              .then((token) => _checkAuth(token).then((isValid) {
+                    if (isValid) {
+                      _analytics
+                          .logSignUp(method: 'email')
+                          .catchError(_app.exception);
+                    }
+                  }))
               .then((_) => Future.value())
               .catchError(_app.exception))
           .whenComplete(() => _app.loadingHide());
@@ -66,15 +78,32 @@ class AuthUseCaseImpl implements AuthUseCase {
   Future<void> signOut() => loading
       .then((_) => _encrypted
           .cleanToken()
+          .then((_) => _analytics.updateUser())
           .whenComplete(() => _app.auth(AuthState.unauthorized)))
       .whenComplete(() => _app.loadingHide());
+
+  int? _getUserId(TokenModel? token) {
+    if (token == null) return null;
+    final jwt = _parseToken(token.accessToken);
+    final payload = jwt?.payload;
+    if (payload != null && payload is Map && payload.containsKey('user')) {
+      return int.tryParse(payload['user'].toString());
+    } else {
+      return null;
+    }
+  }
 
   Future<bool> _checkAuth(TokenModel? token) {
     if (token == null) return Future.value(false);
     final jwt = _parseToken(token.accessToken);
     if (jwt != null) {
       _app.auth(AuthState.authorized);
-      return _encrypted.writeToken(token).then((_) => Future.value(true));
+      return _encrypted.writeToken(token).then((_) => true).whenComplete(() {
+        final userId = _getUserId(token);
+        if (userId != null) {
+          _analytics.updateUser(id: userId);
+        }
+      });
     } else if (_parseToken(token.refreshToken) != null) {
       return _api
           .refreshToken(token.refreshToken)
