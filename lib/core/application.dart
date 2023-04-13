@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:loading_animations/loading_animations.dart';
+import 'package:mixpanel_analytics/mixpanel_analytics.dart';
 
 import '../domain/models/models.dart';
 import '../domain/usecases/usecases.dart';
@@ -151,4 +153,14 @@ abstract class ApplicationModule {
   ApplicationCubit appCubit() => ApplicationCubit(GetIt.I.get<AppUseCase>());
   @singleton
   AppRoute appRoute() => AppRoute();
+  @lazySingleton
+  MixpanelAnalytics mixpanelAnalytics() => MixpanelAnalytics.batch(
+        token: '199db839368b1b91da8de2bda30d743d',
+        //userId$: stream.stream,
+        verbose: kDebugMode,
+        uploadInterval: const Duration(seconds: 30),
+        onError: (p0) {
+          debugPrint(p0.toString());
+        },
+      );
 }

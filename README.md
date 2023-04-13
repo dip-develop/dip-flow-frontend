@@ -12,12 +12,15 @@
 ## Getting Started
 
 ```bash
-flutter pub global activate protoc_plugin
 flutter pub get
 ```
 
 #### Generate files
+
+###### Generate protos
 ```bash
+git submodule update --init --recursive --remote --force 
+flutter pub global activate protoc_plugin
 protoc --dart_out=grpc:lib/data/entities/generated -Iprotos \
     protos/base_models.proto \
     protos/gate_models.proto \
@@ -30,22 +33,43 @@ protoc --dart_out=grpc:lib/data/entities/generated -Iprotos \
     protos/google/protobuf/descriptor.proto \
     protos/google/protobuf/empty.proto \
     protos/google/protobuf/timestamp.proto
+```
+
+###### Generate other flutter files
+```bash
 flutter pub run build_runner build -d
 flutter gen-l10n
 ```
 
-## Build MSIX package for Windows Store
+###### Run project
+```bash
+flutter run
+```
+
+## Create builds
+
+#### Build AppBundle package for Play Store
+```bash
+flutter build appbundle
+```
+
+#### Build Arhive package for App Store
+```bash
+flutter build ios
+flutter build ipa
+```
+
+#### Build MSIX package for Windows Store
 ```bash
 flutter pub run msix:publish
 ```
 
-## Build Snap package for Snap Store
+#### Build Snap package for Snap Store
 ```bash
 snapcraft
-snapcraft upload --release=latest/beta theteam_...._amd64.snap
 snapcraft upload --release=stable theteam_...._amd64.snap
 ```
-
+###### For linux - connect password-manager-service
 ```bash
 snap connect theteam:password-manager-service :password-manager-service
 ```

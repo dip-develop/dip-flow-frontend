@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mixpanel_analytics/mixpanel_analytics.dart';
 
 import '../domain/models/models.dart';
 import '../presentation/screens/auth/sign_in/sign_in_screen.dart';
@@ -100,6 +101,8 @@ class AppRoute {
             ]),
       ],
       redirect: (BuildContext context, GoRouterState state) {
+        GetIt.I<MixpanelAnalytics>()
+            .track(event: 'screen', properties: {'path': state.location});
         if (state.location != route.namedLocation(splashRouteName) &&
             state.location != route.namedLocation(authRouteName) &&
             state.location != route.namedLocation(signInRouteName) &&

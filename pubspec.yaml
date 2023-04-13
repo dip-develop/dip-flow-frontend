@@ -7,7 +7,7 @@ description: |
   Plus, if you are an individual user or a small team, you can use our service for free forever. No hidden fees, no strings attached.
   Join TheTeam today and take your team to the next level.
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: '>=2.19.4 <3.0.0'
@@ -56,6 +56,7 @@ dependencies:
   cached_network_image: ^3.2.3
   permission_handler: ^10.2.0
   flutter_cache_manager: ^3.3.0
+  mixpanel_analytics: ^2.1.1
 
 dev_dependencies:
   flutter_test:
