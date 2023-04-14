@@ -3,7 +3,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grpc/grpc.dart';
 
+import '../../domain/exceptions/auth_exception.dart';
 import '../../domain/models/models.dart';
 import '../../domain/usecases/usecases.dart';
 import '../resources/themes/theme.dart';
@@ -54,11 +56,19 @@ class ApplicationCubit extends Cubit<ApplicationState> {
   dynamic exception([dynamic exception]) {
     if (exception == null) {
       emit(ExceptionOccurred(state));
+    } else if (exception is GrpcError) {
+      if (exception.code == StatusCode.unauthenticated) {
+        auth(AuthState.unauthorized);
+      } else if (exception.code == StatusCode.unavailable) {
+        emit(ExceptionOccurred(state, exception));
+      }
+    } else if (exception is AuthException) {
+      auth(AuthState.unauthorized);
     } else if (exception is Exception) {
       debugPrint(onError.toString());
       emit(ExceptionOccurred(state, exception));
-      throw exception;
     }
+    throw exception;
   }
 
   void auth(AuthState auth) => emit(AuthChanged(state, auth));

@@ -57,6 +57,7 @@ dependencies:
   permission_handler: ^10.2.0
   flutter_cache_manager: ^3.3.0
   mixpanel_analytics: ^2.1.1
+  logging: ^1.1.1
 
 dev_dependencies:
   flutter_test:
