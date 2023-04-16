@@ -19,5 +19,8 @@
   "settings": "Settings",
   "theme": "Theme",
   "darkMode": "Dark Mode",
-  "team": "Team"
+  "team": "Team",
+  "showWindow": "Show Window",
+  "exitApp": "Exit App",
+  "launchAtStartup": "Launch at startup"  
 }

@@ -47,9 +47,13 @@ parts:
     build-packages:
       - libsecret-1-dev
       - libjsoncpp-dev
+      - libayatana-appindicator3-dev
+      - libnotify
     stage-packages:
       - libjsoncpp-dev
       - libsecret-1-dev
       - libgnome-keyring-common
       - libgnome-keyring0
+      - libayatana-appindicator3-dev
+      - libnotify
       

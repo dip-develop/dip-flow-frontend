@@ -7,6 +7,7 @@ abstract class ApplicationState extends Equatable {
   bool get isLoading;
   ConnectivityResult? get connection;
   Exception? get exception;
+  bool get launchAtStartup;
 
   @override
   List<Object> get props => [themeMode, theme, isLoading];
@@ -25,6 +26,8 @@ class ApplicationInitial extends ApplicationState {
   final ConnectivityResult? connection = null;
   @override
   final Exception? exception = null;
+  @override
+  final bool launchAtStartup = false;
 
   ApplicationInitial()
       : themeMode = ThemeMode.system,
@@ -40,6 +43,7 @@ class ThemeChanged extends ApplicationState {
   final ConnectivityResult? _connection;
   final Exception? _exception;
   final AuthState _auth;
+  final bool _launchAtStartup;
 
   @override
   AuthState get auth => _auth;
@@ -53,6 +57,8 @@ class ThemeChanged extends ApplicationState {
   ConnectivityResult? get connection => _connection;
   @override
   Exception? get exception => _exception;
+  @override
+  bool get launchAtStartup => _launchAtStartup;
 
   ThemeChanged(ApplicationState state, this.themeMode)
       : _connection = state.connection,
@@ -64,7 +70,8 @@ class ThemeChanged extends ApplicationState {
             : const LightAppThemeImpl(),
         _isLoading = state.isLoading,
         _exception = state.exception,
-        _auth = state.auth;
+        _auth = state.auth,
+        _launchAtStartup = state.launchAtStartup;
 }
 
 class IsLoadingChanged extends ApplicationState {
@@ -73,6 +80,7 @@ class IsLoadingChanged extends ApplicationState {
   final ConnectivityResult? _connection;
   final Exception? _exception;
   final AuthState _auth;
+  final bool _launchAtStartup;
 
   @override
   AuthState get auth => _auth;
@@ -86,13 +94,16 @@ class IsLoadingChanged extends ApplicationState {
   ConnectivityResult? get connection => _connection;
   @override
   Exception? get exception => _exception;
+  @override
+  bool get launchAtStartup => _launchAtStartup;
 
   IsLoadingChanged(ApplicationState state, this.isLoading)
       : _connection = state.connection,
         _themeMode = state.themeMode,
         _theme = state.theme,
         _exception = state.exception,
-        _auth = state.auth;
+        _auth = state.auth,
+        _launchAtStartup = state.launchAtStartup;
 
   @override
   List<Object> get props => [isLoading];
@@ -104,6 +115,7 @@ class ExceptionOccurred extends ApplicationState {
   final bool _isLoading;
   final ConnectivityResult? _connection;
   final AuthState _auth;
+  final bool _launchAtStartup;
 
   @override
   AuthState get auth => _auth;
@@ -117,13 +129,16 @@ class ExceptionOccurred extends ApplicationState {
   bool get isLoading => _isLoading;
   @override
   final Exception? exception;
+  @override
+  bool get launchAtStartup => _launchAtStartup;
 
   ExceptionOccurred(ApplicationState state, [this.exception])
       : _connection = state.connection,
         _themeMode = state.themeMode,
         _theme = state.theme,
         _isLoading = state.isLoading,
-        _auth = state.auth;
+        _auth = state.auth,
+        _launchAtStartup = state.launchAtStartup;
 
   @override
   List<Object> get props => [exception != null ? true : false];
@@ -135,6 +150,7 @@ class NetworkChanged extends ApplicationState {
   final bool _isLoading;
   final Exception? _exception;
   final AuthState _auth;
+  final bool _launchAtStartup;
 
   @override
   AuthState get auth => _auth;
@@ -148,13 +164,16 @@ class NetworkChanged extends ApplicationState {
   final ConnectivityResult connection;
   @override
   Exception? get exception => _exception;
+  @override
+  bool get launchAtStartup => _launchAtStartup;
 
   NetworkChanged(ApplicationState state, this.connection)
       : _themeMode = state.themeMode,
         _theme = state.theme,
         _isLoading = state.isLoading,
         _exception = state.exception,
-        _auth = state.auth;
+        _auth = state.auth,
+        _launchAtStartup = state.launchAtStartup;
 
   @override
   List<Object> get props => [connection];
@@ -166,6 +185,7 @@ class AuthChanged extends ApplicationState {
   final bool _isLoading;
   final ConnectivityResult? _connection;
   final Exception? _exception;
+  final bool _launchAtStartup;
 
   @override
   final AuthState auth;
@@ -179,14 +199,52 @@ class AuthChanged extends ApplicationState {
   ConnectivityResult? get connection => _connection;
   @override
   Exception? get exception => _exception;
+  @override
+  bool get launchAtStartup => _launchAtStartup;
 
   AuthChanged(ApplicationState state, this.auth)
       : _themeMode = state.themeMode,
         _theme = state.theme,
         _isLoading = state.isLoading,
         _connection = state.connection,
-        _exception = state.exception;
+        _exception = state.exception,
+        _launchAtStartup = state.launchAtStartup;
 
   @override
   List<Object> get props => [auth];
+}
+
+class LaunchAtStartupChanged extends ApplicationState {
+  final ThemeMode _themeMode;
+  final AppTheme _theme;
+  final bool _isLoading;
+  final ConnectivityResult? _connection;
+  final Exception? _exception;
+  final AuthState _auth;
+
+  @override
+  AuthState get auth => _auth;
+  @override
+  ThemeMode get themeMode => _themeMode;
+  @override
+  AppTheme get theme => _theme;
+  @override
+  bool get isLoading => _isLoading;
+  @override
+  ConnectivityResult? get connection => _connection;
+  @override
+  Exception? get exception => _exception;
+  @override
+  final bool launchAtStartup;
+
+  LaunchAtStartupChanged(ApplicationState state, this.launchAtStartup)
+      : _themeMode = state.themeMode,
+        _theme = state.theme,
+        _isLoading = state.isLoading,
+        _connection = state.connection,
+        _auth = state.auth,
+        _exception = state.exception;
+
+  @override
+  List<Object> get props => [launchAtStartup];
 }

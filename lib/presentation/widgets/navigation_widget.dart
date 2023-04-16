@@ -3,6 +3,8 @@ import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tray_manager/tray_manager.dart';
+import 'package:window_manager/window_manager.dart';
 
 import '../../core/app_route.dart';
 
@@ -15,13 +17,23 @@ class NavigationWidget extends StatefulWidget {
   State<NavigationWidget> createState() => _NavigationWidgetState();
 }
 
-class _NavigationWidgetState extends State<NavigationWidget> {
+class _NavigationWidgetState extends State<NavigationWidget>
+    with TrayListener, WindowListener {
   int? _selectedTab;
 
   @override
   void initState() {
+    trayManager.addListener(this);
+    windowManager.addListener(this);
     super.initState();
     _selectMenu();
+  }
+
+  @override
+  void dispose() {
+    trayManager.removeListener(this);
+    windowManager.removeListener(this);
+    super.dispose();
   }
 
   @override
@@ -48,6 +60,15 @@ class _NavigationWidgetState extends State<NavigationWidget> {
     } else if (GetIt.I<AppRoute>().route.location.contains(
         GetIt.I<AppRoute>().route.namedLocation(AppRoute.settingsRouteName))) {
       _selectedTab = 3;
+    }
+  }
+
+  @override
+  void onTrayMenuItemClick(MenuItem menuItem) {
+    if (menuItem.key == 'show_window') {
+      windowManager.show();
+    } else if (menuItem.key == 'exit_app') {
+      windowManager.destroy();
     }
   }
 

@@ -75,14 +75,6 @@ class Application extends StatelessWidget {
                               previous.isLoading != current.isLoading ||
                           current is ExceptionOccurred,
                       builder: (context, state) {
-                        /* if (state.exception != null) {
-                          showDialog(
-                            context: context,
-                            builder: (context) => Dialog.fullscreen(
-                              child: Text(state.exception.toString()),
-                            ),
-                          );
-                        } */
                         return Stack(
                           children: [
                             if (child != null) child,
@@ -168,4 +160,10 @@ abstract class ApplicationModule {
           debugPrint(p0.toString());
         },
       );
+
+  /* @preResolve
+  Future<PackageInfo> get packageInfo => PackageInfo.fromPlatform();
+
+  @preResolve
+  Future<BaseDeviceInfo> get baseDeviceInfo => DeviceInfoPlugin().deviceInfo; */
 }

@@ -23,6 +23,13 @@ class SettingsScreen extends StatelessWidget {
                 onChanged: (_) =>
                     context.read<ApplicationCubit>().switchTheme(),
               ),
+              SwitchListTile(
+                title: Text(AppLocalizations.of(context)!.darkMode),
+                subtitle: Text(AppLocalizations.of(context)!.launchAtStartup),
+                value: state.launchAtStartup,
+                onChanged: (_) =>
+                    context.read<ApplicationCubit>().switchLaunchAtStartup(),
+              ),
             ],
           );
         },

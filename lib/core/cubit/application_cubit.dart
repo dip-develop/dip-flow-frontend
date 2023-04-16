@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grpc/grpc.dart';
+import 'package:launch_at_startup/launch_at_startup.dart';
 
 import '../../domain/exceptions/auth_exception.dart';
 import '../../domain/models/models.dart';
@@ -52,6 +53,23 @@ class ApplicationCubit extends Cubit<ApplicationState> {
 
   void switchTheme() =>
       state.themeMode == ThemeMode.dark ? toLightTheme() : toDarkTheme();
+
+  Future<void> checkLaunchAtStartup() => launchAtStartup
+      .isEnabled()
+      .then((value) => emit(LaunchAtStartupChanged(state, value)));
+
+  Future<void> switchLaunchAtStartup() {
+    loadingShow();
+    return (state.launchAtStartup
+            ? launchAtStartup.disable()
+            : launchAtStartup.isEnabled())
+        .then((value) {
+          debugPrint(value.toString());
+          return launchAtStartup.isEnabled();
+        })
+        .then((value) => emit(LaunchAtStartupChanged(state, value)))
+        .whenComplete(() => loadingHide());
+  }
 
   dynamic exception([dynamic exception]) {
     if (exception == null) {
