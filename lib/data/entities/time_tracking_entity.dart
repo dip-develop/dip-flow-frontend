@@ -23,10 +23,16 @@ class TimeTrackingEntity {
       TimeTrackingEntity(
           id: timeTrack.id,
           userId: timeTrack.userId,
-          task: timeTrack.task.isNotEmpty ? timeTrack.task : null,
-          title: timeTrack.title.isNotEmpty ? timeTrack.title : null,
+          task: timeTrack.hasTask() && timeTrack.task.isNotEmpty
+              ? timeTrack.task
+              : null,
+          title: timeTrack.hasTitle() && timeTrack.title.isNotEmpty
+              ? timeTrack.title
+              : null,
           description:
-              timeTrack.description.isNotEmpty ? timeTrack.description : null,
+              timeTrack.hasDescription() && timeTrack.description.isNotEmpty
+                  ? timeTrack.description
+                  : null,
           tracks:
               timeTrack.tracks.map((e) => TrackEntity.fromGrpc(e)).toList());
 
@@ -51,9 +57,7 @@ class TrackEntity {
   factory TrackEntity.fromGrpc(TrackReply track) => TrackEntity(
       id: track.id,
       start: track.start.toDateTime(),
-      end: track.end.seconds.isZero && track.end.nanos == 0
-          ? null
-          : track.end.toDateTime());
+      end: track.hasEnd() ? track.end.toDateTime() : null);
 
   TrackModel toModel() => TrackModel(
         (p0) => p0

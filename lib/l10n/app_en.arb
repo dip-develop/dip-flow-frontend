@@ -22,5 +22,7 @@
   "team": "Team",
   "showWindow": "Show Window",
   "exitApp": "Exit App",
-  "launchAtStartup": "Launch at startup"  
+  "launchAtStartup": "Launch at startup",
+  "status":"Status",
+  "duration":"Duration"
 }

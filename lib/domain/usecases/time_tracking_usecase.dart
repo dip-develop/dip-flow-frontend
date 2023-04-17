@@ -7,8 +7,13 @@ import 'auth_usecase.dart';
 
 abstract class TimeTrackingUseCase {
   Future<TimeTrackingModel> getTimeTrack(int id);
-  Future<PaginationModel<TimeTrackingModel>> getTimeTracks(
-      {int? limit, int? offset});
+  Future<PaginationModel<TimeTrackingModel>> getTimeTracks({
+    int? limit,
+    int? offset,
+    String? search,
+    DateTime? start,
+    DateTime? end,
+  });
   Future<TimeTrackingModel> addTimeTrack(TimeTrackingModel timeTrack);
   Future<TimeTrackingModel> updateTimeTrack(TimeTrackingModel timeTrack);
   Future<void> deleteTimeTrack(int id);
@@ -32,11 +37,22 @@ class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
       .whenComplete(() => _app.loadingHide());
 
   @override
-  Future<PaginationModel<TimeTrackingModel>> getTimeTracks(
-          {int? limit, int? offset}) =>
+  Future<PaginationModel<TimeTrackingModel>> getTimeTracks({
+    int? limit,
+    int? offset,
+    String? search,
+    DateTime? start,
+    DateTime? end,
+  }) =>
       _prepare
-          .then((token) =>
-              _api.getTimeTracks(token, limit: limit, offset: offset))
+          .then((token) => _api.getTimeTracks(
+                token,
+                limit: limit,
+                offset: offset,
+                search: search,
+                start: start,
+                end: end,
+              ))
           .catchError(_app.exception)
           .whenComplete(() => _app.loadingHide());
 

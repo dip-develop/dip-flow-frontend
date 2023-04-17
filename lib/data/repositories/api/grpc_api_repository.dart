@@ -8,6 +8,9 @@ abstract class GRPCApiRepositoryModule {
   ClientChannel clientChannel() =>
       ClientChannel(FlavorConfig.instance.variables['baseUrl'] ?? 'theteam.run',
           port: 8080,
-          options:
-              const ChannelOptions(credentials: ChannelCredentials.insecure()));
+          options: const ChannelOptions(
+            credentials: ChannelCredentials.insecure(),
+            /*  codecRegistry:
+                CodecRegistry(codecs: const [GzipCodec(), IdentityCodec()]), */
+          ));
 }

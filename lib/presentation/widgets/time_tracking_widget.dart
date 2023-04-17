@@ -159,6 +159,9 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                       .then((_) => _updateTimeTracks())
                                       .then((_) => setState(() {
                                             _isAddPannelVisivle = false;
+                                            _taskTextController.clear();
+                                            _titleTextController.clear();
+                                            _descriptionTextController.clear();
                                           }));
                                 }
                               },
@@ -237,6 +240,9 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                 timeTrack.isStarted
                                     ? Icons.stop
                                     : Icons.play_arrow,
+                                color: timeTrack.isStarted
+                                    ? Theme.of(context).colorScheme.secondary
+                                    : null,
                                 size: 32.0,
                               ),
                             ),
@@ -341,7 +347,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
   void _updateTimeTracks() {
     _timeTracks = PaginationModel<TimeTrackingModel>.empty();
     _timeTrackingUseCase
-        .getTimeTracks()
+        .getTimeTracks(limit: 5)
         .then((value) => setState(() {
               _timeTracks = _timeTracks.from(value);
             }))

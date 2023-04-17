@@ -77,7 +77,8 @@ class ApplicationCubit extends Cubit<ApplicationState> {
     } else if (exception is GrpcError) {
       if (exception.code == StatusCode.unauthenticated) {
         auth(AuthState.unauthorized);
-      } else if (exception.code == StatusCode.unavailable) {
+      } else if (exception.code == StatusCode.unavailable ||
+          exception.code == StatusCode.deadlineExceeded) {
         emit(ExceptionOccurred(state, exception));
       }
     } else if (exception is AuthException) {

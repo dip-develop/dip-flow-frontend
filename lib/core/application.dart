@@ -153,17 +153,10 @@ abstract class ApplicationModule {
   @lazySingleton
   MixpanelAnalytics mixpanelAnalytics() => MixpanelAnalytics.batch(
         token: '199db839368b1b91da8de2bda30d743d',
-        //userId$: stream.stream,
         verbose: kDebugMode,
         uploadInterval: const Duration(seconds: 30),
         onError: (p0) {
           debugPrint(p0.toString());
         },
       );
-
-  /* @preResolve
-  Future<PackageInfo> get packageInfo => PackageInfo.fromPlatform();
-
-  @preResolve
-  Future<BaseDeviceInfo> get baseDeviceInfo => DeviceInfoPlugin().deviceInfo; */
 }

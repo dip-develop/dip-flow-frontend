@@ -12,8 +12,14 @@ abstract class AuthApiRepository extends ApiRepository {
 
 abstract class TimeTrackingRepository extends ApiRepository {
   Future<TimeTrackingModel> getTimeTrack(String token, int id);
-  Future<PaginationModel<TimeTrackingModel>> getTimeTracks(String token,
-      {int? limit, int? offset});
+  Future<PaginationModel<TimeTrackingModel>> getTimeTracks(
+    String token, {
+    int? limit,
+    int? offset,
+    String? search,
+    DateTime? start,
+    DateTime? end,
+  });
   Future<TimeTrackingModel> addTimeTrack(
       String token, TimeTrackingModel timeTrack);
   Future<TimeTrackingModel> updateTimeTrack(

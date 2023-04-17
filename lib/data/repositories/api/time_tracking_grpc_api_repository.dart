@@ -7,6 +7,7 @@ import '../../entities/entities.dart';
 import '../../entities/generated/base_models.pb.dart';
 import '../../entities/generated/gate_models.pb.dart';
 import '../../entities/generated/gate_service.pbgrpc.dart';
+import '../../entities/generated/google/protobuf/timestamp.pb.dart';
 import '../../entities/generated/time_tracking_models.pb.dart'
     as time_tracking_models;
 
@@ -28,10 +29,33 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
       .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel());
 
   @override
-  Future<PaginationModel<TimeTrackingModel>> getTimeTracks(String token,
-          {int? limit, int? offset}) =>
+  Future<PaginationModel<TimeTrackingModel>> getTimeTracks(
+    String token, {
+    int? limit,
+    int? offset,
+    String? search,
+    DateTime? start,
+    DateTime? end,
+  }) =>
       _client(token)
-          .getTimeTracks(PaginationRequest(limit: limit, offset: offset))
+          .getTimeTracks(
+            GetTimeTrackRequest(
+              pagination: limit != null || offset != null
+                  ? PaginationRequest(limit: limit, offset: offset)
+                  : null,
+              search: search != null ? SearchRequest(search: search) : null,
+              dateRange: start != null || end != null
+                  ? DateRangeRequest(
+                      start: start != null
+                          ? Timestamp.fromDateTime(start.toUtc())
+                          : null,
+                      end: end != null
+                          ? Timestamp.fromDateTime(end.toUtc())
+                          : null,
+                    )
+                  : null,
+            ),
+          )
           .then((reply) => PaginationEntity.fromGrpc(reply).toModel());
 
   @override
