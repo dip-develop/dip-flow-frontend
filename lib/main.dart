@@ -22,6 +22,7 @@ void main() async {
     FlavorConfig(
       variables: {
         'baseUrl': 'theteam.run',
+        'basePort': 8080,
       },
     );
   }

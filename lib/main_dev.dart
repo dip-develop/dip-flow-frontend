@@ -9,6 +9,7 @@ void main() {
     name: 'DEVELOP',
     variables: {
       'baseUrl': '127.0.0.1',
+      'basePort': 8080,
     },
   );
   m.main();
