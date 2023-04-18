@@ -17,13 +17,13 @@ architectures:
   - build-on: [ arm64 ]
 
 slots:
-  dbus-protected-person-notes:
+  dbus-theteam:
     interface: dbus
     bus: session
     name: run.theteam.app
 
 apps:
-  protected-person-notes:
+  theteam:
     command: theteam
     extensions: [flutter-stable]
     plugs:
@@ -35,7 +35,7 @@ apps:
     slots:
       - dbus-theteam
 parts:
-  protected-person-notes:
+  theteam:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart
@@ -48,12 +48,12 @@ parts:
       - libsecret-1-dev
       - libjsoncpp-dev
       - libayatana-appindicator3-dev
-      - libnotify
+      - libnotify-dev
     stage-packages:
       - libjsoncpp-dev
       - libsecret-1-dev
       - libgnome-keyring-common
       - libgnome-keyring0
       - libayatana-appindicator3-dev
-      - libnotify
+      - libnotify-dev
       

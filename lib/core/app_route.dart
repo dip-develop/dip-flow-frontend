@@ -8,8 +8,13 @@ import '../domain/usecases/usecases.dart';
 import '../presentation/screens/auth/sign_in/sign_in_screen.dart';
 import '../presentation/screens/auth/sign_up/sign_up_screen.dart';
 import '../presentation/screens/dashboard/dashboard_screen.dart';
+import '../presentation/screens/hr/hr_screen.dart';
+import '../presentation/screens/projects/projects_screen.dart';
+import '../presentation/screens/recruiter/recruiter_screen.dart';
+import '../presentation/screens/reports/reports_screen.dart';
 import '../presentation/screens/settings/settings_screen.dart';
 import '../presentation/screens/splash/splash_screen.dart';
+import '../presentation/screens/tasks/tasks_screen.dart';
 import '../presentation/screens/team/team_screen.dart';
 import '../presentation/screens/time_tracking/time_tracking_screen.dart';
 import '../presentation/widgets/navigation_widget.dart';
@@ -21,8 +26,14 @@ class AppRoute {
   static String signInRouteName = 'signin';
   static String signUpRouteName = 'signup';
   static String dashboardRouteName = 'dashboard';
-  static String teamRouteName = 'team';
+
   static String timeTrackingRouteName = 'timetracking';
+  static String tasksRouteName = 'tasks';
+  static String projectsRouteName = 'projects';
+  static String teamsRouteName = 'teams';
+  static String hrRouteName = 'hr';
+  static String recruiterRouteName = 'recruiter';
+  static String reportsRouteName = 'reports';
   static String settingsRouteName = 'settings';
 
   final _rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -88,17 +99,52 @@ class AppRoute {
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
-                name: teamRouteName,
-                path: '/team',
+                name: timeTrackingRouteName,
+                path: '/time-tracking',
+                pageBuilder: (context, state) => _getTransition(
+                    state: state, child: const TimeTrackingScreen()),
+              ),
+              GoRoute(
+                parentNavigatorKey: _shellNavigatorKey,
+                name: tasksRouteName,
+                path: '/tasks',
+                pageBuilder: (context, state) =>
+                    _getTransition(state: state, child: const TasksScreen()),
+              ),
+              GoRoute(
+                parentNavigatorKey: _shellNavigatorKey,
+                name: projectsRouteName,
+                path: '/projects',
+                pageBuilder: (context, state) =>
+                    _getTransition(state: state, child: const ProjectsScreen()),
+              ),
+              GoRoute(
+                parentNavigatorKey: _shellNavigatorKey,
+                name: teamsRouteName,
+                path: '/teams',
                 pageBuilder: (context, state) =>
                     _getTransition(state: state, child: const TeamScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
-                name: timeTrackingRouteName,
-                path: '/time-tracking',
+                name: hrRouteName,
+                path: '/hr',
+                pageBuilder: (context, state) =>
+                    _getTransition(state: state, child: const HRScreen()),
+              ),
+              GoRoute(
+                parentNavigatorKey: _shellNavigatorKey,
+                name: recruiterRouteName,
+                path: '/recruiter',
                 pageBuilder: (context, state) => _getTransition(
-                    state: state, child: const TimeTrackingScreen()),
+                    state: state, child: const RecruiterScreen()),
+              ),
+              GoRoute(
+                parentNavigatorKey: _shellNavigatorKey,
+                name: reportsRouteName,
+                path: '/reports',
+                pageBuilder: (context, state) =>
+                    _getTransition(state: state, child: const ReportsScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,

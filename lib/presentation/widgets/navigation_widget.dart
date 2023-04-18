@@ -7,6 +7,7 @@ import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import '../../core/app_route.dart';
+import 'user_button_widget.dart';
 
 class NavigationWidget extends StatefulWidget {
   final Widget child;
@@ -47,19 +48,33 @@ class _NavigationWidgetState extends State<NavigationWidget>
   }
 
   void _selectMenu() {
-    if (GetIt.I<AppRoute>().route.location ==
-        GetIt.I<AppRoute>().route.namedLocation(AppRoute.dashboardRouteName)) {
+    final route = GetIt.I<AppRoute>().route;
+    final location = route.location;
+    if (location == route.namedLocation(AppRoute.dashboardRouteName)) {
       _selectedTab = 0;
-    } else if (GetIt.I<AppRoute>().route.location.contains(
-        GetIt.I<AppRoute>().route.namedLocation(AppRoute.teamRouteName))) {
+    } else if (location
+        .contains(route.namedLocation(AppRoute.timeTrackingRouteName))) {
       _selectedTab = 1;
-    } else if (GetIt.I<AppRoute>().route.location.contains(GetIt.I<AppRoute>()
-        .route
-        .namedLocation(AppRoute.timeTrackingRouteName))) {
+    } else if (location
+        .contains(route.namedLocation(AppRoute.tasksRouteName))) {
       _selectedTab = 2;
-    } else if (GetIt.I<AppRoute>().route.location.contains(
-        GetIt.I<AppRoute>().route.namedLocation(AppRoute.settingsRouteName))) {
+    } else if (location
+        .contains(route.namedLocation(AppRoute.projectsRouteName))) {
       _selectedTab = 3;
+    } else if (location
+        .contains(route.namedLocation(AppRoute.teamsRouteName))) {
+      _selectedTab = 4;
+    } else if (location.contains(route.namedLocation(AppRoute.hrRouteName))) {
+      _selectedTab = 5;
+    } else if (location
+        .contains(route.namedLocation(AppRoute.recruiterRouteName))) {
+      _selectedTab = 6;
+    } else if (location
+        .contains(route.namedLocation(AppRoute.reportsRouteName))) {
+      _selectedTab = 7;
+    } else if (location
+        .contains(route.namedLocation(AppRoute.settingsRouteName))) {
+      _selectedTab = 8;
     }
   }
 
@@ -75,7 +90,9 @@ class _NavigationWidgetState extends State<NavigationWidget>
   @override
   Widget build(BuildContext context) {
     return AdaptiveScaffold(
-      useDrawer: false,
+      appBar: AppBar(actions: const [UserButtonWidget()]),
+      leadingExtendedNavRail: const UserButtonWidget(),
+      leadingUnextendedNavRail: const UserButtonWidget(),
       selectedIndex: _selectedTab,
       internalAnimations: false,
       onSelectedIndexChange: (int index) {
@@ -84,12 +101,27 @@ class _NavigationWidgetState extends State<NavigationWidget>
             context.goNamed(AppRoute.dashboardRouteName);
             break;
           case 1:
-            context.goNamed(AppRoute.teamRouteName);
-            break;
-          case 2:
             context.goNamed(AppRoute.timeTrackingRouteName);
             break;
+          case 2:
+            context.goNamed(AppRoute.tasksRouteName);
+            break;
           case 3:
+            context.goNamed(AppRoute.projectsRouteName);
+            break;
+          case 4:
+            context.goNamed(AppRoute.teamsRouteName);
+            break;
+          case 5:
+            context.goNamed(AppRoute.hrRouteName);
+            break;
+          case 6:
+            context.goNamed(AppRoute.recruiterRouteName);
+            break;
+          case 7:
+            context.goNamed(AppRoute.reportsRouteName);
+            break;
+          case 8:
             context.goNamed(AppRoute.settingsRouteName);
             break;
           default:
@@ -105,14 +137,39 @@ class _NavigationWidgetState extends State<NavigationWidget>
           label: AppLocalizations.of(context)!.dashboard,
         ),
         NavigationDestination(
-          icon: const Icon(Icons.people_outline),
-          selectedIcon: const Icon(Icons.people),
-          label: AppLocalizations.of(context)!.team,
-        ),
-        NavigationDestination(
           icon: const Icon(Icons.timer_outlined),
           selectedIcon: const Icon(Icons.timer),
           label: AppLocalizations.of(context)!.timeTracking,
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.task_outlined),
+          selectedIcon: const Icon(Icons.task),
+          label: AppLocalizations.of(context)!.tasks,
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.code_outlined),
+          selectedIcon: const Icon(Icons.code),
+          label: AppLocalizations.of(context)!.projects,
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.group_outlined),
+          selectedIcon: const Icon(Icons.group),
+          label: AppLocalizations.of(context)!.teams,
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.diversity_3_outlined),
+          selectedIcon: const Icon(Icons.diversity_3),
+          label: AppLocalizations.of(context)!.hr,
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.find_replace_outlined),
+          selectedIcon: const Icon(Icons.find_replace),
+          label: AppLocalizations.of(context)!.recruiter,
+        ),
+        NavigationDestination(
+          icon: const Icon(Icons.bar_chart_outlined),
+          selectedIcon: const Icon(Icons.bar_chart),
+          label: AppLocalizations.of(context)!.reports,
         ),
         NavigationDestination(
           icon: const Icon(Icons.settings_outlined),
@@ -120,8 +177,7 @@ class _NavigationWidgetState extends State<NavigationWidget>
           label: AppLocalizations.of(context)!.settings,
         ),
       ],
-      body: (_) => widget.child,
-      //smallBody: (_) => widget.child,
+      body: (_) => SafeArea(child: widget.child),
     );
   }
 }

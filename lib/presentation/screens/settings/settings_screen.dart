@@ -9,31 +9,26 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-          child: BlocBuilder<ApplicationCubit, ApplicationState>(
-        buildWhen: (_, current) => current is ThemeChanged,
-        builder: (context, state) {
-          return ListView(
-            children: [
-              SwitchListTile(
-                title: Text(AppLocalizations.of(context)!.darkMode),
-                subtitle: Text(AppLocalizations.of(context)!.theme),
-                value: state.themeMode == ThemeMode.dark,
-                onChanged: (_) =>
-                    context.read<ApplicationCubit>().switchTheme(),
-              ),
-              SwitchListTile(
-                title: Text(AppLocalizations.of(context)!.darkMode),
-                subtitle: Text(AppLocalizations.of(context)!.launchAtStartup),
-                value: state.launchAtStartup,
-                onChanged: (_) =>
-                    context.read<ApplicationCubit>().switchLaunchAtStartup(),
-              ),
-            ],
-          );
-        },
-      )),
+    return BlocBuilder<ApplicationCubit, ApplicationState>(
+      buildWhen: (_, current) => current is ThemeChanged,
+      builder: (context, state) {
+        return ListView(
+          children: [
+            SwitchListTile(
+              title: Text(AppLocalizations.of(context)!.darkMode),
+              subtitle: Text(AppLocalizations.of(context)!.theme),
+              value: state.themeMode == ThemeMode.dark,
+              onChanged: (_) => context.read<ApplicationCubit>().switchTheme(),
+            ),
+            SwitchListTile(
+              title: Text(AppLocalizations.of(context)!.launchAtStartup),
+              value: state.launchAtStartup,
+              onChanged: (_) =>
+                  context.read<ApplicationCubit>().switchLaunchAtStartup(),
+            ),
+          ],
+        );
+      },
     );
   }
 }
