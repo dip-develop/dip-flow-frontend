@@ -130,6 +130,7 @@ class _NavigationWidgetState extends State<NavigationWidget>
           _selectedTab = index;
         });
       },
+      drawerBreakpoint: Breakpoints.smallMobile,
       destinations: <NavigationDestination>[
         NavigationDestination(
           icon: const Icon(Icons.dashboard_outlined),

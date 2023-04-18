@@ -47,9 +47,9 @@ class ApplicationCubit extends Cubit<ApplicationState> {
     _appUseCase.saveThemeMode(ThemeMode.light);
   }
 
-  void loadingShow() => emit(IsLoadingChanged(state, true));
+  void loadingShow() => !isClosed ? emit(IsLoadingChanged(state, true)) : null;
 
-  void loadingHide() => emit(IsLoadingChanged(state, false));
+  void loadingHide() => !isClosed ? emit(IsLoadingChanged(state, false)) : null;
 
   void switchTheme() =>
       state.themeMode == ThemeMode.dark ? toLightTheme() : toDarkTheme();
@@ -90,5 +90,5 @@ class ApplicationCubit extends Cubit<ApplicationState> {
     throw exception;
   }
 
-  void auth(AuthState auth) => emit(AuthChanged(state, auth));
+  void auth(AuthState auth) => !isClosed ? emit(AuthChanged(state, auth)) : null;
 }

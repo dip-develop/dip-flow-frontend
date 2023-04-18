@@ -36,7 +36,8 @@ class TimeTrackingCubit extends Cubit<TimeTrackingState> {
   void createTimer() {
     if (state.timeTracks.items.any((element) => element.isStarted)) {
       timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        if (state.timeTracks.items.any((element) => element.isStarted)) {
+        if (!isClosed &&
+            state.timeTracks.items.any((element) => element.isStarted)) {
           emit(TimeTick(state.timeTracks));
         }
       });
