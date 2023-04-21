@@ -11,10 +11,13 @@ confinement: strict
 icon: snap/gui/theteam.png
 base: core18
 grade: stable
+adopt-info: desktop
+contact: theteam@dipdev.studio
 
 architectures:
-  - build-on: [ amd64 ]
-  - build-on: [ arm64 ]
+  - build-on: amd64
+  - build-on: arm64
+  - build-on: armhf
 
 slots:
   dbus-theteam:
@@ -25,9 +28,10 @@ slots:
 apps:
   theteam:
     command: theteam
-    extensions: [flutter-stable]
+    extensions: [flutter-master]
     plugs:
       - network
+      - network-status
       - password-manager-service
       - home
       - mount-observe

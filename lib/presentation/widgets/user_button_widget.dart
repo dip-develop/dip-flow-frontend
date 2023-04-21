@@ -15,9 +15,12 @@ class UserButtonWidget extends StatelessWidget {
       onSelected: (value) {
         switch (value) {
           case 0:
-            context.goNamed(AppRoute.settingsRouteName);
+            context.goNamed(AppRoute.profileRouteName);
             break;
           case 1:
+            context.goNamed(AppRoute.settingsRouteName);
+            break;
+          case 2:
             GetIt.I<AuthUseCase>().signOut();
             break;
           default:
@@ -27,12 +30,19 @@ class UserButtonWidget extends StatelessWidget {
         PopupMenuItem(
           value: 0,
           child: ListTile(
+            leading: const Icon(Icons.person),
+            title: Text(AppLocalizations.of(context)!.profile),
+          ),
+        ),
+        PopupMenuItem(
+          value: 1,
+          child: ListTile(
             leading: const Icon(Icons.settings),
             title: Text(AppLocalizations.of(context)!.settings),
           ),
         ),
         PopupMenuItem(
-          value: 1,
+          value: 2,
           child: ListTile(
             leading: const Icon(Icons.logout),
             title: Text(AppLocalizations.of(context)!.signOut),

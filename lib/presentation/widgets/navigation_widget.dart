@@ -73,8 +73,11 @@ class _NavigationWidgetState extends State<NavigationWidget>
         .contains(route.namedLocation(AppRoute.reportsRouteName))) {
       _selectedTab = 7;
     } else if (location
-        .contains(route.namedLocation(AppRoute.settingsRouteName))) {
+            .contains(route.namedLocation(AppRoute.profileRouteName)) ||
+        location.contains(route.namedLocation(AppRoute.settingsRouteName))) {
       _selectedTab = 8;
+    } else {
+      _selectedTab = 0;
     }
   }
 
@@ -130,7 +133,7 @@ class _NavigationWidgetState extends State<NavigationWidget>
           _selectedTab = index;
         });
       },
-      drawerBreakpoint: Breakpoints.smallMobile,
+      drawerBreakpoint: Breakpoints.small,
       destinations: <NavigationDestination>[
         NavigationDestination(
           icon: const Icon(Icons.dashboard_outlined),

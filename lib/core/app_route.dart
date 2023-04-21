@@ -9,6 +9,7 @@ import '../presentation/screens/auth/sign_in/sign_in_screen.dart';
 import '../presentation/screens/auth/sign_up/sign_up_screen.dart';
 import '../presentation/screens/dashboard/dashboard_screen.dart';
 import '../presentation/screens/hr/hr_screen.dart';
+import '../presentation/screens/profile/profile_screen.dart';
 import '../presentation/screens/projects/projects_screen.dart';
 import '../presentation/screens/recruiter/recruiter_screen.dart';
 import '../presentation/screens/reports/reports_screen.dart';
@@ -25,9 +26,11 @@ class AppRoute {
   static String authRouteName = 'auth';
   static String signInRouteName = 'signin';
   static String signUpRouteName = 'signup';
+  static String restorePasswordRouteName = 'restore-password';
+
   static String dashboardRouteName = 'dashboard';
 
-  static String timeTrackingRouteName = 'timetracking';
+  static String timeTrackingRouteName = 'time-tracking';
   static String tasksRouteName = 'tasks';
   static String projectsRouteName = 'projects';
   static String teamsRouteName = 'teams';
@@ -35,6 +38,8 @@ class AppRoute {
   static String recruiterRouteName = 'recruiter';
   static String reportsRouteName = 'reports';
   static String settingsRouteName = 'settings';
+  static String profileRouteName = 'profile';
+  static String changePasswordRouteName = 'change-password';
 
   final _rootNavigatorKey = GlobalKey<NavigatorState>();
   final _shellNavigatorKey = GlobalKey<NavigatorState>();
@@ -57,7 +62,7 @@ class AppRoute {
               GoRoute(
                   parentNavigatorKey: _rootNavigatorKey,
                   name: authRouteName,
-                  path: 'auth',
+                  path: authRouteName,
                   pageBuilder: (context, state) =>
                       _getTransition(state: state, child: const SignInScreen()),
                   redirect: (context, state) {
@@ -70,16 +75,23 @@ class AppRoute {
                     GoRoute(
                       parentNavigatorKey: _rootNavigatorKey,
                       name: signInRouteName,
-                      path: 'signin',
+                      path: signInRouteName,
                       pageBuilder: (context, state) => _getTransition(
                           state: state, child: const SignInScreen()),
                     ),
                     GoRoute(
                       parentNavigatorKey: _rootNavigatorKey,
                       name: signUpRouteName,
-                      path: 'signup',
+                      path: signUpRouteName,
                       pageBuilder: (context, state) => _getTransition(
                           state: state, child: const SignUpScreen()),
+                    ),
+                    GoRoute(
+                      parentNavigatorKey: _rootNavigatorKey,
+                      name: restorePasswordRouteName,
+                      path: restorePasswordRouteName,
+                      pageBuilder: (context, state) =>
+                          _getTransition(state: state, child: Container()),
                     ),
                   ]),
             ]),
@@ -93,63 +105,78 @@ class AppRoute {
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 name: dashboardRouteName,
-                path: '/dashboard',
+                path: '/$dashboardRouteName',
                 pageBuilder: (context, state) => _getTransition(
                     state: state, child: const DashBoardScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 name: timeTrackingRouteName,
-                path: '/time-tracking',
+                path: '/$timeTrackingRouteName',
                 pageBuilder: (context, state) => _getTransition(
                     state: state, child: const TimeTrackingScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 name: tasksRouteName,
-                path: '/tasks',
+                path: '/$tasksRouteName',
                 pageBuilder: (context, state) =>
                     _getTransition(state: state, child: const TasksScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 name: projectsRouteName,
-                path: '/projects',
+                path: '/$projectsRouteName',
                 pageBuilder: (context, state) =>
                     _getTransition(state: state, child: const ProjectsScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 name: teamsRouteName,
-                path: '/teams',
+                path: '/$teamsRouteName',
                 pageBuilder: (context, state) =>
                     _getTransition(state: state, child: const TeamScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 name: hrRouteName,
-                path: '/hr',
+                path: '/$hrRouteName',
                 pageBuilder: (context, state) =>
                     _getTransition(state: state, child: const HRScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 name: recruiterRouteName,
-                path: '/recruiter',
+                path: '/$recruiterRouteName',
                 pageBuilder: (context, state) => _getTransition(
                     state: state, child: const RecruiterScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 name: reportsRouteName,
-                path: '/reports',
+                path: '/$reportsRouteName',
                 pageBuilder: (context, state) =>
                     _getTransition(state: state, child: const ReportsScreen()),
               ),
               GoRoute(
+                  parentNavigatorKey: _shellNavigatorKey,
+                  name: profileRouteName,
+                  path: '/$profileRouteName',
+                  pageBuilder: (context, state) => _getTransition(
+                      state: state, child: const ProfileScreen()),
+                  routes: [
+                    GoRoute(
+                      parentNavigatorKey: _shellNavigatorKey,
+                      name: changePasswordRouteName,
+                      path: changePasswordRouteName,
+                      pageBuilder: (context, state) =>
+                          _getTransition(state: state, child: Container()),
+                    ),
+                  ]),
+              GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
                 name: settingsRouteName,
-                path: '/settings',
+                path: '/$settingsRouteName',
                 pageBuilder: (context, state) =>
                     _getTransition(state: state, child: const SettingsScreen()),
               ),

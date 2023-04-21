@@ -8,7 +8,6 @@ import 'cubit/time_tracking_cubit.dart';
 class TimeTrackingScreen extends StatelessWidget {
   const TimeTrackingScreen({super.key});
 
-  final _titleHeight = 32.0;
   final _rowHeight = 64.0;
 
   @override
@@ -26,6 +25,7 @@ class TimeTrackingScreen extends StatelessWidget {
                 3: FlexColumnWidth(),
                 4: FixedColumnWidth(64),
               },
+              textBaseline: TextBaseline.alphabetic,
               children: [
                 TableRow(
                     decoration: BoxDecoration(
@@ -36,43 +36,41 @@ class TimeTrackingScreen extends StatelessWidget {
                         child: Container(
                             padding: const EdgeInsets.all(8.0),
                             alignment: Alignment.center,
-                            height: _titleHeight,
-                            child: Text(AppLocalizations.of(context)!
-                                .status
-                                .toUpperCase())),
+                            child: Text(
+                              AppLocalizations.of(context)!.status,
+                              style: Theme.of(context).textTheme.labelLarge,
+                            )),
                       ),
                       TableCell(
                         child: Container(
                             padding: const EdgeInsets.all(8.0),
                             alignment: Alignment.center,
-                            height: _titleHeight,
-                            child: Text(AppLocalizations.of(context)!
-                                .duration
-                                .toUpperCase())),
+                            child: Text(
+                              AppLocalizations.of(context)!.duration,
+                              style: Theme.of(context).textTheme.labelLarge,
+                            )),
                       ),
                       TableCell(
                         child: Container(
                             padding: const EdgeInsets.all(8.0),
                             alignment: Alignment.center,
-                            height: _titleHeight,
-                            child: Text(AppLocalizations.of(context)!
-                                .task
-                                .toUpperCase())),
+                            child: Text(
+                              AppLocalizations.of(context)!.task,
+                              style: Theme.of(context).textTheme.labelLarge,
+                            )),
+                      ),
+                      TableCell(
+                        child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              AppLocalizations.of(context)!.title,
+                              style: Theme.of(context).textTheme.labelLarge,
+                            )),
                       ),
                       TableCell(
                         child: Container(
                             padding: const EdgeInsets.all(8.0),
                             alignment: Alignment.center,
-                            height: _titleHeight,
-                            child: Text(AppLocalizations.of(context)!
-                                .title
-                                .toUpperCase())),
-                      ),
-                      TableCell(
-                        child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            alignment: Alignment.center,
-                            height: _titleHeight,
                             child: const SizedBox.shrink()),
                       ),
                     ]),
@@ -107,8 +105,6 @@ class TimeTrackingScreen extends StatelessWidget {
                       child: Container(
                           padding: const EdgeInsets.all(8.0),
                           alignment: Alignment.center,
-                          /* color:
-                              Theme.of(context).colorScheme.primaryContainer, */
                           height: _rowHeight,
                           child: Text(timeTrack.duration.format())),
                     ),
@@ -137,7 +133,7 @@ class TimeTrackingScreen extends StatelessWidget {
                             children: [
                               Text(timeTrack.title ?? '',
                                   style: Theme.of(context).textTheme.bodyMedium,
-                                  maxLines: 1,
+                                  maxLines: 3,
                                   overflow: TextOverflow.ellipsis),
                               if (timeTrack.description != null)
                                 Text(timeTrack.description ?? '',
