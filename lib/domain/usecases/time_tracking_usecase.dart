@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../../core/cubit/application_cubit.dart';
+import '../../core/cubits/application_cubit.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
 import 'auth_usecase.dart';

@@ -30,5 +30,8 @@
   "exitApp": "Exit App",
   "launchAtStartup": "Launch at startup",
   "status":"Status",
-  "duration":"Duration"
+  "duration":"Duration",
+  "today": "Today",
+  "dateRange": "Date range",
+  "search": "Search"
 }

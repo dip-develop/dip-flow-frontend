@@ -13,7 +13,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:tray_manager/tray_manager.dart';
 
 import '../../../core/app_route.dart';
-import '../../../core/cubit/application_cubit.dart';
+import '../../../core/cubits/application_cubit.dart';
 import '../../../domain/usecases/usecases.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -61,7 +61,6 @@ class SplashScreen extends StatelessWidget {
         ],
       );
       await trayManager.setContextMenu(menu);
-
     }
 
     FlutterNativeSplash.remove();

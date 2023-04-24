@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
+import '../../../core/cubits/timer_cubit.dart';
 import '../../utils/extensions.dart';
 import 'cubit/time_tracking_cubit.dart';
 
-class TimeTrackingScreen extends StatelessWidget {
+class TimeTrackingScreen extends StatefulWidget {
   const TimeTrackingScreen({super.key});
 
-  final _rowHeight = 64.0;
+  @override
+  State<TimeTrackingScreen> createState() => _TimeTrackingScreenState();
+}
+
+class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
+  final _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -16,170 +23,225 @@ class TimeTrackingScreen extends StatelessWidget {
       create: (context) => TimeTrackingCubit()..loadData(),
       child: BlocBuilder<TimeTrackingCubit, TimeTrackingState>(
         builder: (context, state) {
-          return SingleChildScrollView(
-            child: Table(
-              columnWidths: const <int, TableColumnWidth>{
-                0: IntrinsicColumnWidth(),
-                1: FixedColumnWidth(96),
-                2: FixedColumnWidth(128.0),
-                3: FlexColumnWidth(),
-                4: FixedColumnWidth(64),
-              },
-              textBaseline: TextBaseline.alphabetic,
-              children: [
-                TableRow(
-                    decoration: BoxDecoration(
-                        color:
-                            Theme.of(context).colorScheme.secondaryContainer),
+          return BlocBuilder<TimerCubit, TimerState>(
+            buildWhen: (previous, current) =>
+                current is TimeTick &&
+                state.timeTracks.items.any((element) => element.isStarted),
+            builder: (context, timeTick) {
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     children: [
-                      TableCell(
-                        child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            alignment: Alignment.center,
-                            child: Text(
+                      Wrap(
+                          runAlignment: WrapAlignment.center,
+                          alignment: WrapAlignment.center,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 16.0,
+                          runSpacing: 16.0,
+                          children: [
+                            ConstrainedBox(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 220.0),
+                                child: TextField(
+                                  decoration: InputDecoration(
+                                    suffixIcon: IconButton(
+                                        onPressed: () {
+                                          context
+                                              .read<TimeTrackingCubit>()
+                                              .loadData(
+                                                limit: state.timeTracks.limit,
+                                                offset: state.timeTracks.offset,
+                                                filter: state.filter
+                                                    .clear(search: true),
+                                              );
+                                          _searchController.clear();
+                                        },
+                                        icon: const Icon(Icons.clear)),
+                                  ),
+                                  controller: _searchController,
+                                )),
+                            ElevatedButton(
+                                onPressed: () =>
+                                    context.read<TimeTrackingCubit>().loadData(
+                                          limit: state.timeTracks.limit,
+                                          offset: state.timeTracks.offset,
+                                          filter: state.filter.copyWith(
+                                              search: _searchController.text),
+                                        ),
+                                child:
+                                    Text(AppLocalizations.of(context)!.search)),
+                            ElevatedButton(
+                                onPressed: () {
+                                  showDateRangePicker(
+                                    context: context,
+                                    firstDate: DateTime(2023, 1, 1),
+                                    lastDate: DateTime.now(),
+                                  ).then((value) {
+                                    if (state.filter.start != value?.start &&
+                                        state.filter.end != value?.end) {
+                                      context
+                                          .read<TimeTrackingCubit>()
+                                          .loadData(
+                                            limit: state.timeTracks.limit,
+                                            offset: state.timeTracks.offset,
+                                            filter: state.filter.copyWith(
+                                                start: value?.start,
+                                                end: value?.end),
+                                          );
+                                    }
+                                  });
+                                },
+                                child: Text(
+                                    AppLocalizations.of(context)!.dateRange)),
+                            if (state.filter.start != null &&
+                                state.filter.end != null)
+                              Chip(
+                                avatar: const Icon(Icons.date_range),
+                                label: Text(
+                                    '${DateFormat.yMd().format(state.filter.start!)} - ${DateFormat.yMd().format(state.filter.end!)}'),
+                                onDeleted: () {
+                                  context.read<TimeTrackingCubit>().loadData(
+                                        filter: state.filter.clear(
+                                          start: true,
+                                          end: true,
+                                        ),
+                                      );
+                                },
+                              ),
+                          ]),
+                      DataTable(
+                        showBottomBorder: true,
+                        dataRowHeight: 72.0,
+                        clipBehavior: Clip.antiAlias,
+                        columns: <DataColumn>[
+                          DataColumn(
+                            label: Text(
                               AppLocalizations.of(context)!.status,
-                              style: Theme.of(context).textTheme.labelLarge,
-                            )),
-                      ),
-                      TableCell(
-                        child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            alignment: Alignment.center,
-                            child: Text(
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
                               AppLocalizations.of(context)!.duration,
-                              style: Theme.of(context).textTheme.labelLarge,
-                            )),
-                      ),
-                      TableCell(
-                        child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            alignment: Alignment.center,
-                            child: Text(
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
                               AppLocalizations.of(context)!.task,
-                              style: Theme.of(context).textTheme.labelLarge,
-                            )),
-                      ),
-                      TableCell(
-                        child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
+                            ),
+                          ),
+                          DataColumn(
+                            label: Text(
                               AppLocalizations.of(context)!.title,
-                              style: Theme.of(context).textTheme.labelLarge,
-                            )),
-                      ),
-                      TableCell(
-                        child: Container(
-                            padding: const EdgeInsets.all(8.0),
-                            alignment: Alignment.center,
-                            child: const SizedBox.shrink()),
-                      ),
-                    ]),
-                ...List.generate(state.timeTracks.items.length, (index) {
-                  final timeTrack = state.timeTracks.items[index];
+                            ),
+                          ),
+                          const DataColumn(
+                            label: SizedBox.shrink(),
+                          ),
+                        ],
+                        rows: List<DataRow>.generate(
+                            state.timeTracks.items.length, (index) {
+                          final timeTrack = state.timeTracks.items[index];
+                          return DataRow(cells: <DataCell>[
+                            /* 0: IntrinsicColumnWidth(),
+                      1: FixedColumnWidth(96),
+                      2: FixedColumnWidth(128.0),
+                      3: FlexColumnWidth(),
+                      4: FixedColumnWidth(64), */
 
-                  return TableRow(children: [
-                    TableCell(
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        alignment: Alignment.center,
-                        height: _rowHeight,
-                        child: IconButton(
-                          onPressed: () => timeTrack.isStarted
-                              ? context
-                                  .read<TimeTrackingCubit>()
-                                  .stopTrack(timeTrack)
-                              : context
-                                  .read<TimeTrackingCubit>()
-                                  .startTrack(timeTrack),
-                          icon: Icon(
-                            timeTrack.isStarted ? Icons.stop : Icons.play_arrow,
-                            color: timeTrack.isStarted
-                                ? Theme.of(context).colorScheme.primary
-                                : null,
-                            size: 32.0,
-                          ),
-                        ),
-                      ),
-                    ),
-                    TableCell(
-                      child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          alignment: Alignment.center,
-                          height: _rowHeight,
-                          child: Text(timeTrack.duration.format())),
-                    ),
-                    TableCell(
-                        child: InkWell(
-                      onTap: () {},
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        alignment: Alignment.center,
-                        height: _rowHeight,
-                        child: Text(
-                            timeTrack.task != null ? '#${timeTrack.task}' : '',
-                            style: Theme.of(context).textTheme.labelMedium),
-                      ),
-                    )),
-                    TableCell(
-                      child: InkWell(
-                        onTap: () {},
-                        child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          alignment: Alignment.centerLeft,
-                          height: _rowHeight,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(timeTrack.title ?? '',
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                  maxLines: 3,
-                                  overflow: TextOverflow.ellipsis),
-                              if (timeTrack.description != null)
-                                Text(timeTrack.description ?? '',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis)
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    TableCell(
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        alignment: Alignment.center,
-                        height: _rowHeight,
-                        child: PopupMenuButton<int>(
-                          onSelected: (value) {
-                            switch (value) {
-                              case 1:
-                                context
-                                    .read<TimeTrackingCubit>()
-                                    .deleteTimeTrack(timeTrack);
-                                break;
-                              default:
-                            }
-                          },
-                          itemBuilder: (context) => <PopupMenuEntry<int>>[
-                            PopupMenuItem<int>(
-                              value: 1,
-                              child: ListTile(
-                                leading: const Icon(Icons.delete),
-                                title:
-                                    Text(AppLocalizations.of(context)!.delete),
+                            DataCell(
+                              IconButton(
+                                onPressed: () => timeTrack.isStarted
+                                    ? context
+                                        .read<TimeTrackingCubit>()
+                                        .stopTrack(timeTrack)
+                                    : context
+                                        .read<TimeTrackingCubit>()
+                                        .startTrack(timeTrack),
+                                icon: Icon(
+                                  timeTrack.isStarted
+                                      ? Icons.stop
+                                      : Icons.play_arrow,
+                                  color: timeTrack.isStarted
+                                      ? Theme.of(context).colorScheme.primary
+                                      : null,
+                                  size: 32.0,
+                                ),
                               ),
                             ),
-                          ],
-                        ),
+                            DataCell(
+                              Text(timeTrack.duration.format()),
+                              onTap: () {},
+                            ),
+                            DataCell(
+                              Text(
+                                  timeTrack.task != null
+                                      ? '#${timeTrack.task}'
+                                      : '',
+                                  style:
+                                      Theme.of(context).textTheme.labelMedium),
+                              onTap: () {},
+                            ),
+                            DataCell(
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(timeTrack.title ?? '',
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis),
+                                  if (timeTrack.description != null)
+                                    Text(timeTrack.description ?? '',
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis)
+                                ],
+                              ),
+                              onTap: () {},
+                            ),
+                            DataCell(
+                              PopupMenuButton<int>(
+                                onSelected: (value) {
+                                  switch (value) {
+                                    case 1:
+                                      context
+                                          .read<TimeTrackingCubit>()
+                                          .deleteTimeTrack(timeTrack);
+                                      break;
+                                    default:
+                                  }
+                                },
+                                itemBuilder: (context) => <PopupMenuEntry<int>>[
+                                  PopupMenuItem<int>(
+                                    value: 1,
+                                    child: ListTile(
+                                      leading: const Icon(Icons.delete),
+                                      title: Text(
+                                          AppLocalizations.of(context)!.delete),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ]);
+                        }),
                       ),
-                    ),
-                  ]);
-                }),
-              ],
-            ),
+                    ],
+                  ),
+                ),
+              );
+            },
           );
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 }

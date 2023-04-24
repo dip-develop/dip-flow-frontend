@@ -9,9 +9,9 @@ import 'package:loading_animations/loading_animations.dart';
 import 'package:mixpanel_analytics/mixpanel_analytics.dart';
 
 import '../domain/models/models.dart';
-import '../domain/usecases/usecases.dart';
 import 'app_route.dart';
-import 'cubit/application_cubit.dart';
+import 'cubits/application_cubit.dart';
+import 'cubits/timer_cubit.dart';
 import 'resources/themes/dark_theme.dart';
 import 'resources/themes/light_theme.dart';
 
@@ -20,21 +20,22 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FlavorBanner(
+    return RepositoryProvider(
+      create: (context) => GetIt.I<AppRoute>(),
       child: MultiBlocProvider(
         providers: [
           BlocProvider(
             create: (context) => GetIt.I.get<ApplicationCubit>(),
           ),
-          RepositoryProvider(
-            create: (context) => GetIt.I<AppRoute>(),
+          BlocProvider(
+            create: (context) => GetIt.I.get<TimerCubit>(),
           ),
         ],
         child: BlocListener<ApplicationCubit, ApplicationState>(
           listenWhen: (previous, current) =>
               current is AuthChanged &&
-              current.auth == AuthState.unauthorized &&
-              current.auth != previous.auth,
+              current.auth != AuthState.authorized &&
+              previous.auth == AuthState.authorized,
           listener: (context, state) {
             final route = context.read<AppRoute>().route;
             if (route.location != route.namedLocation(AppRoute.authRouteName)) {
@@ -53,87 +54,92 @@ class Application extends StatelessWidget {
                     value: state.themeMode,
                   ),
                 ],
-                child: MaterialApp.router(
-                  routeInformationProvider:
-                      context.read<AppRoute>().route.routeInformationProvider,
-                  routeInformationParser:
-                      context.read<AppRoute>().route.routeInformationParser,
-                  routerDelegate: context.read<AppRoute>().route.routerDelegate,
-                  onGenerateTitle: (context) =>
-                      AppLocalizations.of(context)!.appName,
-                  theme: const LightAppThemeImpl().themeData,
-                  darkTheme: const DarkAppThemeImpl().themeData,
-                  themeMode: state.themeMode,
-                  localizationsDelegates:
-                      AppLocalizations.localizationsDelegates,
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  debugShowCheckedModeBanner: false,
-                  builder: (context, child) {
-                    return BlocBuilder<ApplicationCubit, ApplicationState>(
-                      buildWhen: (previous, current) =>
-                          current is IsLoadingChanged &&
-                              previous.isLoading != current.isLoading ||
-                          current is ExceptionOccurred,
-                      builder: (context, state) {
-                        return Stack(
-                          children: [
-                            if (child != null) child,
-                            Visibility(
-                                visible: state.exception != null,
-                                child: Center(
-                                  child: Card(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .errorContainer,
-                                    child: Container(
-                                      padding: const EdgeInsets.all(16.0),
-                                      constraints:
-                                          const BoxConstraints(maxWidth: 320.0),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Text(AppLocalizations.of(context)!
-                                                  .oops),
-                                              IconButton(
-                                                  onPressed: () => GetIt.I<
-                                                          ApplicationCubit>()
-                                                      .exception(),
-                                                  icon:
-                                                      const Icon(Icons.close)),
-                                            ],
-                                          ),
-                                          Center(
-                                            child: Text(
-                                              state.exception.toString(),
-                                              style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .error),
+                child: FlavorBanner(
+                  child: MaterialApp.router(
+                    routeInformationProvider:
+                        context.read<AppRoute>().route.routeInformationProvider,
+                    routeInformationParser:
+                        context.read<AppRoute>().route.routeInformationParser,
+                    routerDelegate:
+                        context.read<AppRoute>().route.routerDelegate,
+                    onGenerateTitle: (context) =>
+                        AppLocalizations.of(context)!.appName,
+                    theme: const LightAppThemeImpl().themeData,
+                    darkTheme: const DarkAppThemeImpl().themeData,
+                    themeMode: state.themeMode,
+                    localizationsDelegates:
+                        AppLocalizations.localizationsDelegates,
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    debugShowCheckedModeBanner: false,
+                    builder: (context, child) {
+                      return BlocBuilder<ApplicationCubit, ApplicationState>(
+                        buildWhen: (previous, current) =>
+                            current is IsLoadingChanged &&
+                                previous.isLoading != current.isLoading ||
+                            current is ExceptionOccurred,
+                        builder: (context, state) {
+                          return Stack(
+                            children: [
+                              if (child != null) child,
+                              Visibility(
+                                  visible: state.exception != null,
+                                  child: Center(
+                                    child: Card(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .errorContainer,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(16.0),
+                                        constraints: const BoxConstraints(
+                                            maxWidth: 320.0),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(AppLocalizations.of(
+                                                        context)!
+                                                    .oops),
+                                                IconButton(
+                                                    onPressed: () => GetIt.I<
+                                                            ApplicationCubit>()
+                                                        .exception(),
+                                                    icon: const Icon(
+                                                        Icons.close)),
+                                              ],
                                             ),
-                                          ),
-                                        ],
+                                            Center(
+                                              child: Text(
+                                                state.exception.toString(),
+                                                style: TextStyle(
+                                                    color: Theme.of(context)
+                                                        .colorScheme
+                                                        .error),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                )),
-                            Visibility(
-                                visible: state.isLoading,
-                                child: Center(
-                                  child: LoadingBouncingGrid.square(
-                                    backgroundColor:
-                                        Theme.of(context).colorScheme.secondary,
-                                    inverted: true,
-                                  ),
-                                )),
-                          ],
-                        );
-                      },
-                    );
-                  },
+                                  )),
+                              Visibility(
+                                  visible: state.isLoading,
+                                  child: Center(
+                                    child: LoadingBouncingGrid.square(
+                                      backgroundColor: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      inverted: true,
+                                    ),
+                                  )),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               );
             },
@@ -146,10 +152,6 @@ class Application extends StatelessWidget {
 
 @module
 abstract class ApplicationModule {
-  @lazySingleton
-  ApplicationCubit appCubit() => ApplicationCubit(GetIt.I.get<AppUseCase>());
-  @singleton
-  AppRoute appRoute() => AppRoute();
   @lazySingleton
   MixpanelAnalytics mixpanelAnalytics() => MixpanelAnalytics.batch(
         token: '199db839368b1b91da8de2bda30d743d',

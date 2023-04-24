@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../widgets/daily_time.dart';
 import '../../widgets/time_tracking_widget.dart';
 
 class DashBoardScreen extends StatelessWidget {
@@ -11,10 +12,16 @@ class DashBoardScreen extends StatelessWidget {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          child: Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            runSpacing: 16.0,
+            spacing: 16.0,
             children: [
+              ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 220.0),
+                  child: const DailyTime()),
               ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 440.0),
                   child: const TimeTrackingWidget())

@@ -2,9 +2,11 @@ part of 'time_tracking_cubit.dart';
 
 @immutable
 abstract class TimeTrackingState {
+  final FilterTimeTracks filter;
   final PaginationModel<TimeTrackingModel> timeTracks;
 
-  const TimeTrackingState(this.timeTracks);
+  const TimeTrackingState(this.timeTracks,
+      {this.filter = const FilterTimeTracks()});
 }
 
 class TimeTrackingInitial extends TimeTrackingState {
@@ -12,9 +14,30 @@ class TimeTrackingInitial extends TimeTrackingState {
 }
 
 class TimeTracksUpdated extends TimeTrackingState {
-  const TimeTracksUpdated(super.timeTracks);
+  const TimeTracksUpdated(
+      PaginationModel<TimeTrackingModel> timeTracks, FilterTimeTracks filter)
+      : super(timeTracks, filter: filter);
 }
 
-class TimeTick extends TimeTrackingState {
-  const TimeTick(super.timeTracks);
+class FilterTimeTracks {
+  final DateTime? start;
+  final DateTime? end;
+  final String? search;
+
+  const FilterTimeTracks({this.start, this.end, this.search});
+
+  FilterTimeTracks copyWith({DateTime? start, DateTime? end, String? search}) =>
+      FilterTimeTracks(
+        search: search ?? this.search,
+        start: start ?? this.start,
+        end: end ?? this.end,
+      );
+
+  FilterTimeTracks clear(
+          {bool search = false, bool start = false, bool end = false}) =>
+      FilterTimeTracks(
+        search: search ? null : this.search,
+        start: start ? null : this.start,
+        end: end ? null : this.end,
+      );
 }

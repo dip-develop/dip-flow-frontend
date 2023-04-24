@@ -7,7 +7,7 @@ description: |
   Plus, if you are an individual user or a small team, you can use our service for free forever. No hidden fees, no strings attached.
   Join TheTeam today and take your team to the next level.
 publish_to: 'none'
-version: 1.0.0+3
+version: 1.0.0+4
 
 environment:
   sdk: '>=2.19.4 <3.0.0'
@@ -66,7 +66,7 @@ dev_dependencies:
   hive_generator: ^2.0.0
   injectable_generator: ^2.1.5
   built_value_generator: ^8.4.3
-  msix: ^3.10.1
+  msix: ^3.11.0
 
 dependency_overrides:
   collection: 1.17.1

@@ -1,7 +1,7 @@
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../core/cubit/application_cubit.dart';
+import '../../core/cubits/application_cubit.dart';
 import '../exceptions/auth_exception.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';

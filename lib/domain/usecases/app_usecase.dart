@@ -9,7 +9,7 @@ abstract class AppUseCase {
   Future<void> saveThemeMode(ThemeMode mode);
 }
 
-@LazySingleton(as: AppUseCase)
+@Singleton(as: AppUseCase)
 class AppUseCaseImpl implements AppUseCase {
   final PreferencesRepository _prefsRepo;
 

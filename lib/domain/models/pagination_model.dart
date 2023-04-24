@@ -21,5 +21,7 @@ class PaginationModel<T> {
       count: pagination.count,
       offset: pagination.offset,
       limit: pagination.limit,
-      items: items..addAll(pagination.items));
+      items: offset != pagination.offset
+          ? (items..addAll(pagination.items))
+          : pagination.items);
 }

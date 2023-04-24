@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:injectable/injectable.dart';
 
 import '../domain/models/models.dart';
 import '../domain/usecases/usecases.dart';
@@ -19,8 +20,9 @@ import '../presentation/screens/tasks/tasks_screen.dart';
 import '../presentation/screens/team/team_screen.dart';
 import '../presentation/screens/time_tracking/time_tracking_screen.dart';
 import '../presentation/widgets/navigation_widget.dart';
-import 'cubit/application_cubit.dart';
+import 'cubits/application_cubit.dart';
 
+@singleton
 class AppRoute {
   static String splashRouteName = 'splash';
   static String authRouteName = 'auth';
@@ -113,8 +115,8 @@ class AppRoute {
                 parentNavigatorKey: _shellNavigatorKey,
                 name: timeTrackingRouteName,
                 path: '/$timeTrackingRouteName',
-                pageBuilder: (context, state) => _getTransition(
-                    state: state, child: const TimeTrackingScreen()),
+                pageBuilder: (context, state) =>
+                    _getTransition(state: state, child: TimeTrackingScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,

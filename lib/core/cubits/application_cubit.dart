@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grpc/grpc.dart';
+import 'package:injectable/injectable.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 
 import '../../domain/exceptions/auth_exception.dart';
@@ -13,6 +14,7 @@ import '../resources/themes/theme.dart';
 
 part 'application_state.dart';
 
+@singleton
 class ApplicationCubit extends Cubit<ApplicationState> {
   final _connectivity = Connectivity();
   final AppUseCase _appUseCase;
@@ -90,5 +92,6 @@ class ApplicationCubit extends Cubit<ApplicationState> {
     throw exception;
   }
 
-  void auth(AuthState auth) => !isClosed ? emit(AuthChanged(state, auth)) : null;
+  void auth(AuthState auth) =>
+      !isClosed ? emit(AuthChanged(state, auth)) : null;
 }
