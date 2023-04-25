@@ -31,6 +31,12 @@
   "launchAtStartup": "Launch at startup",
   "status":"Status",
   "duration":"Duration",
+  "passwordResetLink": "Enter Your Email and we will send send you a password reset link",
+  "passwordRestore": "Password Restore",
+  "changePassword": "Change Password",
+  "oldPassword": "Old Password",
+  "newPassword": "New Password",
+  "confirmNewPassword": "Confirm New Password",
   "today": "Today",
   "dateRange": "Date range",
   "search": "Search"

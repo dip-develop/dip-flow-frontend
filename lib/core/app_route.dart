@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 
 import '../domain/models/models.dart';
 import '../domain/usecases/usecases.dart';
+import '../presentation/screens/auth/password_restore/password_restore_screen.dart';
 import '../presentation/screens/auth/sign_in/sign_in_screen.dart';
 import '../presentation/screens/auth/sign_up/sign_up_screen.dart';
 import '../presentation/screens/dashboard/dashboard_screen.dart';
@@ -92,8 +93,8 @@ class AppRoute {
                       parentNavigatorKey: _rootNavigatorKey,
                       name: restorePasswordRouteName,
                       path: restorePasswordRouteName,
-                      pageBuilder: (context, state) =>
-                          _getTransition(state: state, child: Container()),
+                      pageBuilder: (context, state) => _getTransition(
+                          state: state, child: const PasswordRestoreScreen()),
                     ),
                   ]),
             ]),
@@ -116,7 +117,7 @@ class AppRoute {
                 name: timeTrackingRouteName,
                 path: '/$timeTrackingRouteName',
                 pageBuilder: (context, state) =>
-                    _getTransition(state: state, child: TimeTrackingScreen()),
+                    _getTransition(state: state, child: const TimeTrackingScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,
@@ -190,7 +191,8 @@ class AppRoute {
         if (state.location != route.namedLocation(splashRouteName) &&
             state.location != route.namedLocation(authRouteName) &&
             state.location != route.namedLocation(signInRouteName) &&
-            state.location != route.namedLocation(signUpRouteName)) {
+            state.location != route.namedLocation(signUpRouteName) &&
+            state.location != route.namedLocation(restorePasswordRouteName)) {
           final appCubit = GetIt.I<ApplicationCubit>();
           if (appCubit.state.auth != AuthState.authorized) {
             return route.namedLocation(authRouteName);
