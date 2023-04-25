@@ -32,84 +32,98 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      Wrap(
-                          runAlignment: WrapAlignment.center,
-                          alignment: WrapAlignment.center,
-                          crossAxisAlignment: WrapCrossAlignment.center,
-                          spacing: 16.0,
-                          runSpacing: 16.0,
-                          children: [
-                            ConstrainedBox(
-                                constraints:
-                                    const BoxConstraints(maxWidth: 220.0),
-                                child: TextField(
-                                  decoration: InputDecoration(
-                                    suffixIcon: IconButton(
-                                        onPressed: () {
-                                          context
-                                              .read<TimeTrackingCubit>()
-                                              .loadData(
-                                                limit: state.timeTracks.limit,
-                                                offset: state.timeTracks.offset,
-                                                filter: state.filter
-                                                    .clear(search: true),
-                                              );
-                                          _searchController.clear();
-                                        },
-                                        icon: const Icon(Icons.clear)),
-                                  ),
-                                  controller: _searchController,
-                                )),
-                            ElevatedButton(
-                                onPressed: () =>
+                      Row(children: [
+                        if (state.filter.start == null ||
+                            state.filter.end == null)
+                          OutlinedButton.icon(
+                              onPressed: () {
+                                showDateRangePicker(
+                                  context: context,
+                                  firstDate: DateTime(2023, 1, 1),
+                                  lastDate: DateTime.now(),
+                                ).then((value) {
+                                  if (value == null) {
+                                    context.read<TimeTrackingCubit>().loadData(
+                                          filter: state.filter.clear(
+                                            start: true,
+                                            end: true,
+                                          ),
+                                        );
+                                  } else if (state.filter.start !=
+                                          value.start &&
+                                      state.filter.end != value.end) {
                                     context.read<TimeTrackingCubit>().loadData(
                                           limit: state.timeTracks.limit,
                                           offset: state.timeTracks.offset,
                                           filter: state.filter.copyWith(
-                                              search: _searchController.text),
-                                        ),
-                                child:
-                                    Text(AppLocalizations.of(context)!.search)),
-                            ElevatedButton(
-                                onPressed: () {
-                                  showDateRangePicker(
-                                    context: context,
-                                    firstDate: DateTime(2023, 1, 1),
-                                    lastDate: DateTime.now(),
-                                  ).then((value) {
-                                    if (state.filter.start != value?.start &&
-                                        state.filter.end != value?.end) {
+                                              start: value.start,
+                                              end: value.end.add(const Duration(
+                                                  hours: 23,
+                                                  minutes: 59,
+                                                  seconds: 59))),
+                                        );
+                                  }
+                                });
+                              },
+                              icon: const Icon(Icons.date_range),
+                              label: Text(state.filter.start != null &&
+                                      state.filter.end != null
+                                  ? '${DateFormat.yMd().format(state.filter.start!)} - ${DateFormat.yMd().format(state.filter.end!)}'
+                                  : AppLocalizations.of(context)!.dateRange)),
+                        if (state.filter.start != null &&
+                            state.filter.end != null)
+                          Chip(
+                            avatar: const Icon(Icons.date_range),
+                            label: Text(
+                                '${DateFormat.yMd().format(state.filter.start!)} - ${DateFormat.yMd().format(state.filter.end!)}'),
+                            onDeleted: () {
+                              context.read<TimeTrackingCubit>().loadData(
+                                    filter: state.filter.clear(
+                                      start: true,
+                                      end: true,
+                                    ),
+                                  );
+                            },
+                          ),
+                        const Spacer(),
+                        ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 220.0),
+                            child: TextField(
+                              textInputAction: TextInputAction.search,
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                border: const OutlineInputBorder(),
+                                icon: const Icon(Icons.search),
+                                filled: true,
+                                labelText: AppLocalizations.of(context)!.search,
+                                suffixIcon: IconButton(
+                                    onPressed: () {
                                       context
                                           .read<TimeTrackingCubit>()
                                           .loadData(
                                             limit: state.timeTracks.limit,
                                             offset: state.timeTracks.offset,
-                                            filter: state.filter.copyWith(
-                                                start: value?.start,
-                                                end: value?.end),
+                                            filter: state.filter
+                                                .clear(search: true),
                                           );
-                                    }
-                                  });
-                                },
-                                child: Text(
-                                    AppLocalizations.of(context)!.dateRange)),
-                            if (state.filter.start != null &&
-                                state.filter.end != null)
-                              Chip(
-                                avatar: const Icon(Icons.date_range),
-                                label: Text(
-                                    '${DateFormat.yMd().format(state.filter.start!)} - ${DateFormat.yMd().format(state.filter.end!)}'),
-                                onDeleted: () {
-                                  context.read<TimeTrackingCubit>().loadData(
-                                        filter: state.filter.clear(
-                                          start: true,
-                                          end: true,
-                                        ),
-                                      );
-                                },
+                                      _searchController.clear();
+                                    },
+                                    icon: const Icon(Icons.clear)),
                               ),
-                          ]),
+                              onSubmitted: (value) {
+                                context.read<TimeTrackingCubit>().loadData(
+                                      limit: state.timeTracks.limit,
+                                      offset: state.timeTracks.offset,
+                                      filter: state.filter.copyWith(
+                                          search: _searchController.text),
+                                    );
+                              },
+                              controller: _searchController,
+                            )),
+                      ]),
                       DataTable(
                         showBottomBorder: true,
                         dataRowHeight: 72.0,
@@ -143,12 +157,6 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                             state.timeTracks.items.length, (index) {
                           final timeTrack = state.timeTracks.items[index];
                           return DataRow(cells: <DataCell>[
-                            /* 0: IntrinsicColumnWidth(),
-                      1: FixedColumnWidth(96),
-                      2: FixedColumnWidth(128.0),
-                      3: FlexColumnWidth(),
-                      4: FixedColumnWidth(64), */
-
                             DataCell(
                               IconButton(
                                 onPressed: () => timeTrack.isStarted
@@ -170,7 +178,16 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                               ),
                             ),
                             DataCell(
-                              Text(timeTrack.duration.format()),
+                              Text(
+                                timeTrack.duration.format(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .labelMedium
+                                    ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                              ),
                               onTap: () {},
                             ),
                             DataCell(
@@ -178,8 +195,13 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                   timeTrack.task != null
                                       ? '#${timeTrack.task}'
                                       : '',
-                                  style:
-                                      Theme.of(context).textTheme.labelMedium),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary)),
                               onTap: () {},
                             ),
                             DataCell(

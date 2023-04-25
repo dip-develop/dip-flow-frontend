@@ -228,23 +228,29 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                   title: RichText(
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: isExpanded ? 3 : 1,
-                                    text: TextSpan(children: [
-                                      if (timeTrack.task != null)
-                                        TextSpan(
-                                            text: '#${timeTrack.task}',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .labelMedium),
-                                      if (timeTrack.task != null &&
-                                          timeTrack.title != null)
-                                        const TextSpan(text: ' - '),
-                                      if (timeTrack.title != null)
-                                        TextSpan(
-                                            text: timeTrack.title,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium),
-                                    ]),
+                                    text: TextSpan(
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium,
+                                        children: [
+                                          if (timeTrack.task != null)
+                                            TextSpan(
+                                                text: '#${timeTrack.task}',
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium
+                                                    ?.copyWith(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary)),
+                                          if (timeTrack.task != null &&
+                                              timeTrack.title != null)
+                                            const TextSpan(text: ' - '),
+                                          if (timeTrack.title != null)
+                                            TextSpan(
+                                              text: timeTrack.title,
+                                            ),
+                                        ]),
                                   ),
                                   subtitle: timeTrack.description != null
                                       ? Text(
@@ -276,28 +282,38 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Text(timeTrack.duration.format()),
-                                      PopupMenuButton<int>(
-                                        onSelected: (value) {
-                                          switch (value) {
-                                            case 0:
-                                              /* => GetIt.I<TimeTrackingUseCase>()
+                                      Text(
+                                        timeTrack.duration.format(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium
+                                            ?.copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary),
+                                      ),
+                                      if (isExpanded)
+                                        PopupMenuButton<int>(
+                                          onSelected: (value) {
+                                            switch (value) {
+                                              case 0:
+                                                /* => GetIt.I<TimeTrackingUseCase>()
                                               .updateTimeTrack()
                                               .then(_updateTimeTracking) */
-                                              break;
-                                            case 1:
-                                              GetIt.I<TimeTrackingUseCase>()
-                                                  .deleteTimeTrack(
-                                                      timeTrack.id!)
-                                                  .then((_) =>
-                                                      _updateTimeTracks());
-                                              break;
-                                            default:
-                                          }
-                                        },
-                                        itemBuilder: (context) =>
-                                            <PopupMenuEntry<int>>[
-                                          /* PopupMenuItem<int>(
+                                                break;
+                                              case 1:
+                                                GetIt.I<TimeTrackingUseCase>()
+                                                    .deleteTimeTrack(
+                                                        timeTrack.id!)
+                                                    .then((_) =>
+                                                        _updateTimeTracks());
+                                                break;
+                                              default:
+                                            }
+                                          },
+                                          itemBuilder: (context) =>
+                                              <PopupMenuEntry<int>>[
+                                            /* PopupMenuItem<int>(
                                               value: 0,
                                               child: ListTile(
                                                 leading: const Icon(Icons.edit),
@@ -305,17 +321,18 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                                     AppLocalizations.of(context)!.edit),
                                               ),
                                             ), */
-                                          PopupMenuItem<int>(
-                                            value: 1,
-                                            child: ListTile(
-                                              leading: const Icon(Icons.delete),
-                                              title: Text(
-                                                  AppLocalizations.of(context)!
-                                                      .delete),
+                                            PopupMenuItem<int>(
+                                              value: 1,
+                                              child: ListTile(
+                                                leading:
+                                                    const Icon(Icons.delete),
+                                                title: Text(AppLocalizations.of(
+                                                        context)!
+                                                    .delete),
+                                              ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
+                                          ],
+                                        ),
                                     ],
                                   ),
                                 );
@@ -366,6 +383,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
   }
 
   void _updateTimeTracks() {
+    if (!mounted) return;
     _timeTracks = PaginationModel<TimeTrackingModel>.empty();
     _timeTrackingUseCase.getTimeTracks(limit: 5).then((value) => setState(() {
           _timeTracks = _timeTracks.from(value);
@@ -373,15 +391,18 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
   }
 
   void _updateTimeTracking(TimeTrackingModel timeTrack) {
+    if (!mounted) return;
     final items = List<TimeTrackingModel>.from(_timeTracks.items);
     final index = items.indexWhere((element) => element.id == timeTrack.id);
     if (index >= 0) {
       items[index] = timeTrack;
-      _timeTracks = PaginationModel<TimeTrackingModel>(
-          count: _timeTracks.count,
-          limit: _timeTracks.limit,
-          offset: _timeTracks.offset,
-          items: items);
+      setState(() {
+        _timeTracks = PaginationModel<TimeTrackingModel>(
+            count: _timeTracks.count,
+            limit: _timeTracks.limit,
+            offset: _timeTracks.offset,
+            items: items);
+      });
     }
   }
 }

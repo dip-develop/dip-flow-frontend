@@ -94,8 +94,8 @@ class _DailyTimeState extends State<DailyTime> {
   }
 
   void _updateTimeTracks() {
+    if (!mounted) return;
     _timeTracks = PaginationModel<TimeTrackingModel>.empty();
-
     _timeTrackingUseCase
         .getTimeTracks(
           start: todayStart,
