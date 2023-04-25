@@ -2,7 +2,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../core/app_route.dart';
 import '../../../core/cubits/application_cubit.dart';
@@ -36,6 +38,18 @@ class SettingsScreen extends StatelessWidget {
                 onChanged: (_) =>
                     context.read<ApplicationCubit>().switchLaunchAtStartup(),
               ),
+            ListTile(
+              title: Text(AppLocalizations.of(context)!.support),
+              onTap: () {},
+            ),
+            ListTile(
+                title: Text(AppLocalizations.of(context)!.version),
+                subtitle: Text(
+                    '${GetIt.I<PackageInfo>().version} (${GetIt.I<PackageInfo>().buildNumber})'),
+                onTap: () => showAboutDialog(
+                    context: context,
+                    applicationVersion:
+                        '${GetIt.I<PackageInfo>().version} (${GetIt.I<PackageInfo>().buildNumber})')),
           ],
         );
       },

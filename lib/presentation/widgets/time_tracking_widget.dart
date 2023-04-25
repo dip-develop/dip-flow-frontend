@@ -354,7 +354,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                           .bodyMedium,
                                     ),
                                     subtitle: Text(
-                                      '${DateFormat.jms().format(track.start)} - ${DateFormat.jms().format(track.end!)}',
+                                      '${DateFormat('y/M/d H:m:s').format(track.start)} - ${DateFormat('y/M/d H:m:s').format(track.end!)}',
                                       style:
                                           Theme.of(context).textTheme.bodySmall,
                                     ),

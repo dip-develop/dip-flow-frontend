@@ -38,6 +38,9 @@
   "newPassword": "New Password",
   "confirmNewPassword": "Confirm New Password",
   "today": "Today",
+  "week": "This week",
   "dateRange": "Date range",
-  "search": "Search"
+  "search": "Search",
+  "version": "Version",
+  "support": "Support"
 }

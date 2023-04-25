@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/daily_time.dart';
 import '../../widgets/time_tracking_widget.dart';
+import '../../widgets/weekly_time.dart';
 
 class DashBoardScreen extends StatelessWidget {
   const DashBoardScreen({super.key});
@@ -20,10 +21,13 @@ class DashBoardScreen extends StatelessWidget {
             spacing: 16.0,
             children: [
               ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 220.0),
+                  constraints: const BoxConstraints(maxWidth: 260.0),
                   child: const DailyTime()),
               ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 440.0),
+                  constraints: const BoxConstraints(maxWidth: 260.0),
+                  child: const WeeklyTime()),
+              ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 520.0 + 16),
                   child: const TimeTrackingWidget())
             ],
           ),
