@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 
@@ -15,9 +16,14 @@ class EncryptedSharedPreferences implements EncryptedPreferencesRepository {
   final _iosOptions =
       const IOSOptions(accessibility: KeychainAccessibility.first_unlock);
 
+  final _macOptions =
+      const MacOsOptions(accessibility: KeychainAccessibility.first_unlock);
+
   EncryptedSharedPreferences() {
-    _storage =
-        FlutterSecureStorage(aOptions: _androidOptions, iOptions: _iosOptions);
+    _storage = FlutterSecureStorage(
+        aOptions: _androidOptions,
+        iOptions: _iosOptions,
+        mOptions: _macOptions);
   }
 
   @override
