@@ -18,12 +18,6 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
 
   const TimeTrackingGRPCApiRepository(this._channel);
 
-  TimeTrackingGateServiceClient _client(String token) =>
-      TimeTrackingGateServiceClient(_channel,
-          options: CallOptions(
-              timeout: const Duration(seconds: 4),
-              metadata: {'authorization': token}));
-
   @override
   Future<TimeTrackingModel> getTimeTrack(String token, int id) => _client(token)
       .getTimeTrack(IdRequest(id: id))
@@ -110,6 +104,12 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
               id: timeTrackId, trackId: trackId))
           .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
           .catchError(_checkException<TimeTrackingModel>);
+
+  TimeTrackingGateServiceClient _client(String token) =>
+      TimeTrackingGateServiceClient(_channel,
+          options: CallOptions(
+              timeout: const Duration(seconds: 4),
+              metadata: {'authorization': token}));
 
   Future<T> _checkException<T>(dynamic onError) {
     if (onError is GrpcError) {

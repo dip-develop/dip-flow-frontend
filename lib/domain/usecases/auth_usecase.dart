@@ -5,6 +5,7 @@ import '../../core/cubits/application_cubit.dart';
 import '../exceptions/auth_exception.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
+import 'usecases.dart';
 
 abstract class AuthUseCase {
   Future<bool> get isAuth;
@@ -14,6 +15,8 @@ abstract class AuthUseCase {
   Future<void> signUpWithEmail(
       {required String email, required String password, required String name});
   Future<void> signOut();
+  Future<void> restorePassword(String email);
+  Future<void> deleteAccount();
 }
 
 @LazySingleton(as: AuthUseCase)
@@ -26,9 +29,9 @@ class AuthUseCaseImpl implements AuthUseCase {
   const AuthUseCaseImpl(this._app, this._analytics, this._api, this._encrypted);
 
   @override
-  Future<bool> get isAuth => loading
+  Future<bool> get isAuth => loadingStart
       .then((_) => _encrypted.readToken().then((token) => _checkAuth(token)))
-      .whenComplete(() => _app.loadingHide());
+      .whenComplete(loadingEnd);
 
   @override
   Future<String> getToken() =>
@@ -42,45 +45,57 @@ class AuthUseCaseImpl implements AuthUseCase {
   @override
   Future<void> signInWithEmail(
           {required String email, required String password}) =>
-      loading
+      loadingStart
           .then((_) => _api
               .signInWithEmail(email: email, password: password)
               .then((token) => _checkAuth(token).then((isValid) {
                     if (isValid) {
                       _analytics
                           .logSignIn(method: 'email')
-                          .catchError(_app.exception);
+                          .catchError(exception);
                     }
                   }))
-              .catchError(_app.exception))
-          .whenComplete(() => _app.loadingHide());
+              .catchError(exception))
+          .whenComplete(loadingEnd);
 
   @override
   Future<void> signUpWithEmail(
           {required String email,
           required String password,
           required String name}) =>
-      loading
+      loadingStart
           .then((_) => _api
               .signUpWithEmail(email: email, password: password, name: name)
               .then((token) => _checkAuth(token).then((isValid) {
                     if (isValid) {
                       _analytics
                           .logSignUp(method: 'email')
-                          .catchError(_app.exception);
+                          .catchError(exception);
                     }
                   }))
               .then((_) => Future.value())
-              .catchError(_app.exception))
-          .whenComplete(() => _app.loadingHide());
+              .catchError(exception))
+          .whenComplete(loadingEnd);
 
   @override
-  Future<void> signOut() => loading
+  Future<void> signOut() => loadingStart
       .then((_) => _encrypted
           .cleanToken()
           .then((_) => _analytics.updateUser())
           .whenComplete(() => _app.auth(AuthState.unauthorized)))
-      .whenComplete(() => _app.loadingHide());
+      .whenComplete(loadingEnd);
+
+  @override
+  Future<void> restorePassword(String email) => _prepare
+      .then((token) => _api.restorePassword(token, email))
+      .catchError(exception)
+      .whenComplete(loadingEnd);
+
+  @override
+  Future<void> deleteAccount() => _prepare
+      .then((token) => _api.deleteAccount(token).whenComplete(() => signOut()))
+      .catchError(exception)
+      .whenComplete(loadingEnd);
 
   int? _getUserId(TokenModel? token) {
     if (token == null) return null;
@@ -92,6 +107,8 @@ class AuthUseCaseImpl implements AuthUseCase {
       return null;
     }
   }
+
+  Future<String> get _prepare => loadingStart.then((value) => getToken());
 
   Future<bool> _checkAuth(TokenModel? token) {
     if (token == null) return Future.value(false);
@@ -131,9 +148,4 @@ class AuthUseCaseImpl implements AuthUseCase {
         ? jwt
         : null;
   }
-
-  Future<void> get loading => Future.delayed(
-        Duration.zero,
-        () => _app.loadingShow(),
-      );
 }

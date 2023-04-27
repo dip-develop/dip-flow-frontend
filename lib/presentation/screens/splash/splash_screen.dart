@@ -81,7 +81,8 @@ class SplashScreen extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.onPrimary
+                Theme.of(context).colorScheme.tertiary,
+                Theme.of(context).colorScheme.secondary,
               ]),
         ),
         child: const Center(

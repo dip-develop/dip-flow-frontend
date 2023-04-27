@@ -69,6 +69,7 @@ flutter run
             "request": "launch",
             "type": "dart"
         }
+    ]
 }
 ```
 
