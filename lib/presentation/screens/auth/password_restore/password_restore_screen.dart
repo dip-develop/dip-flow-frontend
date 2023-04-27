@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:form_validator/form_validator.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../core/app_route.dart';
 import '../password_change/password_change_screen.dart';
 
 class PasswordRestoreScreen extends StatefulWidget {
@@ -56,6 +58,13 @@ class _PasswordRestoreScreenState extends State<PasswordRestoreScreen> {
                       AppLocalizations.of(context)!.passwordRestore,
                     ),
                   ),
+                  const SizedBox(
+                    height: 16.0,
+                  ),
+                  TextButton(
+                      onPressed: () => context
+                          .pushReplacementNamed(AppRoute.signInRouteName),
+                      child: Text(AppLocalizations.of(context)!.signIn)),
                 ],
               ),
             ),

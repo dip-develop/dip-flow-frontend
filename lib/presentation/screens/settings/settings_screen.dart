@@ -21,7 +21,7 @@ class SettingsScreen extends StatelessWidget {
           children: [
             ListTile(
               title: Text(AppLocalizations.of(context)!.profile),
-              onTap: () => context.goNamed(AppRoute.profileRouteName),
+              onTap: () => context.pushNamed(AppRoute.profileRouteName),
             ),
             SwitchListTile(
               title: Text(AppLocalizations.of(context)!.darkMode),

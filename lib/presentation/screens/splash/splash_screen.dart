@@ -32,9 +32,8 @@ class SplashScreen extends StatelessWidget {
       }).catchError((onError) {});
     }
 
-    if (defaultTargetPlatform == TargetPlatform.linux ||
-        defaultTargetPlatform == TargetPlatform.windows ||
-        defaultTargetPlatform == TargetPlatform.macOS) {
+    if (!kIsWeb &&
+        (Platform.isLinux || Platform.isWindows || Platform.isMacOS)) {
       launchAtStartup.setup(
         appName: GetIt.I<PackageInfo>().appName,
         appPath: Platform.resolvedExecutable,

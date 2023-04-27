@@ -1,6 +1,7 @@
 import 'package:grpc/grpc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../domain/exceptions/exceptions.dart';
 import '../../../domain/models/models.dart';
 import '../../../domain/repositories/repositories.dart';
 import '../../entities/entities.dart';
@@ -26,7 +27,8 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
   @override
   Future<TimeTrackingModel> getTimeTrack(String token, int id) => _client(token)
       .getTimeTrack(IdRequest(id: id))
-      .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel());
+      .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
+      .catchError(_checkException<TimeTrackingModel>);
 
   @override
   Future<PaginationModel<TimeTrackingModel>> getTimeTracks(
@@ -56,7 +58,8 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
                   : null,
             ),
           )
-          .then((reply) => PaginationEntity.fromGrpc(reply).toModel());
+          .then((reply) => PaginationEntity.fromGrpc(reply).toModel())
+          .catchError(_checkException<PaginationModel<TimeTrackingModel>>);
 
   @override
   Future<TimeTrackingModel> addTimeTrack(
@@ -66,7 +69,8 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
               task: timeTrack.task,
               title: timeTrack.title,
               description: timeTrack.description))
-          .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel());
+          .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
+          .catchError(_checkException<TimeTrackingModel>);
 
   @override
   Future<TimeTrackingModel> updateTimeTrack(
@@ -77,21 +81,26 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
               task: timeTrack.task,
               title: timeTrack.title,
               description: timeTrack.description))
-          .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel());
+          .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
+          .catchError(_checkException<TimeTrackingModel>);
 
   @override
-  Future<void> deleteTimeTrack(String token, int id) =>
-      _client(token).deleteTimeTrack(IdRequest(id: id)).then((_) {});
+  Future<void> deleteTimeTrack(String token, int id) => _client(token)
+      .deleteTimeTrack(IdRequest(id: id))
+      .then((_) => Future.value())
+      .catchError(_checkException<void>);
 
   @override
   Future<TimeTrackingModel> startTrack(String token, int id) => _client(token)
       .startTrack(IdRequest(id: id))
-      .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel());
+      .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
+      .catchError(_checkException<TimeTrackingModel>);
 
   @override
   Future<TimeTrackingModel> stopTrack(String token, int id) => _client(token)
       .stopTrack(IdRequest(id: id))
-      .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel());
+      .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
+      .catchError(_checkException<TimeTrackingModel>);
 
   @override
   Future<TimeTrackingModel> deleteTrack(
@@ -99,5 +108,19 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
       _client(token)
           .deleteTrack(time_tracking_models.DeleteTrackRequest(
               id: timeTrackId, trackId: trackId))
-          .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel());
+          .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
+          .catchError(_checkException<TimeTrackingModel>);
+
+  Future<T> _checkException<T>(dynamic onError) {
+    if (onError is GrpcError) {
+      if (onError.code == StatusCode.unauthenticated) {
+        throw AuthException.invalidData(onError.message);
+      } else if (onError.code == StatusCode.unavailable) {
+        throw ConnectionException.connectionNotFound(onError.message);
+      } else if (onError.code == StatusCode.deadlineExceeded) {
+        throw ConnectionException.timeout(onError.message);
+      }
+    }
+    throw AppException(onError.toString());
+  }
 }

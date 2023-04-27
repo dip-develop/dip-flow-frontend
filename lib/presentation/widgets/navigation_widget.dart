@@ -93,9 +93,15 @@ class _NavigationWidgetState extends State<NavigationWidget>
   @override
   Widget build(BuildContext context) {
     return AdaptiveScaffold(
-      appBar: AppBar(actions: const [UserButtonWidget()]),
-      leadingExtendedNavRail: const UserButtonWidget(),
-      leadingUnextendedNavRail: const UserButtonWidget(),
+      appBar: AppBar(actions: const [
+        UserButtonWidget(),
+      ]),
+      leadingExtendedNavRail: Breakpoints.mediumAndUp.isActive(context)
+          ? const UserButtonWidget()
+          : null,
+      leadingUnextendedNavRail: Breakpoints.mediumAndUp.isActive(context)
+          ? const UserButtonWidget()
+          : null,
       selectedIndex: _selectedTab,
       internalAnimations: false,
       onSelectedIndexChange: (int index) {
@@ -104,28 +110,28 @@ class _NavigationWidgetState extends State<NavigationWidget>
             context.goNamed(AppRoute.dashboardRouteName);
             break;
           case 1:
-            context.goNamed(AppRoute.timeTrackingRouteName);
+            context.pushNamed(AppRoute.timeTrackingRouteName);
             break;
           case 2:
-            context.goNamed(AppRoute.tasksRouteName);
+            context.pushNamed(AppRoute.tasksRouteName);
             break;
           case 3:
-            context.goNamed(AppRoute.projectsRouteName);
+            context.pushNamed(AppRoute.projectsRouteName);
             break;
           case 4:
-            context.goNamed(AppRoute.teamsRouteName);
+            context.pushNamed(AppRoute.teamsRouteName);
             break;
           case 5:
-            context.goNamed(AppRoute.hrRouteName);
+            context.pushNamed(AppRoute.hrRouteName);
             break;
           case 6:
-            context.goNamed(AppRoute.recruiterRouteName);
+            context.pushNamed(AppRoute.recruiterRouteName);
             break;
           case 7:
-            context.goNamed(AppRoute.reportsRouteName);
+            context.pushNamed(AppRoute.reportsRouteName);
             break;
           case 8:
-            context.goNamed(AppRoute.settingsRouteName);
+            context.pushNamed(AppRoute.settingsRouteName);
             break;
           default:
         }

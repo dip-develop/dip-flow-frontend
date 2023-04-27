@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import '../../core/cubits/timer_cubit.dart';
 import '../../domain/models/models.dart';
 import '../../domain/usecases/usecases.dart';
-import '../utils/extensions.dart';
 
 class TimeTrackingWidget extends StatefulWidget {
   const TimeTrackingWidget({super.key});
@@ -283,7 +282,12 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        timeTrack.duration.format(),
+                                        prettyDuration(timeTrack.duration,
+                                            spacer: ' ',
+                                            delimiter: ' ',
+                                            conjunction: ' ',
+                                            tersity: DurationTersity.minute,
+                                            abbreviated: true),
                                         style: Theme.of(context)
                                             .textTheme
                                             .labelMedium
@@ -348,13 +352,11 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                           spacer: ' ',
                                           delimiter: ' ',
                                           conjunction: ' ',
+                                          tersity: DurationTersity.minute,
                                           abbreviated: true),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium,
                                     ),
                                     subtitle: Text(
-                                      '${DateFormat('y/M/d H:m:s').format(track.start)} - ${DateFormat('y/M/d H:m:s').format(track.end!)}',
+                                      '${DateFormat('y/M/d H:m').format(track.start)} - ${DateFormat('y/M/d H:m').format(track.end!)}',
                                       style:
                                           Theme.of(context).textTheme.bodySmall,
                                     ),

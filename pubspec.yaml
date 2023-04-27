@@ -7,7 +7,7 @@ description: |
   Plus, if you are an individual user or a small team, you can use our service for free forever. No hidden fees, no strings attached.
   Join TheTeam today and take your team to the next level.
 publish_to: 'none'
-version: 1.0.0+4
+version: 1.0.0+5
 
 environment:
   sdk: '>=2.19.4 <3.0.0'

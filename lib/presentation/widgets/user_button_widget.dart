@@ -15,10 +15,10 @@ class UserButtonWidget extends StatelessWidget {
       onSelected: (value) {
         switch (value) {
           case 0:
-            context.goNamed(AppRoute.profileRouteName);
+            context.pushNamed(AppRoute.profileRouteName);
             break;
           case 1:
-            context.goNamed(AppRoute.settingsRouteName);
+            context.pushNamed(AppRoute.settingsRouteName);
             break;
           case 2:
             GetIt.I<AuthUseCase>().signOut();

@@ -61,16 +61,17 @@ class _SignInScreenState extends State<SignInScreen> {
                     keyboardType: TextInputType.visiblePassword,
                     validator: ValidationBuilder().minLength(6).build(),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () => context.pushReplacementNamed(
-                            AppRoute.restorePasswordRouteName),
-                        child:
-                            Text(AppLocalizations.of(context)!.passwordRestore),
-                      ),
-                    ],
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () =>
+                          context.pushNamed(AppRoute.restorePasswordRouteName),
+                      child:
+                          Text(AppLocalizations.of(context)!.passwordRestore),
+                    ),
                   ),
                   const SizedBox(
                     height: 22.0,

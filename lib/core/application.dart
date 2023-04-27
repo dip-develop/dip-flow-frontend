@@ -5,10 +5,10 @@ import 'package:flutter_flavor/flutter_flavor.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:loading_animations/loading_animations.dart';
 import 'package:mixpanel_analytics/mixpanel_analytics.dart';
 
 import '../domain/models/models.dart';
+import '../presentation/widgets/screen_builder.dart';
 import 'app_route.dart';
 import 'cubits/application_cubit.dart';
 import 'cubits/timer_cubit.dart';
@@ -71,74 +71,8 @@ class Application extends StatelessWidget {
                         AppLocalizations.localizationsDelegates,
                     supportedLocales: AppLocalizations.supportedLocales,
                     debugShowCheckedModeBanner: false,
-                    builder: (context, child) {
-                      return BlocBuilder<ApplicationCubit, ApplicationState>(
-                        buildWhen: (previous, current) =>
-                            current is IsLoadingChanged &&
-                                previous.isLoading != current.isLoading ||
-                            current is ExceptionOccurred,
-                        builder: (context, state) {
-                          return Stack(
-                            children: [
-                              if (child != null) child,
-                              Visibility(
-                                  visible: state.exception != null,
-                                  child: Center(
-                                    child: Card(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .errorContainer,
-                                      child: Container(
-                                        padding: const EdgeInsets.all(16.0),
-                                        constraints: const BoxConstraints(
-                                            maxWidth: 320.0),
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(AppLocalizations.of(
-                                                        context)!
-                                                    .oops),
-                                                IconButton(
-                                                    onPressed: () => GetIt.I<
-                                                            ApplicationCubit>()
-                                                        .exception(),
-                                                    icon: const Icon(
-                                                        Icons.close)),
-                                              ],
-                                            ),
-                                            Center(
-                                              child: Text(
-                                                state.exception.toString(),
-                                                style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .error),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  )),
-                              Visibility(
-                                  visible: state.isLoading,
-                                  child: Center(
-                                    child: LoadingBouncingGrid.square(
-                                      backgroundColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      inverted: true,
-                                    ),
-                                  )),
-                            ],
-                          );
-                        },
-                      );
-                    },
+                    builder: (context, child) =>
+                        ScreenBuilder(context: context, child: child),
                   ),
                 ),
               );

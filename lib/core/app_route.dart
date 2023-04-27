@@ -116,8 +116,8 @@ class AppRoute {
                 parentNavigatorKey: _shellNavigatorKey,
                 name: timeTrackingRouteName,
                 path: '/$timeTrackingRouteName',
-                pageBuilder: (context, state) =>
-                    _getTransition(state: state, child: const TimeTrackingScreen()),
+                pageBuilder: (context, state) => _getTransition(
+                    state: state, child: const TimeTrackingScreen()),
               ),
               GoRoute(
                 parentNavigatorKey: _shellNavigatorKey,

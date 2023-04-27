@@ -46,6 +46,10 @@ class AuthGRPCApiRepository implements AuthApiRepository {
     if (onError is GrpcError) {
       if (onError.code == StatusCode.unauthenticated) {
         throw AuthException.invalidData(onError.message);
+      } else if (onError.code == StatusCode.unavailable) {
+        throw ConnectionException.connectionNotFound(onError.message);
+      } else if (onError.code == StatusCode.deadlineExceeded) {
+        throw ConnectionException.timeout(onError.message);
       }
     }
     throw AppException(onError.toString());
