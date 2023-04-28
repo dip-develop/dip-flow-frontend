@@ -12,4 +12,13 @@ class ConnectionException extends AppException {
   factory ConnectionException.timeout([String? reason]) {
     return ConnectionException('Timeout connection', reason);
   }
+
+  @override
+  bool operator ==(other) =>
+      other is ConnectionException &&
+      other.message == message &&
+      other.reason == reason;
+
+  @override
+  int get hashCode => [message, reason].join().hashCode;
 }

@@ -40,7 +40,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                         alignment: WrapAlignment.end,
                         runAlignment: WrapAlignment.center,
                         crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 16.0,
+                        spacing: 8.0,
                         children: [
                           if (state.filter.start == null ||
                               state.filter.end == null)

@@ -39,7 +39,7 @@ class Application extends StatelessWidget {
           listener: (context, state) {
             final route = context.read<AppRoute>().route;
             if (route.location != route.namedLocation(AppRoute.authRouteName)) {
-              route.pushReplacementNamed(AppRoute.authRouteName);
+              route.goNamed(AppRoute.authRouteName);
             }
           },
           child: BlocBuilder<ApplicationCubit, ApplicationState>(

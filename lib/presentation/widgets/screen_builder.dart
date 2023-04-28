@@ -17,7 +17,9 @@ class ScreenBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<ApplicationCubit, ApplicationState>(
-        listenWhen: (previous, current) => current is ExceptionOccurred,
+        listenWhen: (previous, current) =>
+            current is ExceptionOccurred &&
+            previous.exception != current.exception,
         listener: (context, state) {
           final cntx = GetIt.I<AppRoute>()
               .route

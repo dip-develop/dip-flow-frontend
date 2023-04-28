@@ -12,13 +12,13 @@ class DashBoardScreen extends StatelessWidget {
     return Center(
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(8.0),
           child: Wrap(
             crossAxisAlignment: WrapCrossAlignment.center,
             alignment: WrapAlignment.center,
             runAlignment: WrapAlignment.center,
-            runSpacing: 16.0,
-            spacing: 16.0,
+            runSpacing: 8.0,
+            spacing: 8.0,
             children: [
               ConstrainedBox(
                   constraints: const BoxConstraints(maxWidth: 260.0),

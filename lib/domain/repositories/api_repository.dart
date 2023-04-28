@@ -8,10 +8,13 @@ abstract class AuthApiRepository extends ApiRepository {
   Future<TokenModel> signUpWithEmail(
       {required String email, required String password, required String name});
   Future<TokenModel> refreshToken(String token);
+  Future<void> restorePassword(String token, String email);
+}
+
+abstract class ProfileApiRepository extends ApiRepository {
   Future<ProfileModel> getProfile(String token);
   Future<void> updateProfile(String token, ProfileModel profile);
-  Future<void> restorePassword(String token, String email);
-  Future<void> deleteAccount(String token);
+  Future<void> deleteProfile(String token);
 }
 
 abstract class TimeTrackingRepository extends ApiRepository {

@@ -31,7 +31,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         child: Center(
           child: SingleChildScrollView(
             child: Container(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(8.0),
               constraints: const BoxConstraints(maxWidth: 400.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

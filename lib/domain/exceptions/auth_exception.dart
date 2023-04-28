@@ -10,4 +10,13 @@ class AuthException extends AppException {
 
   factory AuthException.needAuth(String? reason) =>
       AuthException('Need auth', reason);
+
+  @override
+  bool operator ==(other) =>
+      other is AuthException &&
+      other.message == message &&
+      other.reason == reason;
+
+  @override
+  int get hashCode => [message, reason].join().hashCode;
 }

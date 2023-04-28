@@ -16,7 +16,6 @@ abstract class AuthUseCase {
       {required String email, required String password, required String name});
   Future<void> signOut();
   Future<void> restorePassword(String email);
-  Future<void> deleteAccount();
 }
 
 @LazySingleton(as: AuthUseCase)
@@ -88,12 +87,6 @@ class AuthUseCaseImpl implements AuthUseCase {
   @override
   Future<void> restorePassword(String email) => _prepare
       .then((token) => _api.restorePassword(token, email))
-      .catchError(exception)
-      .whenComplete(loadingEnd);
-
-  @override
-  Future<void> deleteAccount() => _prepare
-      .then((token) => _api.deleteAccount(token).whenComplete(() => signOut()))
       .catchError(exception)
       .whenComplete(loadingEnd);
 

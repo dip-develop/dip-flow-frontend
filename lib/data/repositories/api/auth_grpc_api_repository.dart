@@ -7,7 +7,6 @@ import '../../../domain/repositories/repositories.dart';
 import '../../entities/entities.dart';
 import '../../entities/generated/auth_models.pb.dart';
 import '../../entities/generated/gate_service.pbgrpc.dart';
-import '../../entities/generated/google/protobuf/empty.pb.dart';
 
 @LazySingleton(as: AuthApiRepository)
 class AuthGRPCApiRepository implements AuthApiRepository {
@@ -41,28 +40,8 @@ class AuthGRPCApiRepository implements AuthApiRepository {
       .catchError(_checkException<TokenModel>);
 
   @override
-  Future<ProfileModel> getProfile(String token) => _client(token)
-      .getProfile(Empty())
-      .then((p0) => ProfileEntity.fromGrpc(p0).toModel())
-      .catchError(_checkException<ProfileModel>);
-
-  @override
   Future<void> restorePassword(String token, String email) => _client(token)
       .restorePassword(RestorePasswordRequest(email: email))
-      .catchError(_checkException<TokenModel>);
-
-  @override
-  Future<void> updateProfile(String token, ProfileModel profile) =>
-      _client(token)
-          .updateProfile(UserRequest(
-              name: profile.name,
-              price: profile.price,
-              workDays: profile.workDays))
-          .catchError(_checkException<TokenModel>);
-
-  @override
-  Future<void> deleteAccount(String token) => _client(token)
-      .deleteProfile(Empty())
       .catchError(_checkException<TokenModel>);
 
   AuthGateServiceClient _client([String? token]) =>

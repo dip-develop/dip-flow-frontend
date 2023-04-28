@@ -5,4 +5,10 @@ class AppException implements Exception {
 
   @override
   String toString() => message;
+
+  @override
+  bool operator ==(other) => other is AppException && other.message == message;
+
+  @override
+  int get hashCode => message.hashCode;
 }

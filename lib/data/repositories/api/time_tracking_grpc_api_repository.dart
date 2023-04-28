@@ -118,6 +118,7 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
       } else if (onError.code == StatusCode.unavailable) {
         throw ConnectionException.connectionNotFound(onError.message);
       } else if (onError.code == StatusCode.deadlineExceeded) {
+        //_channel.shutdown().whenComplete(() => _channel.createConnection());
         throw ConnectionException.timeout(onError.message);
       }
     }
