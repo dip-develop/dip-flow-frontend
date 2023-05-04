@@ -74,25 +74,11 @@ class SplashScreen extends StatelessWidget {
               isAuth ? AppRoute.dashboardRouteName : AppRoute.authRouteName)));
     }
     return Material(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.tertiary,
-                Theme.of(context).colorScheme.secondary,
-              ]),
-        ),
-        child: const Center(
-            child: /*  Image.asset(
-          'assets/images/logo_long_dark.png',
-          width: 285.0,
-        ) */
-
-                Text('Loading...')),
-      ),
+      child: Center(
+          child: Text(
+        'TheTeam',
+        style: Theme.of(context).textTheme.headlineLarge,
+      )),
     );
   }
 }

@@ -225,6 +225,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                         delimiter: ' ',
                                         conjunction: ' ',
                                         tersity: DurationTersity.minute,
+                                        upperTersity: DurationTersity.hour,
                                         abbreviated: true),
                                     style: Theme.of(context)
                                         .textTheme

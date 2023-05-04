@@ -62,7 +62,7 @@ class TrackEntity {
   TrackModel toModel() => TrackModel(
         (p0) => p0
           ..id = id
-          ..start = start
-          ..end = end,
+          ..start = start.toLocal()
+          ..end = end?.toLocal(),
       );
 }

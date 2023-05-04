@@ -195,16 +195,20 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                     ),
                     ExpansionPanelList(
                       expandedHeaderPadding: EdgeInsets.zero,
-                      expansionCallback: (panelIndex, isExpanded) =>
-                          setState(() {
-                        if (!isExpanded) {
-                          _expandedTimeTrackings
-                              .add(_timeTracks.items[panelIndex].id!);
-                        } else {
-                          _expandedTimeTrackings.removeWhere((element) =>
-                              element == _timeTracks.items[panelIndex].id);
-                        }
-                      }),
+                      expansionCallback: (panelIndex, isExpanded) {
+                        final id = _timeTracks.items.isNotEmpty
+                            ? _timeTracks.items[panelIndex].id
+                            : null;
+                        if (id == null) return;
+                        setState(() {
+                          if (!isExpanded) {
+                            _expandedTimeTrackings.add(id!);
+                          } else {
+                            _expandedTimeTrackings
+                                .removeWhere((element) => element == id);
+                          }
+                        });
+                      },
                       children: List<ExpansionPanel>.generate(
                         _timeTracks.items.length,
                         (index) {
@@ -224,6 +228,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                   : null,
                               headerBuilder: (context, isExpanded) {
                                 return ListTile(
+                                  horizontalTitleGap: 8.0,
                                   title: RichText(
                                     overflow: TextOverflow.ellipsis,
                                     maxLines: isExpanded ? 3 : 1,
@@ -287,6 +292,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                             delimiter: ' ',
                                             conjunction: ' ',
                                             tersity: DurationTersity.minute,
+                                            upperTersity: DurationTersity.hour,
                                             abbreviated: true),
                                         style: Theme.of(context)
                                             .textTheme
@@ -296,7 +302,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                                     .colorScheme
                                                     .secondary),
                                       ),
-                                      if (isExpanded)
+                                      /* if (isExpanded)
                                         PopupMenuButton<int>(
                                           onSelected: (value) {
                                             switch (value) {
@@ -336,7 +342,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                               ),
                                             ),
                                           ],
-                                        ),
+                                        ), */
                                     ],
                                   ),
                                 );
@@ -353,12 +359,53 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                           delimiter: ' ',
                                           conjunction: ' ',
                                           tersity: DurationTersity.minute,
+                                          upperTersity: DurationTersity.hour,
                                           abbreviated: true),
+                                      style: TextStyle(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary),
                                     ),
-                                    subtitle: Text(
-                                      '${DateFormat('y/M/d H:m').format(track.start)} - ${DateFormat('y/M/d H:m').format(track.end!)}',
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall,
+                                    subtitle: RichText(
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: isExpanded ? 3 : 1,
+                                      text: TextSpan(
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodySmall,
+                                          children: [
+                                            TextSpan(
+                                              text: DateFormat('y/M/d ')
+                                                  .format(track.start),
+                                            ),
+                                            TextSpan(
+                                                text: DateFormat('H:m')
+                                                    .format(track.start),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium
+                                                    ?.copyWith(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary)),
+                                            const TextSpan(
+                                              text: ' - ',
+                                            ),
+                                            TextSpan(
+                                              text: DateFormat('y/M/d ')
+                                                  .format(track.end!),
+                                            ),
+                                            TextSpan(
+                                                text: DateFormat('H:m')
+                                                    .format(track.end!),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .labelMedium
+                                                    ?.copyWith(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .secondary)),
+                                          ]),
                                     ),
                                     trailing: IconButton(
                                         onPressed: () =>

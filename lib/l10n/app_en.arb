@@ -43,5 +43,6 @@
   "dateRange": "Date range",
   "search": "Search",
   "version": "Version",
-  "support": "Support"
+  "support": "Support",
+  "errorConnection": "Problems with connection. Check the internet."
 }

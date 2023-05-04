@@ -44,16 +44,17 @@ class AuthUseCaseImpl implements AuthUseCase {
   @override
   Future<void> signInWithEmail(
           {required String email, required String password}) =>
-      loadingStart
-          .then((_) => _api
-              .signInWithEmail(email: email, password: password)
-              .then((token) => _checkAuth(token).then((isValid) {
-                    if (isValid) {
-                      _analytics
-                          .logSignIn(method: 'email')
-                          .catchError(exception);
-                    }
-                  }))
+      checkConnectionFuture
+          .then((_) => loadingStart
+              .then((_) => _api
+                  .signInWithEmail(email: email, password: password)
+                  .then((token) => _checkAuth(token).then((isValid) {
+                        if (isValid) {
+                          _analytics
+                              .logSignIn(method: 'email')
+                              .catchError(exception);
+                        }
+                      })))
               .catchError(exception))
           .whenComplete(loadingEnd);
 
@@ -62,17 +63,18 @@ class AuthUseCaseImpl implements AuthUseCase {
           {required String email,
           required String password,
           required String name}) =>
-      loadingStart
-          .then((_) => _api
-              .signUpWithEmail(email: email, password: password, name: name)
-              .then((token) => _checkAuth(token).then((isValid) {
-                    if (isValid) {
-                      _analytics
-                          .logSignUp(method: 'email')
-                          .catchError(exception);
-                    }
-                  }))
-              .then((_) => Future.value())
+      checkConnectionFuture
+          .then((_) => loadingStart
+              .then((_) => _api
+                  .signUpWithEmail(email: email, password: password, name: name)
+                  .then((token) => _checkAuth(token).then((isValid) {
+                        if (isValid) {
+                          _analytics
+                              .logSignUp(method: 'email')
+                              .catchError(exception);
+                        }
+                      }))
+                  .then((_) => Future.value()))
               .catchError(exception))
           .whenComplete(loadingEnd);
 
@@ -85,8 +87,8 @@ class AuthUseCaseImpl implements AuthUseCase {
       .whenComplete(loadingEnd);
 
   @override
-  Future<void> restorePassword(String email) => _prepare
-      .then((token) => _api.restorePassword(token, email))
+  Future<void> restorePassword(String email) => checkConnectionFuture
+      .then((_) => _prepare.then((token) => _api.restorePassword(token, email)))
       .catchError(exception)
       .whenComplete(loadingEnd);
 
@@ -115,11 +117,14 @@ class AuthUseCaseImpl implements AuthUseCase {
         }
       });
     } else if (_parseToken(token.refreshToken) != null) {
-      return _api
-          .refreshToken(token.refreshToken)
-          .then((value) => _checkAuth(value))
+      return checkConnectionFuture
+          .then((_) => _api
+              .refreshToken(token.refreshToken)
+              .then((value) => _checkAuth(value)))
           .catchError((onError) {
-        signOut();
+        if (onError is AuthException) {
+          signOut();
+        }
         return Future.value(false);
       });
     } else {

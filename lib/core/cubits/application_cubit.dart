@@ -35,7 +35,9 @@ class ApplicationCubit extends Cubit<ApplicationState> {
     });
 
     _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
-      emit(NetworkChanged(state, result));
+      if (!isClosed) {
+        emit(NetworkChanged(state, result));
+      }
     });
   }
 

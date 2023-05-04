@@ -80,6 +80,7 @@ class _DailyTimeState extends State<DailyTime> {
                                         element.start == todayStart)
                                     .map((e) => e.duration.inMilliseconds)
                                     .sum),
+                            upperTersity: DurationTersity.hour,
                             spacer: ' ',
                             delimiter: ' ',
                             conjunction: ' ',

@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:get_it/get_it.dart';
+import 'package:theteam_frontend/domain/exceptions/connection_exception.dart';
 
 import '../../core/cubits/application_cubit.dart';
 
@@ -20,3 +22,11 @@ FutureOr<void> loadingEnd() => Future.delayed(
 
 dynamic exception(dynamic exception) =>
     GetIt.I<ApplicationCubit>().exception(exception);
+
+Future<void> get checkConnectionFuture =>
+    Future.delayed(Duration.zero, checkConnection);
+
+void checkConnection() => throwIf(
+    (GetIt.I<ApplicationCubit>().state.connection ?? ConnectivityResult.none) ==
+        ConnectivityResult.none,
+    ConnectionException.connectionNotFound());

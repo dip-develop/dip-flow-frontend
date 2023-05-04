@@ -86,6 +86,7 @@ class _WeeklyTimeState extends State<WeeklyTime> {
                                         element.start == weekStart)
                                     .map((e) => e.duration.inMilliseconds)
                                     .sum),
+                            upperTersity: DurationTersity.hour,
                             spacer: ' ',
                             delimiter: ' ',
                             conjunction: ' ',

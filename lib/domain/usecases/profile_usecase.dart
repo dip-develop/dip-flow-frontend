@@ -31,11 +31,11 @@ class ProfileUseCaseImpl implements ProfileUseCase {
 
   @override
   Future<void> deleteProfile() => _prepare
-      .then((token) =>
-          _api.deleteProfile(token).whenComplete(() => _authUseCase.signOut()))
+      .then((token) => _api.deleteProfile(token))
       .catchError(exception)
+      .whenComplete(() => _authUseCase.signOut())
       .whenComplete(loadingEnd);
 
-  Future<String> get _prepare =>
-      loadingStart.then((value) => _authUseCase.getToken());
+  Future<String> get _prepare => checkConnectionFuture
+      .then((_) => loadingStart.then((value) => _authUseCase.getToken()));
 }

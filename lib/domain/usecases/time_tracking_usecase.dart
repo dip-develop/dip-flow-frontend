@@ -24,9 +24,9 @@ abstract class TimeTrackingUseCase {
 @LazySingleton(as: TimeTrackingUseCase)
 class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
   final TimeTrackingRepository _api;
-  final AuthUseCase _auth;
+  final AuthUseCase _authUseCase;
 
-  const TimeTrackingUseCaseImpl(this._api, this._auth);
+  const TimeTrackingUseCaseImpl(this._api, this._authUseCase);
 
   @override
   Future<TimeTrackingModel> getTimeTrack(int id) => _prepare
@@ -93,5 +93,6 @@ class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
           .catchError(exception)
           .whenComplete(loadingEnd);
 
-  Future<String> get _prepare => loadingStart.then((value) => _auth.getToken());
+  Future<String> get _prepare => checkConnectionFuture
+      .then((_) => loadingStart.then((value) => _authUseCase.getToken()));
 }
