@@ -1,11 +1,11 @@
-import 'package:grpc/grpc.dart';
+import 'package:grpc/grpc_connection_interface.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../domain/models/models.dart';
 import '../../../domain/repositories/repositories.dart';
 import '../../entities/entities.dart';
 import '../../entities/generated/base_models.pb.dart';
-import '../../entities/generated/gate_models.pb.dart';
+import '../../entities/generated/gate_models.pb.dart' as gate;
 import '../../entities/generated/gate_service.pbgrpc.dart';
 import '../../entities/generated/google/protobuf/timestamp.pb.dart';
 import '../../entities/generated/time_tracking_models.pb.dart'
@@ -15,7 +15,7 @@ import '../../entities/generated/time_tracking_models.pb.dart'
 class TimeTrackingGRPCApiRepository
     with ApiRepositoryMixin
     implements TimeTrackingRepository {
-  final ClientChannel _channel;
+  final ClientChannelBase _channel;
 
   const TimeTrackingGRPCApiRepository(this._channel);
 
@@ -36,7 +36,7 @@ class TimeTrackingGRPCApiRepository
   }) =>
       _client(token)
           .getTimeTracks(
-            GetTimeTrackRequest(
+            gate.FilterRequest(
               pagination: limit != null || offset != null
                   ? PaginationRequest(limit: limit, offset: offset)
                   : null,
@@ -60,8 +60,8 @@ class TimeTrackingGRPCApiRepository
   Future<TimeTrackingModel> addTimeTrack(
           String token, TimeTrackingModel timeTrack) =>
       _client(token)
-          .addTimeTrack(AddTimeTrackRequest(
-              task: timeTrack.task,
+          .addTimeTrack(gate.AddTimeTrackRequest(
+              taskId: timeTrack.taskId,
               title: timeTrack.title,
               description: timeTrack.description))
           .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
@@ -73,7 +73,7 @@ class TimeTrackingGRPCApiRepository
       _client(token)
           .updateTimeTrack(time_tracking_models.UpdateTimeTrackRequest(
               id: timeTrack.id,
-              task: timeTrack.task,
+              taskId: timeTrack.taskId,
               title: timeTrack.title,
               description: timeTrack.description))
           .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())

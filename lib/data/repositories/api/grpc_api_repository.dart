@@ -1,17 +1,16 @@
+import 'grpc_client.dart'
+    if (dart.library.io) 'grpc_client.dart'
+    if (dart.library.html) 'web_grpc_client.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
-import 'package:grpc/grpc.dart';
+import 'package:grpc/grpc_connection_interface.dart';
 import 'package:injectable/injectable.dart';
 
 @module
 abstract class GRPCApiRepositoryModule {
   @lazySingleton
-  ClientChannel clientChannel() =>
-      ClientChannel(FlavorConfig.instance.variables['baseUrl'],
-          port: FlavorConfig.instance.variables.containsKey('basePort')
-              ? FlavorConfig.instance.variables['basePort']
-              : 443,
-          options: const ChannelOptions(
-            credentials: ChannelCredentials.insecure(),
-            /* codecRegistry: CodecRegistry(codecs: const [GzipCodec()]), */
-          ));
+  ClientChannelBase clientChannel() => getClientChannel(
+      FlavorConfig.instance.variables['baseUrl'],
+      FlavorConfig.instance.variables.containsKey('basePort')
+          ? FlavorConfig.instance.variables['basePort']
+          : 443);
 }

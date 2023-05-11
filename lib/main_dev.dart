@@ -8,7 +8,7 @@ void main() {
   FlavorConfig(
     name: 'DEVELOP',
     variables: {
-      'baseUrl': '127.0.0.1',
+      'baseUrl': 'localhost',
       'basePort': 8080,
     },
   );

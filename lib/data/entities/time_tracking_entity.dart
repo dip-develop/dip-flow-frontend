@@ -6,7 +6,7 @@ import 'generated/time_tracking_models.pb.dart';
 class TimeTrackingEntity {
   final int id;
   final int userId;
-  final String? task;
+  final int? taskId;
   final String? title;
   final String? description;
   final List<TrackEntity> tracks;
@@ -14,7 +14,7 @@ class TimeTrackingEntity {
   const TimeTrackingEntity(
       {required this.id,
       required this.userId,
-      this.task,
+      this.taskId,
       this.title,
       this.description,
       this.tracks = const <TrackEntity>[]});
@@ -23,9 +23,7 @@ class TimeTrackingEntity {
       TimeTrackingEntity(
           id: timeTrack.id,
           userId: timeTrack.userId,
-          task: timeTrack.hasTask() && timeTrack.task.isNotEmpty
-              ? timeTrack.task
-              : null,
+          taskId: timeTrack.hasTaskId() ? timeTrack.taskId : null,
           title: timeTrack.hasTitle() && timeTrack.title.isNotEmpty
               ? timeTrack.title
               : null,
@@ -40,7 +38,7 @@ class TimeTrackingEntity {
         (p0) => p0
           ..id = id
           ..userId = userId
-          ..task = task
+          ..taskId = taskId
           ..title = title
           ..description = description
           ..tracks = ListBuilder(tracks.map((e) => e.toModel())),

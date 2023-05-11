@@ -1,4 +1,4 @@
-import 'package:grpc/grpc.dart';
+import 'package:grpc/grpc_connection_interface.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../domain/models/models.dart';
@@ -11,7 +11,7 @@ import '../../entities/generated/gate_service.pbgrpc.dart';
 class AuthGRPCApiRepository
     with ApiRepositoryMixin
     implements AuthApiRepository {
-  final ClientChannel _channel;
+  final ClientChannelBase _channel;
 
   const AuthGRPCApiRepository(this._channel);
 

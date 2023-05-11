@@ -30,6 +30,9 @@ protoc --dart_out=grpc:lib/data/entities/generated -Iprotos \
     protos/gate_models.proto \
     protos/gate_service.proto \
     protos/auth_models.proto \
+    protos/user_models.proto \
+    protos/project_models.proto \
+    protos/task_models.proto \
     protos/time_tracking_models.proto \
     protos/google/api/annotations.proto \
     protos/google/api/http.proto \

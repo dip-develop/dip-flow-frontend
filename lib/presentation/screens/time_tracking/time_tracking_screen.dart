@@ -238,8 +238,8 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                 ),
                                 DataCell(
                                   Text(
-                                      timeTrack.task != null
-                                          ? '#${timeTrack.task}'
+                                      timeTrack.taskId != null
+                                          ? '#${timeTrack.taskId}'
                                           : '',
                                       style: Theme.of(context)
                                           .textTheme

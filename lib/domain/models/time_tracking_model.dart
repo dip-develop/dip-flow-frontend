@@ -11,7 +11,7 @@ abstract class TimeTrackingModel
   @override
   int? get id;
   int? get userId;
-  String? get task;
+  int? get taskId;
   String? get title;
   String? get description;
   BuiltList<TrackModel> get tracks;

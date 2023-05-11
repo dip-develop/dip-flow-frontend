@@ -1,18 +1,18 @@
-import 'package:grpc/grpc.dart';
+import 'package:grpc/grpc_connection_interface.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../domain/models/models.dart';
 import '../../../domain/repositories/repositories.dart';
 import '../../entities/entities.dart';
-import '../../entities/generated/auth_models.pb.dart';
 import '../../entities/generated/gate_service.pbgrpc.dart';
 import '../../entities/generated/google/protobuf/empty.pb.dart';
+import '../../entities/generated/user_models.pb.dart';
 
 @LazySingleton(as: ProfileApiRepository)
 class ProfileGRPCApiRepository
     with ApiRepositoryMixin
     implements ProfileApiRepository {
-  final ClientChannel _channel;
+  final ClientChannelBase _channel;
 
   const ProfileGRPCApiRepository(this._channel);
 

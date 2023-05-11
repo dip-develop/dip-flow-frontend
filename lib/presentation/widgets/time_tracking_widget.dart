@@ -167,10 +167,10 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                         GetIt.I<TimeTrackingUseCase>()
                                             .addTimeTrack(TimeTrackingModel(
                                               (p0) => p0
-                                                ..task = _taskTextController
+                                                /*  ..taskId = _taskTextController
                                                         .text.isNotEmpty
                                                     ? _taskTextController.text
-                                                    : null
+                                                    : null */
                                                 ..title = _titleTextController
                                                         .text.isNotEmpty
                                                     ? _titleTextController.text
@@ -250,9 +250,9 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                             .textTheme
                                             .bodyMedium,
                                         children: [
-                                          if (timeTrack.task != null)
+                                          if (timeTrack.taskId != null)
                                             TextSpan(
-                                                text: '#${timeTrack.task}',
+                                                text: '#${timeTrack.taskId}',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .labelMedium
@@ -260,7 +260,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                                         color: Theme.of(context)
                                                             .colorScheme
                                                             .primary)),
-                                          if (timeTrack.task != null &&
+                                          if (timeTrack.taskId != null &&
                                               timeTrack.title != null)
                                             const TextSpan(text: ' - '),
                                           if (timeTrack.title != null)

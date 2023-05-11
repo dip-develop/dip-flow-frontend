@@ -50,7 +50,7 @@ android {
 
     defaultConfig {
         applicationId "run.theteam.app"
-        minSdkVersion 18//flutter.minSdkVersion
+        minSdkVersion 21//flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -69,6 +69,7 @@ android {
            signingConfig signingConfigs.release
        }
    }
+    namespace 'run.theteam.app'
 }
 
 flutter {
