@@ -235,9 +235,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                               canTapOnHeader: true,
                               isExpanded: isExpanded,
                               backgroundColor: isExpanded
-                                  ? Theme.of(context)
-                                      .colorScheme
-                                      .primaryContainer
+                                  ? Theme.of(context).colorScheme.surfaceVariant
                                   : null,
                               headerBuilder: (context, isExpanded) {
                                 return ListTile(

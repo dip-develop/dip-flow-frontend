@@ -58,6 +58,7 @@ class _DailyTimeState extends State<DailyTime> {
                 _timeTracks.items.any((element) => element.isStarted),
             builder: (context, state) {
               return Card(
+                color: Theme.of(context).colorScheme.primaryContainer,
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(

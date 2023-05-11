@@ -63,6 +63,7 @@ class _WeeklyTimeState extends State<WeeklyTime> {
                 _timeTracks.items.any((element) => element.isStarted),
             builder: (context, state) {
               return Card(
+                color: Theme.of(context).colorScheme.tertiaryContainer,
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
