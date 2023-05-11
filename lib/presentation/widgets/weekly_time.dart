@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../core/cubits/content_changed_cubit.dart';
 import '../../core/cubits/timer_cubit.dart';
 import '../../domain/models/models.dart';
 import '../../domain/usecases/usecases.dart';
@@ -37,12 +38,25 @@ class _WeeklyTimeState extends State<WeeklyTime> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<TimerCubit, TimerState>(
-        listenWhen: (previous, current) =>
-            current is TimeTick && current.tick % 10 == 0,
-        listener: (context, state) {
-          _updateTimeTracks();
-        },
+    return MultiBlocListener(
+        listeners: [
+          BlocListener<ContentChangedCubit, ContentChangedState>(
+              listenWhen: (previous, current) =>
+                  current is TimeTracksChanged || current is TimeTrackChanged,
+              listener: (context, state) {
+                if (state is TimeTracksChanged) {
+                  _updateTimeTracks();
+                } else if (state is TimeTrackChanged) {
+                  _updateTimeTrack(state.timeTrack);
+                }
+              }),
+          BlocListener<TimerCubit, TimerState>(
+              listenWhen: (previous, current) =>
+                  current is TimeTick && current.tick % 10 == 0,
+              listener: (context, state) {
+                _updateTimeTracks();
+              }),
+        ],
         child: BlocBuilder<TimerCubit, TimerState>(
             buildWhen: (previous, current) =>
                 current is TimeTick &&
@@ -110,5 +124,12 @@ class _WeeklyTimeState extends State<WeeklyTime> {
         .then((value) => setState(() {
               _timeTracks = _timeTracks.from(value);
             }));
+  }
+
+  void _updateTimeTrack(TimeTrackingModel timeTrack) {
+    if (!mounted) return;
+    setState(() {
+      _timeTracks.update(timeTrack);
+    });
   }
 }

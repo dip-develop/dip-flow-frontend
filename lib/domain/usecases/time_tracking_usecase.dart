@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 
+import '../../core/cubits/content_changed_cubit.dart';
 import '../models/models.dart';
 import '../repositories/repositories.dart';
 import 'usecases.dart';
@@ -25,8 +26,10 @@ abstract class TimeTrackingUseCase {
 class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
   final TimeTrackingRepository _api;
   final AuthUseCase _authUseCase;
+  final ContentChangedCubit _contentCubit;
 
-  const TimeTrackingUseCaseImpl(this._api, this._authUseCase);
+  const TimeTrackingUseCaseImpl(
+      this._api, this._authUseCase, this._contentCubit);
 
   @override
   Future<TimeTrackingModel> getTimeTrack(int id) => _prepare
@@ -58,6 +61,10 @@ class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
   Future<TimeTrackingModel> addTimeTrack(TimeTrackingModel timeTrack) =>
       _prepare
           .then((token) => _api.addTimeTrack(token, timeTrack))
+          .then((value) {
+            _contentCubit.timeTracksChanged();
+            return value;
+          })
           .catchError(exception)
           .whenComplete(loadingEnd);
 
@@ -65,24 +72,39 @@ class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
   Future<TimeTrackingModel> updateTimeTrack(TimeTrackingModel timeTrack) =>
       _prepare
           .then((token) => _api.updateTimeTrack(token, timeTrack))
+          .then((value) {
+            _contentCubit.timeTrackChanged(value);
+            return value;
+          })
           .catchError(exception)
           .whenComplete(loadingEnd);
 
   @override
   Future<void> deleteTimeTrack(int id) => _prepare
       .then((token) => _api.deleteTimeTrack(token, id))
+      .then((_) {
+        _contentCubit.timeTracksChanged();
+      })
       .catchError(exception)
       .whenComplete(loadingEnd);
 
   @override
   Future<TimeTrackingModel> startTrack(int id) => _prepare
       .then((token) => _api.startTrack(token, id))
+      .then((value) {
+        _contentCubit.timeTrackChanged(value);
+        return value;
+      })
       .catchError(exception)
       .whenComplete(loadingEnd);
 
   @override
   Future<TimeTrackingModel> stopTrack(int id) => _prepare
       .then((token) => _api.stopTrack(token, id))
+      .then((value) {
+        _contentCubit.timeTrackChanged(value);
+        return value;
+      })
       .catchError(exception)
       .whenComplete(loadingEnd);
 
@@ -90,6 +112,10 @@ class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
   Future<TimeTrackingModel> deleteTrack(int timeTrackId, int trackId) =>
       _prepare
           .then((token) => _api.deleteTrack(token, timeTrackId, trackId))
+          .then((value) {
+            _contentCubit.timeTrackChanged(value);
+            return value;
+          })
           .catchError(exception)
           .whenComplete(loadingEnd);
 

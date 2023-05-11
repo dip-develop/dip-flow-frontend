@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
+import '../../core/cubits/content_changed_cubit.dart';
 import '../../core/cubits/timer_cubit.dart';
 import '../../domain/models/models.dart';
 import '../../domain/usecases/usecases.dart';
@@ -36,12 +37,25 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<TimerCubit, TimerState>(
-      listenWhen: (previous, current) =>
-          current is TimeTick && current.tick % 10 == 0,
-      listener: (context, state) {
-        _updateTimeTracks();
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ContentChangedCubit, ContentChangedState>(
+            listenWhen: (previous, current) =>
+                current is TimeTracksChanged || current is TimeTrackChanged,
+            listener: (context, state) {
+              if (state is TimeTracksChanged) {
+                _updateTimeTracks();
+              } else if (state is TimeTrackChanged) {
+                _updateTimeTrack(state.timeTrack);
+              }
+            }),
+        BlocListener<TimerCubit, TimerState>(
+            listenWhen: (previous, current) =>
+                current is TimeTick && current.tick % 10 == 0,
+            listener: (context, state) {
+              _updateTimeTracks();
+            }),
+      ],
       child: BlocBuilder<TimerCubit, TimerState>(
         buildWhen: (previous, current) =>
             current is TimeTick &&
@@ -168,7 +182,6 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                                             .text
                                                         : null,
                                             ))
-                                            .then((_) => _updateTimeTracks())
                                             .then((_) => setState(() {
                                                   _isAddPannelVisivle = false;
                                                   _taskTextController.clear();
@@ -202,7 +215,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                         if (id == null) return;
                         setState(() {
                           if (!isExpanded) {
-                            _expandedTimeTrackings.add(id!);
+                            _expandedTimeTrackings.add(id);
                           } else {
                             _expandedTimeTrackings
                                 .removeWhere((element) => element == id);
@@ -265,11 +278,10 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                       : null,
                                   leading: IconButton(
                                     onPressed: () => (timeTrack.isStarted
-                                            ? _timeTrackingUseCase
-                                                .stopTrack(timeTrack.id!)
-                                            : _timeTrackingUseCase
-                                                .startTrack(timeTrack.id!))
-                                        .then(_updateTimeTracking),
+                                        ? _timeTrackingUseCase
+                                            .stopTrack(timeTrack.id!)
+                                        : _timeTrackingUseCase
+                                            .startTrack(timeTrack.id!)),
                                     icon: Icon(
                                       timeTrack.isStarted
                                           ? Icons.stop
@@ -411,8 +423,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                         onPressed: () =>
                                             GetIt.I<TimeTrackingUseCase>()
                                                 .deleteTrack(
-                                                    timeTrack.id!, track.id!)
-                                                .then(_updateTimeTracking),
+                                                    timeTrack.id!, track.id!),
                                         icon: const Icon(Icons.delete)),
                                   );
                                 },
@@ -433,25 +444,15 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
 
   void _updateTimeTracks() {
     if (!mounted) return;
-    _timeTracks = PaginationModel<TimeTrackingModel>.empty();
     _timeTrackingUseCase.getTimeTracks(limit: 5).then((value) => setState(() {
           _timeTracks = _timeTracks.from(value);
         }));
   }
 
-  void _updateTimeTracking(TimeTrackingModel timeTrack) {
+  void _updateTimeTrack(TimeTrackingModel timeTrack) {
     if (!mounted) return;
-    final items = List<TimeTrackingModel>.from(_timeTracks.items);
-    final index = items.indexWhere((element) => element.id == timeTrack.id);
-    if (index >= 0) {
-      items[index] = timeTrack;
-      setState(() {
-        _timeTracks = PaginationModel<TimeTrackingModel>(
-            count: _timeTracks.count,
-            limit: _timeTracks.limit,
-            offset: _timeTracks.offset,
-            items: items);
-      });
-    }
+    setState(() {
+      _timeTracks.update(timeTrack);
+    });
   }
 }

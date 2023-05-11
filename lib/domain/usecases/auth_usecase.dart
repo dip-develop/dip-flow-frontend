@@ -36,7 +36,7 @@ class AuthUseCaseImpl implements AuthUseCase {
   Future<String> getToken() =>
       _encrypted.readToken().then((token) => _checkAuth(token).then((isValid) {
             if (!isValid) {
-              throw AuthException.needAuth('Token invalid');
+              throw AuthException.needAuth();
             }
             return 'Bearer ${token!.accessToken}';
           }));

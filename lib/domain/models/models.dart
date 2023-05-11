@@ -25,3 +25,7 @@ part 'models.g.dart';
 ])
 final Serializers serializers =
     (_$serializers.toBuilder()..addPlugin(StandardJsonPlugin())).build();
+
+abstract class BaseModel {
+  int? get id;
+}

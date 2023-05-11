@@ -1,7 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grpc/grpc.dart';
 import 'package:injectable/injectable.dart';
@@ -10,7 +9,6 @@ import 'package:launch_at_startup/launch_at_startup.dart';
 import '../../domain/exceptions/auth_exception.dart';
 import '../../domain/models/models.dart';
 import '../../domain/usecases/usecases.dart';
-import '../resources/themes/theme.dart';
 
 part 'application_state.dart';
 
@@ -87,7 +85,9 @@ class ApplicationCubit extends Cubit<ApplicationState> {
       }
     } else if (exception is AuthException) {
       auth(AuthState.unauthorized);
-      emit(ExceptionOccurred(state, exception));
+      if (exception.reason != AuthReasonException.needAuth) {
+        emit(ExceptionOccurred(state, exception));
+      }
     } else if (exception is Exception) {
       debugPrint(onError.toString());
       emit(ExceptionOccurred(state, exception));

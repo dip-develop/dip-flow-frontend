@@ -1,7 +1,6 @@
 import 'package:grpc/grpc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../domain/exceptions/exceptions.dart';
 import '../../../domain/models/models.dart';
 import '../../../domain/repositories/repositories.dart';
 import '../../entities/entities.dart';
@@ -13,7 +12,9 @@ import '../../entities/generated/time_tracking_models.pb.dart'
     as time_tracking_models;
 
 @LazySingleton(as: TimeTrackingRepository)
-class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
+class TimeTrackingGRPCApiRepository
+    with ApiRepositoryMixin
+    implements TimeTrackingRepository {
   final ClientChannel _channel;
 
   const TimeTrackingGRPCApiRepository(this._channel);
@@ -22,7 +23,7 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
   Future<TimeTrackingModel> getTimeTrack(String token, int id) => _client(token)
       .getTimeTrack(IdRequest(id: id))
       .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
-      .catchError(_checkException<TimeTrackingModel>);
+      .catchError(checkException<TimeTrackingModel>);
 
   @override
   Future<PaginationModel<TimeTrackingModel>> getTimeTracks(
@@ -53,7 +54,7 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
             ),
           )
           .then((reply) => PaginationEntity.fromGrpc(reply).toModel())
-          .catchError(_checkException<PaginationModel<TimeTrackingModel>>);
+          .catchError(checkException<PaginationModel<TimeTrackingModel>>);
 
   @override
   Future<TimeTrackingModel> addTimeTrack(
@@ -64,7 +65,7 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
               title: timeTrack.title,
               description: timeTrack.description))
           .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
-          .catchError(_checkException<TimeTrackingModel>);
+          .catchError(checkException<TimeTrackingModel>);
 
   @override
   Future<TimeTrackingModel> updateTimeTrack(
@@ -76,25 +77,25 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
               title: timeTrack.title,
               description: timeTrack.description))
           .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
-          .catchError(_checkException<TimeTrackingModel>);
+          .catchError(checkException<TimeTrackingModel>);
 
   @override
   Future<void> deleteTimeTrack(String token, int id) => _client(token)
       .deleteTimeTrack(IdRequest(id: id))
       .then((_) => Future.value())
-      .catchError(_checkException<void>);
+      .catchError(checkException<void>);
 
   @override
   Future<TimeTrackingModel> startTrack(String token, int id) => _client(token)
       .startTrack(IdRequest(id: id))
       .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
-      .catchError(_checkException<TimeTrackingModel>);
+      .catchError(checkException<TimeTrackingModel>);
 
   @override
   Future<TimeTrackingModel> stopTrack(String token, int id) => _client(token)
       .stopTrack(IdRequest(id: id))
       .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
-      .catchError(_checkException<TimeTrackingModel>);
+      .catchError(checkException<TimeTrackingModel>);
 
   @override
   Future<TimeTrackingModel> deleteTrack(
@@ -103,25 +104,11 @@ class TimeTrackingGRPCApiRepository implements TimeTrackingRepository {
           .deleteTrack(time_tracking_models.DeleteTrackRequest(
               id: timeTrackId, trackId: trackId))
           .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
-          .catchError(_checkException<TimeTrackingModel>);
+          .catchError(checkException<TimeTrackingModel>);
 
   TimeTrackingGateServiceClient _client(String token) =>
       TimeTrackingGateServiceClient(_channel,
           options: CallOptions(
               timeout: const Duration(seconds: 4),
               metadata: {'authorization': token}));
-
-  Future<T> _checkException<T>(dynamic onError) {
-    if (onError is GrpcError) {
-      if (onError.code == StatusCode.unauthenticated) {
-        throw AuthException.invalidData(onError.message);
-      } else if (onError.code == StatusCode.unavailable) {
-        throw ConnectionException.connectionNotFound(onError.message);
-      } else if (onError.code == StatusCode.deadlineExceeded) {
-        //_channel.shutdown().whenComplete(() => _channel.createConnection());
-        throw ConnectionException.timeout(onError.message);
-      }
-    }
-    throw AppException(onError.toString());
-  }
 }

@@ -1,4 +1,6 @@
-class PaginationModel<T> {
+import 'models.dart';
+
+class PaginationModel<T extends BaseModel> {
   final int count;
   final int offset;
   final int limit;
@@ -24,4 +26,14 @@ class PaginationModel<T> {
       items: offset != pagination.offset
           ? (items..addAll(pagination.items))
           : pagination.items);
+
+  void update(T item) {
+    final items = List<T>.from(this.items);
+    final index = items.indexWhere((element) => element.id == item.id);
+    if (index >= 0) {
+      items[index] = item;
+      this.items.clear();
+      this.items.addAll(items);
+    }
+  }
 }

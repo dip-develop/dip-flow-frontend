@@ -2,10 +2,13 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:collection/collection.dart';
 
+import 'models.dart';
+
 part 'time_tracking_model.g.dart';
 
 abstract class TimeTrackingModel
-    implements Built<TimeTrackingModel, TimeTrackingModelBuilder> {
+    implements BaseModel, Built<TimeTrackingModel, TimeTrackingModelBuilder> {
+  @override
   int? get id;
   int? get userId;
   String? get task;
@@ -25,7 +28,9 @@ abstract class TimeTrackingModel
   }
 }
 
-abstract class TrackModel implements Built<TrackModel, TrackModelBuilder> {
+abstract class TrackModel
+    implements BaseModel, Built<TrackModel, TrackModelBuilder> {
+  @override
   int? get id;
   DateTime get start;
   DateTime? get end;

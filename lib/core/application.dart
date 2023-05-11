@@ -11,6 +11,7 @@ import '../domain/models/models.dart';
 import '../presentation/widgets/screen_builder.dart';
 import 'app_route.dart';
 import 'cubits/application_cubit.dart';
+import 'cubits/content_changed_cubit.dart';
 import 'cubits/timer_cubit.dart';
 import 'resources/themes/dark_theme.dart';
 import 'resources/themes/light_theme.dart';
@@ -30,6 +31,9 @@ class Application extends StatelessWidget {
           BlocProvider(
             create: (context) => GetIt.I.get<TimerCubit>(),
           ),
+          BlocProvider(
+            create: (context) => GetIt.I.get<ContentChangedCubit>(),
+          ),
         ],
         child: BlocListener<ApplicationCubit, ApplicationState>(
           listenWhen: (previous, current) =>
@@ -47,9 +51,6 @@ class Application extends StatelessWidget {
             builder: (context, state) {
               return MultiRepositoryProvider(
                 providers: [
-                  RepositoryProvider.value(
-                    value: state.theme,
-                  ),
                   RepositoryProvider.value(
                     value: state.themeMode,
                   ),

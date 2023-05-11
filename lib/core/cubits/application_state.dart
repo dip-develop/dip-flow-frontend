@@ -3,14 +3,13 @@ part of 'application_cubit.dart';
 abstract class ApplicationState extends Equatable {
   AuthState get auth;
   ThemeMode get themeMode;
-  AppTheme get theme;
   bool get isLoading;
   ConnectivityResult? get connection;
   Exception? get exception;
   bool get launchAtStartup;
 
   @override
-  List<Object> get props => [themeMode, theme, isLoading];
+  List<Object> get props => [themeMode,isLoading];
 }
 
 class ApplicationInitial extends ApplicationState {
@@ -18,8 +17,6 @@ class ApplicationInitial extends ApplicationState {
   final AuthState auth = AuthState.unknown;
   @override
   final ThemeMode themeMode;
-  @override
-  final AppTheme theme;
   @override
   final bool isLoading = false;
   @override
@@ -30,15 +27,10 @@ class ApplicationInitial extends ApplicationState {
   final bool launchAtStartup = false;
 
   ApplicationInitial()
-      : themeMode = ThemeMode.system,
-        theme = SchedulerBinding.instance.window.platformBrightness ==
-                Brightness.dark
-            ? const DarkAppThemeImpl()
-            : const LightAppThemeImpl();
+      : themeMode = ThemeMode.system;
 }
 
 class ThemeChanged extends ApplicationState {
-  final AppTheme _theme;
   final bool _isLoading;
   final ConnectivityResult? _connection;
   final Exception? _exception;
@@ -49,8 +41,6 @@ class ThemeChanged extends ApplicationState {
   AuthState get auth => _auth;
   @override
   final ThemeMode themeMode;
-  @override
-  AppTheme get theme => _theme;
   @override
   bool get isLoading => _isLoading;
   @override
@@ -62,12 +52,6 @@ class ThemeChanged extends ApplicationState {
 
   ThemeChanged(ApplicationState state, this.themeMode)
       : _connection = state.connection,
-        _theme = themeMode == ThemeMode.dark ||
-                (themeMode == ThemeMode.system &&
-                    SchedulerBinding.instance.window.platformBrightness ==
-                        Brightness.dark)
-            ? const DarkAppThemeImpl()
-            : const LightAppThemeImpl(),
         _isLoading = state.isLoading,
         _exception = state.exception,
         _auth = state.auth,
@@ -76,7 +60,6 @@ class ThemeChanged extends ApplicationState {
 
 class IsLoadingChanged extends ApplicationState {
   final ThemeMode _themeMode;
-  final AppTheme _theme;
   final ConnectivityResult? _connection;
   final Exception? _exception;
   final AuthState _auth;
@@ -85,9 +68,7 @@ class IsLoadingChanged extends ApplicationState {
   @override
   AuthState get auth => _auth;
   @override
-  ThemeMode get themeMode => _themeMode;
-  @override
-  AppTheme get theme => _theme;
+  ThemeMode get themeMode => _themeMode; 
   @override
   final bool isLoading;
   @override
@@ -99,8 +80,7 @@ class IsLoadingChanged extends ApplicationState {
 
   IsLoadingChanged(ApplicationState state, this.isLoading)
       : _connection = state.connection,
-        _themeMode = state.themeMode,
-        _theme = state.theme,
+        _themeMode = state.themeMode,       
         _exception = state.exception,
         _auth = state.auth,
         _launchAtStartup = state.launchAtStartup;
@@ -111,7 +91,6 @@ class IsLoadingChanged extends ApplicationState {
 
 class ExceptionOccurred extends ApplicationState {
   final ThemeMode _themeMode;
-  final AppTheme _theme;
   final bool _isLoading;
   final ConnectivityResult? _connection;
   final AuthState _auth;
@@ -120,9 +99,7 @@ class ExceptionOccurred extends ApplicationState {
   @override
   AuthState get auth => _auth;
   @override
-  ThemeMode get themeMode => _themeMode;
-  @override
-  AppTheme get theme => _theme;
+  ThemeMode get themeMode => _themeMode; 
   @override
   ConnectivityResult? get connection => _connection;
   @override
@@ -135,8 +112,7 @@ class ExceptionOccurred extends ApplicationState {
   ExceptionOccurred(ApplicationState state, [this.exception])
       : _connection = state.connection,
         _themeMode = state.themeMode,
-        _theme = state.theme,
-        _isLoading = state.isLoading,
+              _isLoading = state.isLoading,
         _auth = state.auth,
         _launchAtStartup = state.launchAtStartup;
 
@@ -146,7 +122,6 @@ class ExceptionOccurred extends ApplicationState {
 
 class NetworkChanged extends ApplicationState {
   final ThemeMode _themeMode;
-  final AppTheme _theme;
   final bool _isLoading;
   final Exception? _exception;
   final AuthState _auth;
@@ -156,9 +131,7 @@ class NetworkChanged extends ApplicationState {
   AuthState get auth => _auth;
   @override
   ThemeMode get themeMode => _themeMode;
-  @override
-  AppTheme get theme => _theme;
-  @override
+   @override
   bool get isLoading => _isLoading;
   @override
   final ConnectivityResult connection;
@@ -169,7 +142,6 @@ class NetworkChanged extends ApplicationState {
 
   NetworkChanged(ApplicationState state, this.connection)
       : _themeMode = state.themeMode,
-        _theme = state.theme,
         _isLoading = state.isLoading,
         _exception = state.exception,
         _auth = state.auth,
@@ -181,7 +153,6 @@ class NetworkChanged extends ApplicationState {
 
 class AuthChanged extends ApplicationState {
   final ThemeMode _themeMode;
-  final AppTheme _theme;
   final bool _isLoading;
   final ConnectivityResult? _connection;
   final Exception? _exception;
@@ -191,8 +162,6 @@ class AuthChanged extends ApplicationState {
   final AuthState auth;
   @override
   ThemeMode get themeMode => _themeMode;
-  @override
-  AppTheme get theme => _theme;
   @override
   bool get isLoading => _isLoading;
   @override
@@ -204,7 +173,6 @@ class AuthChanged extends ApplicationState {
 
   AuthChanged(ApplicationState state, this.auth)
       : _themeMode = state.themeMode,
-        _theme = state.theme,
         _isLoading = state.isLoading,
         _connection = state.connection,
         _exception = state.exception,
@@ -216,7 +184,6 @@ class AuthChanged extends ApplicationState {
 
 class LaunchAtStartupChanged extends ApplicationState {
   final ThemeMode _themeMode;
-  final AppTheme _theme;
   final bool _isLoading;
   final ConnectivityResult? _connection;
   final Exception? _exception;
@@ -226,8 +193,6 @@ class LaunchAtStartupChanged extends ApplicationState {
   AuthState get auth => _auth;
   @override
   ThemeMode get themeMode => _themeMode;
-  @override
-  AppTheme get theme => _theme;
   @override
   bool get isLoading => _isLoading;
   @override
@@ -239,7 +204,6 @@ class LaunchAtStartupChanged extends ApplicationState {
 
   LaunchAtStartupChanged(ApplicationState state, this.launchAtStartup)
       : _themeMode = state.themeMode,
-        _theme = state.theme,
         _isLoading = state.isLoading,
         _connection = state.connection,
         _auth = state.auth,
