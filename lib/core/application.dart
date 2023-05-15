@@ -61,22 +61,17 @@ class Application extends StatelessWidget {
                       (ColorScheme? lightDynamic, ColorScheme? darkDynamic) {
                     ColorScheme lightScheme;
                     ColorScheme darkScheme;
-
                     if (lightDynamic != null && darkDynamic != null) {
                       lightScheme = lightDynamic.harmonized();
                       lightCustomColors =
                           lightCustomColors.harmonized(lightScheme);
-
-                      // Repeat for the dark color scheme.
                       darkScheme = darkDynamic.harmonized();
                       darkCustomColors =
                           darkCustomColors.harmonized(darkScheme);
                     } else {
-                      // Otherwise, use fallback schemes.
                       lightScheme = lightColorScheme;
                       darkScheme = darkColorScheme;
                     }
-
                     return MaterialApp.router(
                       routeInformationProvider: context
                           .read<AppRoute>()

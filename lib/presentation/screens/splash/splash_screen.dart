@@ -10,7 +10,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:tray_manager/tray_manager.dart';
+import 'package:system_tray/system_tray.dart';
 
 import '../../../core/app_route.dart';
 import '../../../core/cubits/application_cubit.dart';
@@ -38,28 +38,11 @@ class SplashScreen extends StatelessWidget {
         appName: GetIt.I<PackageInfo>().appName,
         appPath: Platform.resolvedExecutable,
       );
+
       await GetIt.I<ApplicationCubit>().checkLaunchAtStartup();
-      await trayManager.setIcon(
-        Platform.isWindows
-            ? 'assets/images/tray_icon.ico'
-            : 'assets/images/tray_icon.png',
-      );
-      final menu = Menu(
-        items: [
-          MenuItem(
-            key: 'show_window',
-            // ignore: use_build_context_synchronously
-            label: AppLocalizations.of(context)!.showWindow,
-          ),
-          MenuItem.separator(),
-          MenuItem(
-            key: 'exit_app',
-            // ignore: use_build_context_synchronously
-            label: AppLocalizations.of(context)!.exitApp,
-          ),
-        ],
-      );
-      await trayManager.setContextMenu(menu);
+
+      // ignore: use_build_context_synchronously
+      await _initSystemTray(context);
     }
 
     FlutterNativeSplash.remove();
@@ -80,5 +63,37 @@ class SplashScreen extends StatelessWidget {
         style: Theme.of(context).textTheme.headlineLarge,
       )),
     );
+  }
+
+  Future<void> _initSystemTray(BuildContext context) async {
+    final path = Platform.isWindows
+        ? 'assets/images/launch_icon.ico'
+        : 'assets/images/launch_icon.png';
+
+    final appWindow = AppWindow();
+    final systemTray = SystemTray();
+    await systemTray.initSystemTray(
+      title: AppLocalizations.of(context)!.exitApp,
+      iconPath: path,
+    );
+    final Menu menu = Menu();
+    await menu.buildFrom([
+      MenuItemLabel(
+          // ignore: use_build_context_synchronously
+          label: AppLocalizations.of(context)!.showWindow,
+          onClicked: (menuItem) => appWindow.show()),
+      MenuItemLabel(
+          // ignore: use_build_context_synchronously
+          label: AppLocalizations.of(context)!.exitApp,
+          onClicked: (menuItem) => appWindow.close()),
+    ]);
+    await systemTray.setContextMenu(menu);
+    systemTray.registerSystemTrayEventHandler((eventName) {
+      if (eventName == kSystemTrayEventClick) {
+        Platform.isWindows ? appWindow.show() : systemTray.popUpContextMenu();
+      } else if (eventName == kSystemTrayEventRightClick) {
+        Platform.isWindows ? systemTray.popUpContextMenu() : appWindow.show();
+      }
+    });
   }
 }

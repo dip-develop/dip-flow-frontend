@@ -48,6 +48,11 @@ class SettingsScreen extends StatelessWidget {
                     '${GetIt.I<PackageInfo>().version} (${GetIt.I<PackageInfo>().buildNumber})'),
                 onTap: () => showAboutDialog(
                     context: context,
+                    applicationIcon: Image.asset(
+                      'assets/images/launch_icon.png',
+                      width: 128.0,
+                      height: 128.0,
+                    ),
                     applicationVersion:
                         '${GetIt.I<PackageInfo>().version} (${GetIt.I<PackageInfo>().buildNumber})')),
           ],

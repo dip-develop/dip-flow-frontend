@@ -139,9 +139,9 @@ class AuthUseCaseImpl implements AuthUseCase {
     final payload = jwt.payload;
     if (payload is! Map) return null;
     if (!payload.containsKey('exp')) return null;
-    final dateExpired = DateTime.fromMillisecondsSinceEpoch(
-        payload['exp'] * 1000,
-        isUtc: false);
+    final dateExpired =
+        DateTime.fromMillisecondsSinceEpoch(payload['exp'] * 1000, isUtc: false)
+            .add(const Duration(seconds: -1));
     return dateExpired.difference(DateTime.now().toUtc()) > Duration.zero
         ? jwt
         : null;

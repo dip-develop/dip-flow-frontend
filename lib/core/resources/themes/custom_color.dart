@@ -1,4 +1,3 @@
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
 const customcolor1 = Color(0xFF4A154B);
@@ -19,10 +18,6 @@ CustomColors darkCustomColors = const CustomColors(
   onCustomcolor1Container: Color(0xFFFFD6F8),
 );
 
-/// Defines a set of custom colors, each comprised of 4 complementary tones.
-///
-/// See also:
-///   * <https://m3.material.io/styles/color/the-color-system/custom-colors>
 @immutable
 class CustomColors extends ThemeExtension<CustomColors> {
   const CustomColors({
@@ -75,11 +70,6 @@ class CustomColors extends ThemeExtension<CustomColors> {
     );
   }
 
-  /// Returns an instance of [CustomColors] in which the following custom
-  /// colors are harmonized with [dynamic]'s [ColorScheme.primary].
-  ///
-  /// See also:
-  ///   * <https://m3.material.io/styles/color/the-color-system/custom-colors#harmonization>
   CustomColors harmonized(ColorScheme dynamic) {
     return copyWith();
   }
