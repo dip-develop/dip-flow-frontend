@@ -84,9 +84,10 @@ class ApplicationCubit extends Cubit<ApplicationState> {
         emit(ExceptionOccurred(state, exception));
       }
     } else if (exception is AuthException) {
-      auth(AuthState.unauthorized);
       if (exception.reason != AuthReasonException.needAuth) {
         emit(ExceptionOccurred(state, exception));
+      } else {
+        auth(AuthState.unauthorized);
       }
     } else if (exception is Exception) {
       debugPrint(onError.toString());

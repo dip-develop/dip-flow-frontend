@@ -1,11 +1,14 @@
+import 'package:collection/collection.dart';
 import 'package:data_table_2/data_table_2.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/cubits/timer_cubit.dart';
+import '../../../domain/usecases/usecases.dart';
 import 'cubit/time_tracking_cubit.dart';
 
 class TimeTrackingScreen extends StatefulWidget {
@@ -41,8 +44,10 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                         runAlignment: WrapAlignment.center,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         spacing: 8.0,
+                        runSpacing: 8.0,
+                        verticalDirection: VerticalDirection.up,
                         children: [
-                          if (state.filter.start == null ||
+                          if (state.filter.start == null &&
                               state.filter.end == null)
                             IconButton(
                                 onPressed: () {
@@ -82,26 +87,50 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                 icon: const Icon(Icons.date_range),
                                 tooltip: state.filter.start != null &&
                                         state.filter.end != null
-                                    ? '${DateFormat.yMd().format(state.filter.start!)} - ${DateFormat.yMd().format(state.filter.end!)}'
-                                    : AppLocalizations.of(context)!.dateRange),
-                          if (state.filter.start != null &&
+                                    ? AppLocalizations.of(context)!
+                                        .dateRangeFormat(state.filter.start!,
+                                            state.filter.end!)
+                                    : state.filter.start != null
+                                        ? AppLocalizations.of(context)!
+                                            .dateRangeAfter(state.filter.start!)
+                                        : state.filter.end != null
+                                            ? AppLocalizations.of(context)!
+                                                .dateRangeBefore(
+                                                    state.filter.end!)
+                                            : AppLocalizations.of(context)!
+                                                .dateRange),
+                          if (state.filter.start != null ||
                               state.filter.end != null)
                             Chip(
+                              padding: const EdgeInsets.all(14.0),
                               avatar: const Icon(Icons.date_range),
-                              label: Text(
-                                  '${DateFormat.yMd().format(state.filter.start!)} - ${DateFormat.yMd().format(state.filter.end!)}'),
+                              label: Text(state.filter.start != null &&
+                                      state.filter.end != null
+                                  ? AppLocalizations.of(context)!
+                                      .dateRangeFormat(state.filter.start!,
+                                          state.filter.end!)
+                                  : state.filter.start != null
+                                      ? AppLocalizations.of(context)!
+                                          .dateRangeAfter(state.filter.start!)
+                                      : state.filter.end != null
+                                          ? AppLocalizations.of(context)!
+                                              .dateRangeBefore(
+                                                  state.filter.end!)
+                                          : AppLocalizations.of(context)!
+                                              .dateRange),
                               onDeleted: () {
                                 context.read<TimeTrackingCubit>().loadData(
                                       filter: state.filter.clear(
                                         start: true,
                                         end: true,
                                       ),
+                                      clean: true,
                                     );
                               },
                             ),
                           ConstrainedBox(
                               constraints:
-                                  const BoxConstraints(maxWidth: 220.0),
+                                  const BoxConstraints(maxWidth: 400.0),
                               child: TextField(
                                 textInputAction: TextInputAction.search,
                                 decoration: InputDecoration(
@@ -142,22 +171,29 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                         horizontalMargin: 0.0,
                         checkboxHorizontalMargin: 0.0,
                         fixedTopRows: 1,
+                        fixedLeftColumns: 1,
                         columnSpacing: 0.0,
                         bottomMargin: 0.0,
                         showBottomBorder: true,
-                        dataRowHeight: 72.0,
+                        dataRowHeight: 56.0,
                         minWidth: 600.0,
                         columns: <DataColumn2>[
                           DataColumn2(
                             fixedWidth: 64.0,
-                            label: Text(
-                              AppLocalizations.of(context)!.status,
+                            label: Center(
+                              child: Text(
+                                AppLocalizations.of(context)!.status,
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
                           DataColumn2(
                             fixedWidth: 84.0,
-                            label: Text(
-                              AppLocalizations.of(context)!.duration,
+                            label: Center(
+                              child: Text(
+                                AppLocalizations.of(context)!.duration,
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
                           DataColumn2(
@@ -180,92 +216,210 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                         rows: List<DataRow2>.generate(
                             state.timeTracks.items.length, (index) {
                           final timeTrack = state.timeTracks.items[index];
-                          return DataRow2(
-                              selected: _expandedTimeTrackId == timeTrack.id,
-                              specificRowHeight:
-                                  _expandedTimeTrackId == timeTrack.id
-                                      ? 200
-                                      : null,
-                              onTap: () {
-                                setState(() {
-                                  if (_expandedTimeTrackId == timeTrack.id) {
-                                    _expandedTimeTrackId = null;
-                                  } else {
-                                    _expandedTimeTrackId = timeTrack.id;
-                                  }
-                                });
-                              },
+                          final isExpanded =
+                              _expandedTimeTrackId == timeTrack.id;
+                          final finishedTracks = timeTrack.tracks
+                              .where((p0) => p0.isFinished)
+                              .toList();
+                          return DataRow2.byIndex(
+                              index: index,
+                              selected: isExpanded,
+                              specificRowHeight: isExpanded ? 400 : null,
                               cells: <DataCell>[
                                 DataCell(
-                                  IconButton(
-                                    onPressed: () => timeTrack.isStarted
-                                        ? context
-                                            .read<TimeTrackingCubit>()
-                                            .stopTrack(timeTrack)
-                                        : context
-                                            .read<TimeTrackingCubit>()
-                                            .startTrack(timeTrack),
-                                    icon: Icon(
-                                      timeTrack.isStarted
-                                          ? Icons.stop
-                                          : Icons.play_arrow,
-                                      color: timeTrack.isStarted
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                          : null,
-                                      size: 32.0,
+                                  Center(
+                                    child: IconButton(
+                                      onPressed: () => timeTrack.isStarted
+                                          ? context
+                                              .read<TimeTrackingCubit>()
+                                              .stopTrack(timeTrack)
+                                          : context
+                                              .read<TimeTrackingCubit>()
+                                              .startTrack(timeTrack),
+                                      icon: Icon(
+                                        timeTrack.isStarted
+                                            ? Icons.stop
+                                            : Icons.play_arrow,
+                                        color: timeTrack.isStarted
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                            : null,
+                                        size: 32.0,
+                                      ),
                                     ),
                                   ),
                                 ),
                                 DataCell(
-                                  Text(
-                                    prettyDuration(timeTrack.duration,
-                                        spacer: ' ',
-                                        delimiter: ' ',
-                                        conjunction: ' ',
-                                        tersity: DurationTersity.minute,
-                                        upperTersity: DurationTersity.hour,
-                                        abbreviated: true),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .labelMedium
-                                        ?.copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary),
-                                  ),
-                                ),
-                                DataCell(
-                                  Text(
-                                      timeTrack.taskId != null
-                                          ? '#${timeTrack.taskId}'
-                                          : '',
+                                  onTap: () {
+                                    setState(() {
+                                      if (isExpanded) {
+                                        _expandedTimeTrackId = null;
+                                      } else {
+                                        _expandedTimeTrackId = timeTrack.id;
+                                      }
+                                    });
+                                  },
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      prettyDuration(timeTrack.duration,
+                                          spacer: ' ',
+                                          delimiter: ' ',
+                                          conjunction: ' ',
+                                          tersity: DurationTersity.minute,
+                                          upperTersity: DurationTersity.hour,
+                                          abbreviated: true),
                                       style: Theme.of(context)
                                           .textTheme
                                           .labelMedium
                                           ?.copyWith(
                                               color: Theme.of(context)
                                                   .colorScheme
-                                                  .primary)),
+                                                  .secondary),
+                                    ),
+                                  ),
                                 ),
                                 DataCell(
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(timeTrack.title ?? '',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyMedium,
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis),
-                                      if (timeTrack.description != null)
-                                        Text(timeTrack.description ?? '',
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis)
-                                    ],
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                        timeTrack.taskId != null
+                                            ? '#${timeTrack.taskId}'
+                                            : '',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelMedium
+                                            ?.copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary)),
+                                  ),
+                                ),
+                                DataCell(
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const SizedBox(
+                                          height: 8.0,
+                                        ),
+                                        Text(timeTrack.title ?? '',
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyMedium,
+                                            maxLines: 3,
+                                            overflow: TextOverflow.ellipsis),
+                                        if (timeTrack.description != null)
+                                          Text(timeTrack.description ?? '',
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis),
+                                        if (isExpanded)
+                                          const SizedBox(
+                                            height: 16.0,
+                                          ),
+                                        if (isExpanded) const Divider(),
+                                        if (isExpanded)
+                                          Expanded(
+                                            child: ListView.builder(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 16.0),
+                                              scrollDirection: Axis.vertical,
+                                              shrinkWrap: true,
+                                              itemBuilder: (context, index) {
+                                                final track =
+                                                    finishedTracks[index];
+                                                return ListTile(
+                                                  title: Text(
+                                                    prettyDuration(
+                                                        track.duration,
+                                                        spacer: ' ',
+                                                        delimiter: ' ',
+                                                        conjunction: ' ',
+                                                        tersity: DurationTersity
+                                                            .minute,
+                                                        upperTersity:
+                                                            DurationTersity
+                                                                .hour,
+                                                        abbreviated: true),
+                                                    style: TextStyle(
+                                                        color: Theme.of(context)
+                                                            .colorScheme
+                                                            .primary),
+                                                  ),
+                                                  subtitle: RichText(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    maxLines:
+                                                        isExpanded ? 3 : 1,
+                                                    text: TextSpan(
+                                                        style: Theme.of(context)
+                                                            .textTheme
+                                                            .bodySmall,
+                                                        children: [
+                                                          TextSpan(
+                                                            text: DateFormat(
+                                                                    'y/M/d ')
+                                                                .format(track
+                                                                    .start),
+                                                          ),
+                                                          TextSpan(
+                                                              text: DateFormat(
+                                                                      'H:m')
+                                                                  .format(track
+                                                                      .start),
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .labelMedium
+                                                                  ?.copyWith(
+                                                                      color: Theme.of(
+                                                                              context)
+                                                                          .colorScheme
+                                                                          .secondary)),
+                                                          const TextSpan(
+                                                            text: ' - ',
+                                                          ),
+                                                          TextSpan(
+                                                            text: DateFormat(
+                                                                    'y/M/d ')
+                                                                .format(
+                                                                    track.end!),
+                                                          ),
+                                                          TextSpan(
+                                                              text: DateFormat(
+                                                                      'H:m')
+                                                                  .format(track
+                                                                      .end!),
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .labelMedium
+                                                                  ?.copyWith(
+                                                                      color: Theme.of(
+                                                                              context)
+                                                                          .colorScheme
+                                                                          .secondary)),
+                                                        ]),
+                                                  ),
+                                                  trailing: IconButton(
+                                                      onPressed: () => GetIt.I<
+                                                              TimeTrackingUseCase>()
+                                                          .deleteTrack(
+                                                              timeTrack.id!,
+                                                              track.id!),
+                                                      icon: const Icon(
+                                                          Icons.delete)),
+                                                );
+                                              },
+                                              itemCount: finishedTracks.length,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 DataCell(
@@ -297,6 +451,22 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                               ]);
                         }),
                       ),
+                    ),
+                    ListTile(
+                      selected: true,
+                      leading: const Icon(Icons.av_timer),
+                      title: Text(AppLocalizations.of(context)!.total(
+                          prettyDuration(
+                              Duration(
+                                  milliseconds: state.timeTracks.items
+                                      .map((e) => e.duration.inMilliseconds)
+                                      .sum),
+                              spacer: ' ',
+                              delimiter: ' ',
+                              conjunction: ' ',
+                              tersity: DurationTersity.minute,
+                              upperTersity: DurationTersity.hour,
+                              abbreviated: true))),
                     ),
                   ],
                 ),

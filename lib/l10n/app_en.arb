@@ -17,12 +17,12 @@
   "description": "Description",
   "dashboard": "Dashboard",
   "timeTracking": "Time Tracking",
-  "tasks":"Tasks",
-  "projects":"Projects",
+  "tasks": "Tasks",
+  "projects": "Projects",
   "teams": "Teams",
-  "hr":"HR",
-  "recruiter":"Recruiter",
-  "reports":"Reports",
+  "hr": "HR",
+  "recruiter": "Recruiter",
+  "reports": "Reports",
   "settings": "Settings",
   "profile": "Profile",
   "theme": "Theme",
@@ -30,8 +30,8 @@
   "showWindow": "Show Window",
   "exitApp": "Exit App",
   "launchAtStartup": "Launch at startup",
-  "status":"Status",
-  "duration":"Duration",
+  "status": "Status",
+  "duration": "Duration",
   "passwordResetLink": "Enter Your Email and we will send send you a password reset link",
   "passwordRestore": "Password Restore",
   "changePassword": "Change Password",
@@ -44,5 +44,49 @@
   "search": "Search",
   "version": "Version",
   "support": "Support",
-  "errorConnection": "Problems with connection. Check the internet."
+  "errorConnection": "Problems with connection. Check the internet.",
+  "total": "Total: {value}",
+  "@total": {
+    "description": "A total count",
+    "placeholders": {
+      "value": {
+        "type": "String",
+        "example": "100"
+      }
+    }
+  },
+  "dateRangeFormat": "{start} - {end}",
+  "@dateRangeFormat": {
+    "description": "A message with a date parameter",
+    "placeholders": {
+      "start": {
+        "type": "DateTime",
+        "format": "yMd"
+      },
+      "end": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "dateRangeBefore": "... - {end}",
+  "@dateRangeBefore": {
+    "description": "A message with a date parameter",
+    "placeholders": {
+      "end": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  },
+  "dateRangeAfter": "{start} - ...",
+  "@dateRangeAfter": {
+    "description": "A message with a date parameter",
+    "placeholders": {
+      "start": {
+        "type": "DateTime",
+        "format": "yMd"
+      }
+    }
+  }
 }

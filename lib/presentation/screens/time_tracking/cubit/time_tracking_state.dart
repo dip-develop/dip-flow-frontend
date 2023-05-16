@@ -10,7 +10,17 @@ abstract class TimeTrackingState {
 }
 
 class TimeTrackingInitial extends TimeTrackingState {
-  TimeTrackingInitial() : super(PaginationModel<TimeTrackingModel>.empty());
+  TimeTrackingInitial()
+      : super(PaginationModel<TimeTrackingModel>.empty(),
+            filter: FilterTimeTracks(
+              start: DateTime(DateTime.now().year, DateTime.now().month,
+                      DateTime.now().day)
+                  .subtract(Duration(
+                      days: DateTime(DateTime.now().year, DateTime.now().month,
+                                  DateTime.now().day)
+                              .weekday -
+                          1)),
+            ));
 }
 
 class TimeTracksUpdated extends TimeTrackingState {

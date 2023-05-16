@@ -84,7 +84,9 @@ class _NavigationWidgetState extends State<NavigationWidget> {
         ]),
         leadingExtendedNavRail: Breakpoints.mediumAndUp.isActive(context)
             ? const UserButtonWidget()
-            : null,
+            : const SizedBox(
+                height: 16.0,
+              ),
         leadingUnextendedNavRail: Breakpoints.mediumAndUp.isActive(context)
             ? const UserButtonWidget()
             : null,
@@ -124,6 +126,10 @@ class _NavigationWidgetState extends State<NavigationWidget> {
           setState(() {
             _selectedTab = index;
           });
+
+          /* if (Scaffold .of(context).isDrawerOpen) {
+            Scaffold.of(context).closeDrawer();
+          } */
         },
         drawerBreakpoint: Breakpoints.small,
         destinations: <NavigationDestination>[

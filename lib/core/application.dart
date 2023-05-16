@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,7 +7,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mixpanel_analytics/mixpanel_analytics.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 
 import '../domain/models/models.dart';
 import '../presentation/widgets/screen_builder.dart';
@@ -87,11 +87,16 @@ class Application extends StatelessWidget {
                         useMaterial3: true,
                         colorScheme: lightScheme,
                         extensions: [lightCustomColors],
+                        navigationRailTheme: NavigationRailThemeData(
+                          backgroundColor: lightScheme.onInverseSurface,
+                        ),
                       ),
                       darkTheme: ThemeData(
                         useMaterial3: true,
                         colorScheme: darkScheme,
                         extensions: [darkCustomColors],
+                        navigationRailTheme: NavigationRailThemeData(
+                            backgroundColor: darkScheme.onInverseSurface),
                       ),
                       themeMode: state.themeMode,
                       localizationsDelegates:

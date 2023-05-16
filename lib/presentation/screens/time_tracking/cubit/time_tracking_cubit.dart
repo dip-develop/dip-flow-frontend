@@ -12,25 +12,22 @@ class TimeTrackingCubit extends Cubit<TimeTrackingState> {
 
   TimeTrackingCubit() : super(TimeTrackingInitial());
 
-  void loadData({
-    int? limit,
-    int? offset,
-    FilterTimeTracks? filter,
-  }) {
+  void loadData(
+      {int? limit, int? offset, FilterTimeTracks? filter, bool clean = false}) {
     _timeTrackingUseCase
         .getTimeTracks(
-            limit: limit,
-            offset: offset,
-            search: filter?.search,
-            start: filter?.start,
-            end: filter?.end)
+          limit: limit,
+          offset: offset,
+          search: filter?.search ?? (!clean ? state.filter.search : null),
+          start: filter?.start ?? (!clean ? state.filter.start : null),
+          end: filter?.end ?? (!clean ? state.filter.end : null),
+        )
         .then((value) => emit(TimeTracksUpdated(
             state.timeTracks.from(value),
             FilterTimeTracks(
-              search: filter?.search,
-              start: filter?.start,
-              end: filter?.end,
-            ))));
+                search: filter?.search ?? (!clean ? state.filter.search : null),
+                start: filter?.start ?? (!clean ? state.filter.start : null),
+                end: filter?.end ?? (!clean ? state.filter.end : null)))));
   }
 
   void updateTimeTracking(TimeTrackingModel timeTrack) {
