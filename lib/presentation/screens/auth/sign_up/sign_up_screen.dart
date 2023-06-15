@@ -45,7 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (state.exception != null)
+                      if (state.exception is AuthException)
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(

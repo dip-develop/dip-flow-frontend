@@ -287,7 +287,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                       color: timeTrack.isStarted
                                           ? Theme.of(context)
                                               .colorScheme
-                                              .secondary
+                                              .tertiary
                                           : null,
                                       size: 32.0,
                                     ),

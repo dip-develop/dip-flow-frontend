@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:injectable/injectable.dart';
 
 import '../../core/cubits/content_changed_cubit.dart';
@@ -32,10 +34,10 @@ class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
       this._api, this._authUseCase, this._contentCubit);
 
   @override
-  Future<TimeTrackingModel> getTimeTrack(int id) => _prepare
-      .then((token) => _api.getTimeTrack(token, id))
-      .catchError(exception)
-      .whenComplete(loadingEnd);
+  Future<TimeTrackingModel> getTimeTrack(int id) => getApiRequest(
+        _prepare.then((token) => _api.getTimeTrack(token, getDeviceId(), id)),
+        _onRetry,
+      );
 
   @override
   Future<PaginationModel<TimeTrackingModel>> getTimeTracks({
@@ -45,80 +47,92 @@ class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
     DateTime? start,
     DateTime? end,
   }) =>
-      _prepare
-          .then((token) => _api.getTimeTracks(
-                token,
-                limit: limit,
-                offset: offset,
-                search: search,
-                start: start,
-                end: end,
-              ))
-          .catchError(exception)
-          .whenComplete(loadingEnd);
+      getApiRequest(
+        _prepare.then((token) => _api.getTimeTracks(
+              token,
+              getDeviceId(),
+              limit: limit,
+              offset: offset,
+              search: search,
+              start: start,
+              end: end,
+            )),
+        _onRetry,
+      );
 
   @override
   Future<TimeTrackingModel> addTimeTrack(TimeTrackingModel timeTrack) =>
-      _prepare
-          .then((token) => _api.addTimeTrack(token, timeTrack))
-          .then((value) {
-            _contentCubit.timeTracksChanged();
-            return value;
-          })
-          .catchError(exception)
-          .whenComplete(loadingEnd);
+      getApiRequest(
+        _prepare
+            .then((token) => _api.addTimeTrack(token, getDeviceId(), timeTrack))
+            .then((value) {
+          _contentCubit.timeTracksChanged();
+          return value;
+        }),
+        _onRetry,
+      );
 
   @override
   Future<TimeTrackingModel> updateTimeTrack(TimeTrackingModel timeTrack) =>
-      _prepare
-          .then((token) => _api.updateTimeTrack(token, timeTrack))
-          .then((value) {
-            _contentCubit.timeTrackChanged(value);
-            return value;
-          })
-          .catchError(exception)
-          .whenComplete(loadingEnd);
+      getApiRequest(
+        _prepare
+            .then((token) =>
+                _api.updateTimeTrack(token, getDeviceId(), timeTrack))
+            .then((value) {
+          _contentCubit.timeTrackChanged(value);
+          return value;
+        }),
+        _onRetry,
+      );
 
   @override
-  Future<void> deleteTimeTrack(int id) => _prepare
-      .then((token) => _api.deleteTimeTrack(token, id))
-      .then((_) {
-        _contentCubit.timeTracksChanged();
-      })
-      .catchError(exception)
-      .whenComplete(loadingEnd);
+  Future<void> deleteTimeTrack(int id) => getApiRequest(
+        _prepare
+            .then((token) => _api.deleteTimeTrack(token, getDeviceId(), id))
+            .then((_) {
+          _contentCubit.timeTracksChanged();
+        }),
+        _onRetry,
+      );
 
   @override
-  Future<TimeTrackingModel> startTrack(int id) => _prepare
-      .then((token) => _api.startTrack(token, id))
-      .then((value) {
-        _contentCubit.timeTrackChanged(value);
-        return value;
-      })
-      .catchError(exception)
-      .whenComplete(loadingEnd);
+  Future<TimeTrackingModel> startTrack(int id) => getApiRequest(
+        _prepare
+            .then((token) => _api.startTrack(token, getDeviceId(), id))
+            .then((value) {
+          _contentCubit.timeTrackChanged(value);
+          return value;
+        }),
+        _onRetry,
+      );
 
   @override
-  Future<TimeTrackingModel> stopTrack(int id) => _prepare
-      .then((token) => _api.stopTrack(token, id))
-      .then((value) {
-        _contentCubit.timeTrackChanged(value);
-        return value;
-      })
-      .catchError(exception)
-      .whenComplete(loadingEnd);
+  Future<TimeTrackingModel> stopTrack(int id) => getApiRequest(
+        _prepare
+            .then((token) => _api.stopTrack(token, getDeviceId(), id))
+            .then((value) {
+          _contentCubit.timeTrackChanged(value);
+          return value;
+        }),
+        _onRetry,
+      );
 
   @override
   Future<TimeTrackingModel> deleteTrack(int timeTrackId, int trackId) =>
-      _prepare
-          .then((token) => _api.deleteTrack(token, timeTrackId, trackId))
-          .then((value) {
-            _contentCubit.timeTrackChanged(value);
-            return value;
-          })
-          .catchError(exception)
-          .whenComplete(loadingEnd);
+      getApiRequest(
+        _prepare
+            .then((token) =>
+                _api.deleteTrack(token, getDeviceId(), timeTrackId, trackId))
+            .then((value) {
+          _contentCubit.timeTrackChanged(value);
+          return value;
+        }),
+        _onRetry,
+      );
 
   Future<String> get _prepare => checkConnectionFuture
-      .then((_) => loadingStart.then((value) => _authUseCase.getToken()));
+      .then((_) => loadingStart.then((value) => _authUseCase.getAPIToken()));
+
+  FutureOr<void> _onRetry(Exception exception) => _authUseCase.getToken().then(
+      (token) => _authUseCase.checkAuth(token).then((_) => Future.value()));
 }

@@ -18,6 +18,9 @@ class AuthException extends AppException {
   factory AuthException.wrongAuthData() => const AuthException(
       'Authorization data is not correct', AuthReasonException.needAuth);
 
+  factory AuthException.authInProgress() => const AuthException(
+      'Authorization in progress', AuthReasonException.inProgress);
+
   factory AuthException.undefined() => const AuthException(
       'Undefined authorization error', AuthReasonException.undefined);
 
@@ -45,4 +48,4 @@ class AuthException extends AppException {
   int get hashCode => [message, reason].join().hashCode;
 }
 
-enum AuthReasonException { undefined, invalidData, needAuth }
+enum AuthReasonException { undefined, invalidData, needAuth, inProgress }

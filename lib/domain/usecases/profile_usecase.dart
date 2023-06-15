@@ -19,23 +19,29 @@ class ProfileUseCaseImpl implements ProfileUseCase {
 
   @override
   Future<ProfileModel> getProfile() => _prepare
-      .then((token) => _api.getProfile(token))
+      .then((token) => _api.getProfile(
+            token,
+            getDeviceId(),
+          ))
       .catchError(exception)
       .whenComplete(loadingEnd);
 
   @override
   Future<void> updateProfile(ProfileModel profile) => _prepare
-      .then((token) => _api.updateProfile(token, profile))
+      .then((token) => _api.updateProfile(token, getDeviceId(), profile))
       .catchError(exception)
       .whenComplete(loadingEnd);
 
   @override
   Future<void> deleteProfile() => _prepare
-      .then((token) => _api.deleteProfile(token))
+      .then((token) => _api.deleteProfile(
+            token,
+            getDeviceId(),
+          ))
       .catchError(exception)
       .whenComplete(() => _authUseCase.signOut())
       .whenComplete(loadingEnd);
 
   Future<String> get _prepare => checkConnectionFuture
-      .then((_) => loadingStart.then((value) => _authUseCase.getToken()));
+      .then((_) => loadingStart.then((value) => _authUseCase.getAPIToken()));
 }

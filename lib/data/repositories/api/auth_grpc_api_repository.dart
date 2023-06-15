@@ -16,38 +16,53 @@ class AuthGRPCApiRepository
   const AuthGRPCApiRepository(this._channel);
 
   @override
-  Future<TokenModel> signInWithEmail(
-          {required String email, required String password}) =>
-      _client()
+  Future<TokenModel> signInWithEmail({
+    required String email,
+    required String password,
+    required String deviceId,
+  }) =>
+      _client(deviceId: deviceId)
           .signInByEmail(SignInEmailRequest(email: email, password: password))
           .then((auth) => TokenEntity.fromGrpc(auth).toModel())
           .catchError(checkException<TokenModel>);
 
   @override
-  Future<TokenModel> signUpWithEmail(
-          {required String email,
-          required String password,
-          required String name}) =>
-      _client()
+  Future<TokenModel> signUpWithEmail({
+    required String email,
+    required String password,
+    required String name,
+    required String deviceId,
+  }) =>
+      _client(deviceId: deviceId)
           .signUpByEmail(
               SignUpEmailRequest(email: email, password: password, name: name))
           .then((auth) => TokenEntity.fromGrpc(auth).toModel())
           .catchError(checkException<TokenModel>);
 
   @override
-  Future<TokenModel> refreshToken(String token) => _client()
-      .refreshToken(RefreshTokenRequest(token: token))
-      .then((auth) => TokenEntity.fromGrpc(auth).toModel())
-      .catchError(checkException<TokenModel>);
+  Future<TokenModel> refreshToken(
+    String token,
+    String deviceId,
+  ) =>
+      _client(deviceId: deviceId)
+          .refreshToken(RefreshTokenRequest(token: token))
+          .then((auth) => TokenEntity.fromGrpc(auth).toModel())
+          .catchError(checkException<TokenModel>);
 
   @override
-  Future<void> restorePassword(String token, String email) => _client(token)
-      .restorePassword(RestorePasswordRequest(email: email))
-      .catchError(checkException<TokenModel>);
+  Future<void> restorePassword(
+    String token,
+    String email,
+    String deviceId,
+  ) =>
+      _client(token: token, deviceId: deviceId)
+          .restorePassword(RestorePasswordRequest(email: email))
+          .catchError(checkException<TokenModel>);
 
-  AuthGateServiceClient _client([String? token]) =>
+  AuthGateServiceClient _client({String? token, String? deviceId}) =>
       AuthGateServiceClient(_channel,
-          options: CallOptions(
-              timeout: const Duration(seconds: 4),
-              metadata: token != null ? {'authorization': token} : null));
+          options: CallOptions(timeout: const Duration(seconds: 4), metadata: {
+            if (token != null) 'authorization': token,
+            if (deviceId != null) 'deviceId': deviceId,
+          }));
 }

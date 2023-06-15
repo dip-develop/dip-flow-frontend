@@ -175,11 +175,11 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                         columnSpacing: 0.0,
                         bottomMargin: 0.0,
                         showBottomBorder: true,
-                        dataRowHeight: 56.0,
+                        dataRowHeight: 58.0,
                         minWidth: 600.0,
                         columns: <DataColumn2>[
                           DataColumn2(
-                            fixedWidth: 64.0,
+                            fixedWidth: 54.0,
                             label: Center(
                               child: Text(
                                 AppLocalizations.of(context)!.status,
@@ -188,7 +188,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                             ),
                           ),
                           DataColumn2(
-                            fixedWidth: 84.0,
+                            fixedWidth: 92.0,
                             label: Center(
                               child: Text(
                                 AppLocalizations.of(context)!.duration,
@@ -198,8 +198,10 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                           ),
                           DataColumn2(
                             fixedWidth: 100.0,
-                            label: Text(
-                              AppLocalizations.of(context)!.task,
+                            label: Center(
+                              child: Text(
+                                AppLocalizations.of(context)!.task,
+                              ),
                             ),
                           ),
                           DataColumn2(
@@ -243,7 +245,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                         color: timeTrack.isStarted
                                             ? Theme.of(context)
                                                 .colorScheme
-                                                .primary
+                                                .tertiary
                                             : null,
                                         size: 32.0,
                                       ),
@@ -260,8 +262,17 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                       }
                                     });
                                   },
-                                  Padding(
+                                  Container(
                                     padding: const EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                        border: timeTrack.isStarted
+                                            ? Border.all(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .tertiaryContainer,
+                                              )
+                                            : null),
+                                    alignment: Alignment.center,
                                     child: Text(
                                       prettyDuration(timeTrack.duration,
                                           spacer: ' ',
@@ -281,8 +292,9 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                   ),
                                 ),
                                 DataCell(
-                                  Padding(
+                                  Container(
                                     padding: const EdgeInsets.all(8.0),
+                                    alignment: Alignment.center,
                                     child: Text(
                                         timeTrack.taskId != null
                                             ? '#${timeTrack.taskId}'
@@ -297,15 +309,28 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                   ),
                                 ),
                                 DataCell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (isExpanded) {
+                                        _expandedTimeTrackId = null;
+                                      } else {
+                                        _expandedTimeTrackId = timeTrack.id;
+                                      }
+                                    });
+                                  },
                                   Padding(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        const SizedBox(
-                                          height: 8.0,
-                                        ),
+                                        if (isExpanded)
+                                          const SizedBox(
+                                            height: 9.0,
+                                          ),
                                         Text(timeTrack.title ?? '',
                                             style: Theme.of(context)
                                                 .textTheme
@@ -318,7 +343,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                               overflow: TextOverflow.ellipsis),
                                         if (isExpanded)
                                           const SizedBox(
-                                            height: 16.0,
+                                            height: 9.0,
                                           ),
                                         if (isExpanded) const Divider(),
                                         if (isExpanded)

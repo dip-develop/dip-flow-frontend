@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../core/cubits/application_cubit.dart';
@@ -9,13 +12,16 @@ import 'usecases.dart';
 
 abstract class AuthUseCase {
   Future<bool> get isAuth;
-  Future<String> getToken();
+  Future<TokenModel?> getToken();
+  Future<String> getAPIToken();
   Future<void> signInWithEmail(
       {required String email, required String password});
   Future<void> signUpWithEmail(
       {required String email, required String password, required String name});
   Future<void> signOut();
   Future<void> restorePassword(String email);
+  Future<bool> checkAuth(TokenModel? token);
+  Future<bool> refreshToken(TokenModel? token);
 }
 
 @LazySingleton(as: AuthUseCase)
@@ -25,16 +31,28 @@ class AuthUseCaseImpl implements AuthUseCase {
   final EncryptedPreferencesRepository _encrypted;
   final ApplicationCubit _app;
 
-  const AuthUseCaseImpl(this._app, this._analytics, this._api, this._encrypted);
+  AuthUseCaseImpl(this._app, this._analytics, this._api, this._encrypted);
+
+  bool _isTokenRefreshProgress = false;
+
+  Future<void> _waitWhile() async {
+    while (_isTokenRefreshProgress) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+  }
+
+  @override
+  Future<TokenModel?> getToken() =>
+      _waitWhile().then((_) => _encrypted.readToken());
 
   @override
   Future<bool> get isAuth => loadingStart
-      .then((_) => _encrypted.readToken().then((token) => _checkAuth(token)))
+      .then((_) => getToken().then((token) => checkAuth(token)))
       .whenComplete(loadingEnd);
 
   @override
-  Future<String> getToken() =>
-      _encrypted.readToken().then((token) => _checkAuth(token).then((isValid) {
+  Future<String> getAPIToken() =>
+      getToken().then((token) => checkAuth(token).then((isValid) {
             if (!isValid) {
               throw AuthException.needAuth();
             }
@@ -42,13 +60,19 @@ class AuthUseCaseImpl implements AuthUseCase {
           }));
 
   @override
-  Future<void> signInWithEmail(
-          {required String email, required String password}) =>
+  Future<void> signInWithEmail({
+    required String email,
+    required String password,
+  }) =>
       checkConnectionFuture
           .then((_) => loadingStart
               .then((_) => _api
-                  .signInWithEmail(email: email, password: password)
-                  .then((token) => _checkAuth(token).then((isValid) {
+                  .signInWithEmail(
+                    email: email,
+                    password: password,
+                    deviceId: getDeviceId(),
+                  )
+                  .then((token) => checkAuth(token).then((isValid) {
                         if (isValid) {
                           _analytics
                               .logSignIn(method: 'email')
@@ -59,15 +83,21 @@ class AuthUseCaseImpl implements AuthUseCase {
           .whenComplete(loadingEnd);
 
   @override
-  Future<void> signUpWithEmail(
-          {required String email,
-          required String password,
-          required String name}) =>
+  Future<void> signUpWithEmail({
+    required String email,
+    required String password,
+    required String name,
+  }) =>
       checkConnectionFuture
           .then((_) => loadingStart
               .then((_) => _api
-                  .signUpWithEmail(email: email, password: password, name: name)
-                  .then((token) => _checkAuth(token).then((isValid) {
+                  .signUpWithEmail(
+                    email: email,
+                    password: password,
+                    name: name,
+                    deviceId: getDeviceId(),
+                  )
+                  .then((token) => checkAuth(token).then((isValid) {
                         if (isValid) {
                           _analytics
                               .logSignUp(method: 'email')
@@ -88,7 +118,8 @@ class AuthUseCaseImpl implements AuthUseCase {
 
   @override
   Future<void> restorePassword(String email) => checkConnectionFuture
-      .then((_) => _prepare.then((token) => _api.restorePassword(token, email)))
+      .then((_) => _prepare
+          .then((token) => _api.restorePassword(token, getDeviceId(), email)))
       .catchError(exception)
       .whenComplete(loadingEnd);
 
@@ -103,12 +134,14 @@ class AuthUseCaseImpl implements AuthUseCase {
     }
   }
 
-  Future<String> get _prepare => loadingStart.then((value) => getToken());
+  Future<String> get _prepare => loadingStart.then((value) => getAPIToken());
 
-  Future<bool> _checkAuth(TokenModel? token) {
-    if (token == null) return Future.value(false);
-    final jwt = _parseToken(token.accessToken);
-    if (jwt != null) {
+  @override
+  Future<bool> checkAuth(TokenModel? token) {
+    if (token == null) {
+      return Future.value(false);
+    }
+    if (_parseToken(token.accessToken) != null) {
       _app.auth(AuthState.authorized);
       return _encrypted.writeToken(token).then((_) => true).whenComplete(() {
         final userId = _getUserId(token);
@@ -116,20 +149,41 @@ class AuthUseCaseImpl implements AuthUseCase {
           _analytics.updateUser(id: userId);
         }
       });
-    } else if (_parseToken(token.refreshToken) != null) {
+    } else {
+      return refreshToken(token).then((value) {
+        if (!value) {
+          _app.auth(AuthState.unauthorized);
+        }
+        return value;
+      }).catchError((onError) {
+        debugPrint(onError);
+        throw onError;
+      });
+    }
+  }
+
+  @override
+  Future<bool> refreshToken(TokenModel? token) async {
+    if (token == null || _parseToken(token.refreshToken) == null) {
+      return Future.value(false);
+    } else if (_isTokenRefreshProgress) {
+      return _waitWhile()
+          .then((_) => getToken().then((value) => checkAuth(token)));
+    } else {
+      _isTokenRefreshProgress = true;
       return checkConnectionFuture
-          .then((_) => _api
-              .refreshToken(token.refreshToken)
-              .then((value) => _checkAuth(value)))
+          .then((_) => _api.refreshToken(
+                token.refreshToken,
+                getDeviceId(),
+              ))
+          .then((value) => checkAuth(value))
           .catchError((onError) {
-        if (onError is AuthException) {
+        if (onError is AuthException &&
+            onError.reason == AuthReasonException.needAuth) {
           signOut();
         }
         return Future.value(false);
-      });
-    } else {
-      _app.auth(AuthState.unauthorized);
-      return Future.value(false);
+      }).whenComplete(() => _isTokenRefreshProgress = false);
     }
   }
 

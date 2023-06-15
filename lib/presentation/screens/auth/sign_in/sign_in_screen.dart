@@ -33,8 +33,7 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Center(
           child: BlocBuilder<ApplicationCubit, ApplicationState>(
             buildWhen: (previous, current) =>
-                current is ExceptionOccurred &&
-                current.exception is AuthException,
+                current is ExceptionOccurred && exception is AuthException,
             builder: (context, state) {
               return SingleChildScrollView(
                 child: Container(
@@ -44,7 +43,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (state.exception != null)
+                      if (state.exception is AuthException)
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(

@@ -17,14 +17,25 @@ class ProfileGRPCApiRepository
   const ProfileGRPCApiRepository(this._channel);
 
   @override
-  Future<ProfileModel> getProfile(String token) => _client(token)
-      .getProfile(Empty())
-      .then((p0) => ProfileEntity.fromGrpc(p0).toModel())
-      .catchError(checkException<ProfileModel>);
+  Future<ProfileModel> getProfile(
+    String token,
+    String deviceId,
+  ) =>
+      _client(
+        token: token,
+        deviceId: deviceId,
+      )
+          .getProfile(Empty())
+          .then((p0) => ProfileEntity.fromGrpc(p0).toModel())
+          .catchError(checkException<ProfileModel>);
 
   @override
-  Future<void> updateProfile(String token, ProfileModel profile) =>
-      _client(token)
+  Future<void> updateProfile(
+          String token, String deviceId, ProfileModel profile) =>
+      _client(
+        token: token,
+        deviceId: deviceId,
+      )
           .updateProfile(UserRequest(
               name: profile.name,
               price: profile.price,
@@ -32,13 +43,19 @@ class ProfileGRPCApiRepository
           .catchError(checkException<TokenModel>);
 
   @override
-  Future<void> deleteProfile(String token) => _client(token)
-      .deleteProfile(Empty())
-      .catchError(checkException<TokenModel>);
+  Future<void> deleteProfile(
+    String token,
+    String deviceId,
+  ) =>
+      _client(
+        token: token,
+        deviceId: deviceId,
+      ).deleteProfile(Empty()).catchError(checkException<TokenModel>);
 
-  ProfileGateServiceClient _client([String? token]) =>
+  ProfileGateServiceClient _client({String? token, String? deviceId}) =>
       ProfileGateServiceClient(_channel,
-          options: CallOptions(
-              timeout: const Duration(seconds: 4),
-              metadata: token != null ? {'authorization': token} : null));
+          options: CallOptions(timeout: const Duration(seconds: 4), metadata: {
+            if (token != null) 'authorization': token,
+            if (deviceId != null) 'deviceId': deviceId,
+          }));
 }

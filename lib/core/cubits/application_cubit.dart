@@ -2,7 +2,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:grpc/grpc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:launch_at_startup/launch_at_startup.dart';
 
@@ -76,17 +75,10 @@ class ApplicationCubit extends Cubit<ApplicationState> {
   dynamic exception([dynamic exception]) {
     if (exception == null) {
       emit(ExceptionOccurred(state));
-    } else if (exception is GrpcError) {
-      if (exception.code == StatusCode.unauthenticated) {
-        auth(AuthState.unauthorized);
-      } else if (exception.code == StatusCode.unavailable ||
-          exception.code == StatusCode.deadlineExceeded) {
-        emit(ExceptionOccurred(state, exception));
-      }
     } else if (exception is AuthException) {
       if (exception.reason != AuthReasonException.needAuth) {
         emit(ExceptionOccurred(state, exception));
-      } else {
+      } else if (exception.reason != AuthReasonException.inProgress) {
         auth(AuthState.unauthorized);
       }
     } else if (exception is Exception) {

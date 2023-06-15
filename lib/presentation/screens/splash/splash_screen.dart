@@ -27,7 +27,20 @@ class SplashScreen extends StatelessWidget {
       }).catchError((onError) {});
     }
     if (!GetIt.I.isRegistered<BaseDeviceInfo>()) {
-      await DeviceInfoPlugin().deviceInfo.then((value) {
+      await (kIsWeb
+              ? DeviceInfoPlugin().windowsInfo
+              : Platform.isIOS
+                  ? DeviceInfoPlugin().iosInfo
+                  : Platform.isAndroid
+                      ? DeviceInfoPlugin().androidInfo
+                      : Platform.isLinux
+                          ? DeviceInfoPlugin().linuxInfo
+                          : Platform.isMacOS
+                              ? DeviceInfoPlugin().macOsInfo
+                              : Platform.isWindows
+                                  ? DeviceInfoPlugin().windowsInfo
+                                  : DeviceInfoPlugin().deviceInfo)
+          .then((value) {
         GetIt.I.registerSingleton<BaseDeviceInfo>(value);
       }).catchError((onError) {});
     }
