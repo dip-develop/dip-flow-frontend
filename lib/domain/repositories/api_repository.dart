@@ -70,49 +70,22 @@ abstract class ProfileApiRepository extends ApiRepository {
 }
 
 abstract class TimeTrackingRepository extends ApiRepository {
-  Future<TimeTrackingModel> getTimeTrack(
-    String token,
-    String deviceId,
-    int id,
-  );
+  Future<TimeTrackingModel> getTimeTracking(
+      String token, String deviceId, String id);
   Future<PaginationModel<TimeTrackingModel>> getTimeTracks(
-    String token,
-    String deviceId, {
-    int? limit,
-    int? offset,
-    String? search,
-    DateTime? start,
-    DateTime? end,
-  });
-  Future<TimeTrackingModel> addTimeTrack(
-    String token,
-    String deviceId,
-    TimeTrackingModel timeTrack,
-  );
-  Future<TimeTrackingModel> updateTimeTrack(
-    String token,
-    String deviceId,
-    TimeTrackingModel timeTrack,
-  );
-  Future<void> deleteTimeTrack(
-    String token,
-    String deviceId,
-    int id,
-  );
+      String token, String deviceId,
+      {int? limit,
+      int? offset,
+      String? search,
+      DateTime? start,
+      DateTime? end});
+  Future<TimeTrackingModel> addTimeTracking(
+      String token, String deviceId, TimeTrackingModel timeTrack);
+  Future<TimeTrackingModel> updateTimeTracking(
+      String token, String deviceId, TimeTrackingModel timeTrack);
+  Future<void> deleteTimeTracking(String token, String deviceId, String id);
   Future<TimeTrackingModel> startTrack(
-    String token,
-    String deviceId,
-    int id,
-  );
-  Future<TimeTrackingModel> stopTrack(
-    String token,
-    String deviceId,
-    int id,
-  );
-  Future<TimeTrackingModel> deleteTrack(
-    String token,
-    String deviceId,
-    int timeTrackId,
-    int trackId,
-  );
+      String token, String deviceId, String id);
+  Future<TimeTrackingModel> stopTrack(String token, String deviceId, String id);
+  Future<void> deleteTrack(String token, String deviceId, String id);
 }

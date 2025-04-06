@@ -8,20 +8,20 @@ import '../repositories/repositories.dart';
 import 'usecases.dart';
 
 abstract class TimeTrackingUseCase {
-  Future<TimeTrackingModel> getTimeTrack(int id);
-  Future<PaginationModel<TimeTrackingModel>> getTimeTracks({
+  Future<TimeTrackingModel> getTimeTracking(String id);
+  Future<PaginationModel<TimeTrackingModel>> getTimeTrackings({
     int? limit,
     int? offset,
     String? search,
     DateTime? start,
     DateTime? end,
   });
-  Future<TimeTrackingModel> addTimeTrack(TimeTrackingModel timeTrack);
-  Future<TimeTrackingModel> updateTimeTrack(TimeTrackingModel timeTrack);
-  Future<void> deleteTimeTrack(int id);
-  Future<TimeTrackingModel> startTrack(int id);
-  Future<TimeTrackingModel> stopTrack(int id);
-  Future<TimeTrackingModel> deleteTrack(int timeTrackId, int trackId);
+  Future<TimeTrackingModel> addTimeTracking(TimeTrackingModel timeTrack);
+  Future<TimeTrackingModel> updateTimeTracking(TimeTrackingModel timeTrack);
+  Future<void> deleteTimeTracking(String id);
+  Future<TimeTrackingModel> startTrack(String id);
+  Future<TimeTrackingModel> stopTrack(String id);
+  Future<void> deleteTrack(String timeTrackId, String trackId);
 }
 
 @LazySingleton(as: TimeTrackingUseCase)
@@ -34,13 +34,12 @@ class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
       this._api, this._authUseCase, this._contentCubit);
 
   @override
-  Future<TimeTrackingModel> getTimeTrack(int id) => getApiRequest(
-        _prepare.then((token) => _api.getTimeTrack(token, getDeviceId(), id)),
-        _onRetry,
-      );
+  Future<TimeTrackingModel> getTimeTracking(String id) => getApiRequest(
+      _prepare.then((token) => _api.getTimeTracking(token, getDeviceId(), id)),
+      _onRetry);
 
   @override
-  Future<PaginationModel<TimeTrackingModel>> getTimeTracks({
+  Future<PaginationModel<TimeTrackingModel>> getTimeTrackings({
     int? limit,
     int? offset,
     String? search,
@@ -48,66 +47,62 @@ class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
     DateTime? end,
   }) =>
       getApiRequest(
-        _prepare.then((token) => _api.getTimeTracks(
-              token,
-              getDeviceId(),
-              limit: limit,
-              offset: offset,
-              search: search,
-              start: start,
-              end: end,
-            )),
-        _onRetry,
-      );
+          _prepare.then((token) => _api.getTimeTracks(
+                token,
+                getDeviceId(),
+                limit: limit,
+                offset: offset,
+                search: search,
+                start: start,
+                end: end,
+              )),
+          _onRetry);
 
   @override
-  Future<TimeTrackingModel> addTimeTrack(TimeTrackingModel timeTrack) =>
+  Future<TimeTrackingModel> addTimeTracking(TimeTrackingModel timeTrack) =>
       getApiRequest(
-        _prepare
-            .then((token) => _api.addTimeTrack(token, getDeviceId(), timeTrack))
-            .then((value) {
-          _contentCubit.timeTracksChanged();
-          return value;
-        }),
-        _onRetry,
-      );
+          _prepare
+              .then((token) =>
+                  _api.addTimeTracking(token, getDeviceId(), timeTrack))
+              .then((value) {
+            _contentCubit.timeTrackingsChanged();
+            return value;
+          }),
+          _onRetry);
 
   @override
-  Future<TimeTrackingModel> updateTimeTrack(TimeTrackingModel timeTrack) =>
+  Future<TimeTrackingModel> updateTimeTracking(TimeTrackingModel timeTrack) =>
       getApiRequest(
-        _prepare
-            .then((token) =>
-                _api.updateTimeTrack(token, getDeviceId(), timeTrack))
-            .then((value) {
-          _contentCubit.timeTrackChanged(value);
-          return value;
-        }),
-        _onRetry,
-      );
+          _prepare
+              .then((token) =>
+                  _api.updateTimeTracking(token, getDeviceId(), timeTrack))
+              .then((value) {
+            _contentCubit.timeTrackChanged(value);
+            return value;
+          }),
+          _onRetry);
 
   @override
-  Future<void> deleteTimeTrack(int id) => getApiRequest(
-        _prepare
-            .then((token) => _api.deleteTimeTrack(token, getDeviceId(), id))
-            .then((_) {
-          _contentCubit.timeTracksChanged();
-        }),
-        _onRetry,
-      );
+  Future<void> deleteTimeTracking(String id) => getApiRequest(
+      _prepare
+          .then((token) => _api.deleteTimeTracking(token, getDeviceId(), id))
+          .then((_) {
+        _contentCubit.timeTrackingsChanged();
+      }),
+      _onRetry);
 
   @override
-  Future<TimeTrackingModel> startTrack(int id) => getApiRequest(
-        _prepare
-            .then((token) => _api.startTrack(token, getDeviceId(), id))
-            .then((value) {
-          _contentCubit.timeTrackChanged(value);
-          return value;
-        }),
-        _onRetry,
-      );
+  Future<TimeTrackingModel> startTrack(String id) => getApiRequest(
+      _prepare
+          .then((token) => _api.startTrack(token, getDeviceId(), id))
+          .then((value) {
+        _contentCubit.timeTrackChanged(value);
+        return value;
+      }),
+      _onRetry);
 
   @override
-  Future<TimeTrackingModel> stopTrack(int id) => getApiRequest(
+  Future<TimeTrackingModel> stopTrack(String id) => getApiRequest(
         _prepare
             .then((token) => _api.stopTrack(token, getDeviceId(), id))
             .then((value) {
@@ -118,15 +113,11 @@ class TimeTrackingUseCaseImpl implements TimeTrackingUseCase {
       );
 
   @override
-  Future<TimeTrackingModel> deleteTrack(int timeTrackId, int trackId) =>
-      getApiRequest(
+  Future<void> deleteTrack(String timeTrackId, String trackId) => getApiRequest(
         _prepare
-            .then((token) =>
-                _api.deleteTrack(token, getDeviceId(), timeTrackId, trackId))
-            .then((value) {
-          _contentCubit.timeTrackChanged(value);
-          return value;
-        }),
+            .then((token) => _api.deleteTrack(token, getDeviceId(), trackId))
+            .then((_) => getTimeTracking(timeTrackId)
+                .then((value) => _contentCubit.timeTrackChanged(value))),
         _onRetry,
       );
 

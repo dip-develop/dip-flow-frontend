@@ -7,7 +7,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
+
 import 'package:launch_at_startup/launch_at_startup.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:system_tray/system_tray.dart';
@@ -65,8 +66,9 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!GetIt.I.isRegistered<PackageInfo>()) {
+      final goRouter = GoRouter.of(context);
       _initApp(context).whenComplete(() => GetIt.I<AuthUseCase>().isAuth.then(
-          (isAuth) => context.goNamed(
+          (isAuth) => goRouter.goNamed(
               isAuth ? AppRoute.dashboardRouteName : AppRoute.authRouteName)));
     }
     return Material(

@@ -28,12 +28,13 @@ class ApplicationCubit extends Cubit<ApplicationState> {
     });
 
     _connectivity.checkConnectivity().then((value) {
-      emit(NetworkChanged(state, value));
+      emit(NetworkChanged(state, value.first));
     });
 
-    _connectivity.onConnectivityChanged.listen((ConnectivityResult result) {
-      if (!isClosed) {
-        emit(NetworkChanged(state, result));
+    _connectivity.onConnectivityChanged
+        .listen((List<ConnectivityResult>? result) {
+      if (!isClosed && result != null) {
+        emit(NetworkChanged(state, result.first));
       }
     });
   }
@@ -85,7 +86,7 @@ class ApplicationCubit extends Cubit<ApplicationState> {
       debugPrint(onError.toString());
       emit(ExceptionOccurred(state, exception));
     }
-    throw exception;
+    //throw exception;
   }
 
   void auth(AuthState auth) =>

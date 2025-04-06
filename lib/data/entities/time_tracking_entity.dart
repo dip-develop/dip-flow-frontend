@@ -4,9 +4,9 @@ import '../../domain/models/models.dart';
 import 'generated/time_tracking_models.pb.dart';
 
 class TimeTrackingEntity {
-  final int id;
-  final int userId;
-  final int? taskId;
+  final String id;
+  final String userId;
+  final String? taskId;
   final String? title;
   final String? description;
   final List<TrackEntity> tracks;
@@ -19,7 +19,7 @@ class TimeTrackingEntity {
       this.description,
       this.tracks = const <TrackEntity>[]});
 
-  factory TimeTrackingEntity.fromGrpc(TimeTrackReply timeTrack) =>
+  factory TimeTrackingEntity.fromGrpc(TimeTrackingReply timeTrack) =>
       TimeTrackingEntity(
           id: timeTrack.id,
           userId: timeTrack.userId,
@@ -46,7 +46,7 @@ class TimeTrackingEntity {
 }
 
 class TrackEntity {
-  final int id;
+  final String id;
   final DateTime start;
   final DateTime? end;
 

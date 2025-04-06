@@ -20,13 +20,13 @@ class TimeTrackingGRPCApiRepository
   const TimeTrackingGRPCApiRepository(this._channel);
 
   @override
-  Future<TimeTrackingModel> getTimeTrack(
-          String token, String deviceId, int id) =>
+  Future<TimeTrackingModel> getTimeTracking(
+          String token, String deviceId, String id) =>
       _client(
         token: token,
         deviceId: deviceId,
       )
-          .getTimeTrack(IdRequest(id: id))
+          .getTimeTracking(IdRequest(id: id))
           .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
           .catchError(checkException<TimeTrackingModel>);
 
@@ -44,7 +44,7 @@ class TimeTrackingGRPCApiRepository
         token: token,
         deviceId: deviceId,
       )
-          .getTimeTracks(
+          .getTimeTrackings(
             gate.FilterRequest(
               pagination: limit != null || offset != null
                   ? PaginationRequest(limit: limit, offset: offset)
@@ -66,13 +66,13 @@ class TimeTrackingGRPCApiRepository
           .catchError(checkException<PaginationModel<TimeTrackingModel>>);
 
   @override
-  Future<TimeTrackingModel> addTimeTrack(
+  Future<TimeTrackingModel> addTimeTracking(
           String token, String deviceId, TimeTrackingModel timeTrack) =>
       _client(
         token: token,
         deviceId: deviceId,
       )
-          .addTimeTrack(gate.AddTimeTrackRequest(
+          .addTimeTracking(gate.AddTimeTrackingRequest(
               taskId: timeTrack.taskId,
               title: timeTrack.title,
               description: timeTrack.description))
@@ -80,13 +80,13 @@ class TimeTrackingGRPCApiRepository
           .catchError(checkException<TimeTrackingModel>);
 
   @override
-  Future<TimeTrackingModel> updateTimeTrack(
+  Future<TimeTrackingModel> updateTimeTracking(
           String token, String deviceId, TimeTrackingModel timeTrack) =>
       _client(
         token: token,
         deviceId: deviceId,
       )
-          .updateTimeTrack(time_tracking_models.UpdateTimeTrackRequest(
+          .updateTimeTracking(time_tracking_models.UpdateTimeTrackingRequest(
               id: timeTrack.id,
               taskId: timeTrack.taskId,
               title: timeTrack.title,
@@ -95,17 +95,18 @@ class TimeTrackingGRPCApiRepository
           .catchError(checkException<TimeTrackingModel>);
 
   @override
-  Future<void> deleteTimeTrack(String token, String deviceId, int id) =>
+  Future<void> deleteTimeTracking(String token, String deviceId, String id) =>
       _client(
         token: token,
         deviceId: deviceId,
       )
-          .deleteTimeTrack(IdRequest(id: id))
+          .deleteTimeTracking(IdRequest(id: id))
           .then((_) => Future.value())
           .catchError(checkException<void>);
 
   @override
-  Future<TimeTrackingModel> startTrack(String token, String deviceId, int id) =>
+  Future<TimeTrackingModel> startTrack(
+          String token, String deviceId, String id) =>
       _client(
         token: token,
         deviceId: deviceId,
@@ -115,7 +116,8 @@ class TimeTrackingGRPCApiRepository
           .catchError(checkException<TimeTrackingModel>);
 
   @override
-  Future<TimeTrackingModel> stopTrack(String token, String deviceId, int id) =>
+  Future<TimeTrackingModel> stopTrack(
+          String token, String deviceId, String id) =>
       _client(
         token: token,
         deviceId: deviceId,
@@ -125,16 +127,13 @@ class TimeTrackingGRPCApiRepository
           .catchError(checkException<TimeTrackingModel>);
 
   @override
-  Future<TimeTrackingModel> deleteTrack(
-          String token, String deviceId, int timeTrackId, int trackId) =>
-      _client(
+  Future<void> deleteTrack(String token, String deviceId, String id) => _client(
         token: token,
         deviceId: deviceId,
       )
-          .deleteTrack(time_tracking_models.DeleteTrackRequest(
-              id: timeTrackId, trackId: trackId))
-          .then((reply) => TimeTrackingEntity.fromGrpc(reply).toModel())
-          .catchError(checkException<TimeTrackingModel>);
+          .deleteTrack(IdRequest(id: id))
+          .then((_) => Future.value())
+          .catchError(checkException<void>);
 
   TimeTrackingGateServiceClient _client({String? token, String? deviceId}) =>
       TimeTrackingGateServiceClient(_channel,

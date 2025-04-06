@@ -18,7 +18,7 @@ import 'resources/themes/color_schemes.dart';
 import 'resources/themes/custom_color.dart';
 
 class Application extends StatelessWidget {
-  const Application({Key? key}) : super(key: key);
+  const Application({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class Application extends StatelessWidget {
               previous.auth == AuthState.authorized,
           listener: (context, state) {
             final route = context.read<AppRoute>().route;
-            if (route.location != route.namedLocation(AppRoute.authRouteName)) {
+            if (route.state.uri.path != route.namedLocation(AppRoute.authRouteName)) {
               route.goNamed(AppRoute.authRouteName);
             }
           },

@@ -113,7 +113,7 @@ class _DailyTimeState extends State<DailyTime> {
     if (!mounted) return;
     _timeTracks = PaginationModel<TimeTrackingModel>.empty();
     _timeTrackingUseCase
-        .getTimeTracks(
+        .getTimeTrackings(
           start: todayStart,
         )
         .then((value) => setState(() {

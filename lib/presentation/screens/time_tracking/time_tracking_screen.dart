@@ -21,7 +21,7 @@ class TimeTrackingScreen extends StatefulWidget {
 class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
   final _searchController = TextEditingController();
 
-  int? _expandedTimeTrackId;
+  String? _expandedTimeTrackId;
 
   @override
   Widget build(BuildContext context) {
@@ -51,36 +51,33 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                               state.filter.end == null)
                             IconButton(
                                 onPressed: () {
+                                  final cubit =
+                                      context.read<TimeTrackingCubit>();
                                   showDateRangePicker(
                                     context: context,
                                     firstDate: DateTime(2023, 1, 1),
                                     lastDate: DateTime.now(),
                                   ).then((value) {
                                     if (value == null) {
-                                      context
-                                          .read<TimeTrackingCubit>()
-                                          .loadData(
-                                            filter: state.filter.clear(
-                                              start: true,
-                                              end: true,
-                                            ),
-                                          );
+                                      cubit.loadData(
+                                        filter: state.filter.clear(
+                                          start: true,
+                                          end: true,
+                                        ),
+                                      );
                                     } else if (state.filter.start !=
                                             value.start &&
                                         state.filter.end != value.end) {
-                                      context
-                                          .read<TimeTrackingCubit>()
-                                          .loadData(
-                                            limit: state.timeTracks.limit,
-                                            offset: state.timeTracks.offset,
-                                            filter: state.filter.copyWith(
-                                                start: value.start,
-                                                end: value.end.add(
-                                                    const Duration(
-                                                        hours: 23,
-                                                        minutes: 59,
-                                                        seconds: 59))),
-                                          );
+                                      cubit.loadData(
+                                        limit: state.timeTracks.limit,
+                                        offset: state.timeTracks.offset,
+                                        filter: state.filter.copyWith(
+                                            start: value.start,
+                                            end: value.end.add(const Duration(
+                                                hours: 23,
+                                                minutes: 59,
+                                                seconds: 59))),
+                                      );
                                     }
                                   });
                                 },
@@ -146,8 +143,8 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                         context
                                             .read<TimeTrackingCubit>()
                                             .loadData(
-                                              limit: state.timeTracks.limit,
-                                              offset: state.timeTracks.offset,
+                                              /* limit: state.timeTracks.limit,
+                                              offset: state.timeTracks.offset, */
                                               filter: state.filter
                                                   .clear(search: true),
                                             );
@@ -217,10 +214,10 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                         ],
                         rows: List<DataRow2>.generate(
                             state.timeTracks.items.length, (index) {
-                          final timeTrack = state.timeTracks.items[index];
+                          final timeTracking = state.timeTracks.items[index];
                           final isExpanded =
-                              _expandedTimeTrackId == timeTrack.id;
-                          final finishedTracks = timeTrack.tracks
+                              _expandedTimeTrackId == timeTracking.id;
+                          final finishedTracks = timeTracking.tracks
                               .where((p0) => p0.isFinished)
                               .toList();
                           return DataRow2.byIndex(
@@ -231,18 +228,18 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                 DataCell(
                                   Center(
                                     child: IconButton(
-                                      onPressed: () => timeTrack.isStarted
+                                      onPressed: () => timeTracking.isStarted
                                           ? context
                                               .read<TimeTrackingCubit>()
-                                              .stopTrack(timeTrack)
+                                              .stopTrack(timeTracking)
                                           : context
                                               .read<TimeTrackingCubit>()
-                                              .startTrack(timeTrack),
+                                              .startTrack(timeTracking),
                                       icon: Icon(
-                                        timeTrack.isStarted
+                                        timeTracking.isStarted
                                             ? Icons.stop
                                             : Icons.play_arrow,
-                                        color: timeTrack.isStarted
+                                        color: timeTracking.isStarted
                                             ? Theme.of(context)
                                                 .colorScheme
                                                 .tertiary
@@ -258,14 +255,14 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                       if (isExpanded) {
                                         _expandedTimeTrackId = null;
                                       } else {
-                                        _expandedTimeTrackId = timeTrack.id;
+                                        _expandedTimeTrackId = timeTracking.id;
                                       }
                                     });
                                   },
                                   Container(
                                     padding: const EdgeInsets.all(8.0),
                                     decoration: BoxDecoration(
-                                        border: timeTrack.isStarted
+                                        border: timeTracking.isStarted
                                             ? Border.all(
                                                 color: Theme.of(context)
                                                     .colorScheme
@@ -274,7 +271,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                             : null),
                                     alignment: Alignment.center,
                                     child: Text(
-                                      prettyDuration(timeTrack.duration,
+                                      prettyDuration(timeTracking.duration,
                                           spacer: ' ',
                                           delimiter: ' ',
                                           conjunction: ' ',
@@ -296,8 +293,8 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                     padding: const EdgeInsets.all(8.0),
                                     alignment: Alignment.center,
                                     child: Text(
-                                        timeTrack.taskId != null
-                                            ? '#${timeTrack.taskId}'
+                                        timeTracking.taskId != null
+                                            ? '#${timeTracking.taskId}'
                                             : '',
                                         style: Theme.of(context)
                                             .textTheme
@@ -314,7 +311,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                       if (isExpanded) {
                                         _expandedTimeTrackId = null;
                                       } else {
-                                        _expandedTimeTrackId = timeTrack.id;
+                                        _expandedTimeTrackId = timeTracking.id;
                                       }
                                     });
                                   },
@@ -331,14 +328,14 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                           const SizedBox(
                                             height: 9.0,
                                           ),
-                                        Text(timeTrack.title ?? '',
+                                        Text(timeTracking.title ?? '',
                                             style: Theme.of(context)
                                                 .textTheme
                                                 .bodyMedium,
                                             maxLines: 3,
                                             overflow: TextOverflow.ellipsis),
-                                        if (timeTrack.description != null)
-                                          Text(timeTrack.description ?? '',
+                                        if (timeTracking.description != null)
+                                          Text(timeTracking.description ?? '',
                                               maxLines: 1,
                                               overflow: TextOverflow.ellipsis),
                                         if (isExpanded)
@@ -434,7 +431,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                                       onPressed: () => GetIt.I<
                                                               TimeTrackingUseCase>()
                                                           .deleteTrack(
-                                                              timeTrack.id!,
+                                                              timeTracking.id!,
                                                               track.id!),
                                                       icon: const Icon(
                                                           Icons.delete)),
@@ -454,7 +451,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                         case 1:
                                           context
                                               .read<TimeTrackingCubit>()
-                                              .deleteTimeTrack(timeTrack);
+                                              .deleteTimeTrack(timeTracking);
                                           break;
                                         default:
                                       }

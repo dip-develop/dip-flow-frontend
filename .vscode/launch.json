@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Frontend PROD-Flavor",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "Frontend DEV-Flavor",
+      "program": "lib/main_dev.dart",
+      "request": "launch",
+      "type": "dart"
+    }
+  ]
+}

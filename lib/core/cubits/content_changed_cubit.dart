@@ -10,7 +10,7 @@ part 'content_changed_state.dart';
 class ContentChangedCubit extends Cubit<ContentChangedState> {
   ContentChangedCubit() : super(ContentChangedInitial());
 
-  void timeTracksChanged() => emit(TimeTracksChanged());
+  void timeTrackingsChanged() => emit(TimeTracksChanged());
   void timeTrackChanged(TimeTrackingModel timeTrack) =>
       emit(TimeTrackChanged(timeTrack));
 }

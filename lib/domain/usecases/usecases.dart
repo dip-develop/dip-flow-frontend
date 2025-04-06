@@ -4,8 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:retry/retry.dart';
-import 'package:theteam_frontend/domain/exceptions/auth_exception.dart';
-import 'package:theteam_frontend/domain/exceptions/connection_exception.dart';
+import '../exceptions/connection_exception.dart';
 
 import '../../core/cubits/application_cubit.dart';
 
@@ -18,13 +17,10 @@ export 'time_tracking_usecase.dart';
 @override
 Future<T> getApiRequest<T>(
         Future<T> fn, FutureOr<void> Function(Exception)? onRetry) =>
-    retry(() => fn,
-            onRetry: onRetry,
-            retryIf: (exception) =>
-                exception is AuthException &&
-                exception.reason == AuthReasonException.needAuth)
-        .catchError((onError) => exception(onError))
-        .whenComplete(loadingEnd);
+    retry(() => fn, onRetry: onRetry, retryIf: (exception) => false
+        /* exception is AuthException &&
+                exception.reason == AuthReasonException.needAuth */
+        ).catchError(exception).whenComplete(loadingEnd);
 
 Future<void> get loadingStart => Future.delayed(
       Duration.zero,

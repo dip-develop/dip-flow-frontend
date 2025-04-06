@@ -14,7 +14,7 @@ class PaginationEntity {
       required this.limit,
       required this.items});
 
-  factory PaginationEntity.fromGrpc(TimeTracksReply timeTraks) =>
+  factory PaginationEntity.fromGrpc(TimeTrackingsReply timeTraks) =>
       PaginationEntity(
           count: timeTraks.count,
           limit: timeTraks.limit,

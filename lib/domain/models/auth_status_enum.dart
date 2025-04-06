@@ -11,7 +11,7 @@ class AuthState extends EnumClass {
   static const AuthState authorized = _$authorized;
   static const AuthState unauthorized = _$unauthorized;
 
-  const AuthState._(String name) : super(name);
+  const AuthState._(super.name);
 
   static BuiltSet<AuthState> get values => _$values;
   static AuthState valueOf(String name) => _$valueOf(name);

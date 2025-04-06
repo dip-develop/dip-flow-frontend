@@ -9,17 +9,33 @@
 
 **TheTeam** is the ultimate solution for team management. Whether you are a freelancer, a developer, an HR manager, or a headhunter, you can benefit from our powerful and user-friendly application that lets you track time, create reports, manage projects, and more. You can access our service from any device and any operating system, and enjoy our beautiful graphs that visualize your progress and performance. Plus, if you are an individual user or a small team, you can use our service for free forever. No hidden fees, no strings attached. Join **TheTeam** today and take your team to the next level.
 
-## Getting Started
-
-```bash
-flutter pub get
-```
-
 #### Generate files
 
 * [Install protobuf for your OS](https://github.com/protocolbuffers/protobuf/releases)
 
-###### Generate protos
+## Getting Started
+
+## Quick start
+
+Linux and Mac
+
+```bash
+sh ./generate.sh
+```
+
+Windows
+
+```bash
+./generate.bat
+```
+
+## Or manual getting Started
+
+### Generate protos
+
+```bash
+flutter pub get
+```
 
 ```bash
 git submodule update --init --recursive --remote --force 
@@ -42,20 +58,20 @@ protoc --dart_out=grpc:lib/data/entities/generated -Iprotos \
     protos/google/protobuf/timestamp.proto
 ```
 
-###### Generate other flutter files
+### Generate other flutter files
 
 ```bash
 flutter pub run build_runner build -d
 flutter gen-l10n
 ```
 
-###### Run project
+## Run project
 
 ```bash
 flutter run
 ```
 
-###### Add flavors to VSCode
+### Add flavors to VSCode
 
 ```json
 {

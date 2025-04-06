@@ -25,8 +25,8 @@ class TimeTrackingInitial extends TimeTrackingState {
 
 class TimeTracksUpdated extends TimeTrackingState {
   const TimeTracksUpdated(
-      PaginationModel<TimeTrackingModel> timeTracks, FilterTimeTracks filter)
-      : super(timeTracks, filter: filter);
+      super.timeTracks, FilterTimeTracks filter)
+      : super(filter: filter);
 }
 
 class FilterTimeTracks {

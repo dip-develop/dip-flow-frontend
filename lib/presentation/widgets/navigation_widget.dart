@@ -38,7 +38,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
 
   void _selectMenu() {
     final route = GetIt.I<AppRoute>().route;
-    final location = route.location;
+    final location = route.state.uri.path ?? '';
     if (location == route.namedLocation(AppRoute.dashboardRouteName)) {
       _selectedTab = 0;
     } else if (location

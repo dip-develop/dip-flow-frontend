@@ -48,4 +48,4 @@ class AuthException extends AppException {
   int get hashCode => [message, reason].join().hashCode;
 }
 
-enum AuthReasonException { undefined, invalidData, needAuth, inProgress }
+enum AuthReasonException { undefined, invalidData, needAuth, inProgress, need }

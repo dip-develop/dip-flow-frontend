@@ -119,7 +119,7 @@ class _WeeklyTimeState extends State<WeeklyTime> {
     if (!mounted) return;
     _timeTracks = PaginationModel<TimeTrackingModel>.empty();
     _timeTrackingUseCase
-        .getTimeTracks(
+        .getTimeTrackings(
           start: weekStart,
         )
         .then((value) => setState(() {

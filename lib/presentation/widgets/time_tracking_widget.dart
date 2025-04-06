@@ -19,7 +19,7 @@ class TimeTrackingWidget extends StatefulWidget {
 
 class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
   final _timeTrackingUseCase = GetIt.I<TimeTrackingUseCase>();
-  final _expandedTimeTrackings = List<int>.empty(growable: true);
+  final _expandedTimeTrackings = List<String>.empty(growable: true);
   final _addFormKey = GlobalKey<FormState>();
   final _taskTextController = TextEditingController();
   final _titleTextController = TextEditingController();
@@ -165,7 +165,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                               ?.validate() ??
                                           false) {
                                         GetIt.I<TimeTrackingUseCase>()
-                                            .addTimeTrack(TimeTrackingModel(
+                                            .addTimeTracking(TimeTrackingModel(
                                               (p0) => p0
                                                 /*  ..taskId = _taskTextController
                                                         .text.isNotEmpty
@@ -225,17 +225,19 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                       children: List<ExpansionPanel>.generate(
                         _timeTracks.items.length,
                         (index) {
-                          final timeTrack = _timeTracks.items[index];
-                          final finishedTracks = timeTrack.tracks
+                          final timeTracking = _timeTracks.items[index];
+                          final finishedTracks = timeTracking.tracks
                               .where((p0) => p0.isFinished)
                               .toList();
                           final isExpanded =
-                              _expandedTimeTrackings.contains(timeTrack.id);
+                              _expandedTimeTrackings.contains(timeTracking.id);
                           return ExpansionPanel(
                               canTapOnHeader: true,
                               isExpanded: isExpanded,
                               backgroundColor: isExpanded
-                                  ? Theme.of(context).colorScheme.surfaceVariant
+                                  ? Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainerHighest
                                   : null,
                               headerBuilder: (context, isExpanded) {
                                 return ListTile(
@@ -248,9 +250,9 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                             .textTheme
                                             .bodyMedium,
                                         children: [
-                                          if (timeTrack.taskId != null)
+                                          if (timeTracking.taskId != null)
                                             TextSpan(
-                                                text: '#${timeTrack.taskId}',
+                                                text: '#${timeTracking.taskId}',
                                                 style: Theme.of(context)
                                                     .textTheme
                                                     .labelMedium
@@ -258,33 +260,33 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                                         color: Theme.of(context)
                                                             .colorScheme
                                                             .primary)),
-                                          if (timeTrack.taskId != null &&
-                                              timeTrack.title != null)
+                                          if (timeTracking.taskId != null &&
+                                              timeTracking.title != null)
                                             const TextSpan(text: ' - '),
-                                          if (timeTrack.title != null)
+                                          if (timeTracking.title != null)
                                             TextSpan(
-                                              text: timeTrack.title,
+                                              text: timeTracking.title,
                                             ),
                                         ]),
                                   ),
-                                  subtitle: timeTrack.description != null
+                                  subtitle: timeTracking.description != null
                                       ? Text(
-                                          timeTrack.description ?? '',
+                                          timeTracking.description ?? '',
                                           maxLines: isExpanded ? 3 : 1,
                                           overflow: TextOverflow.ellipsis,
                                         )
                                       : null,
                                   leading: IconButton(
-                                    onPressed: () => (timeTrack.isStarted
+                                    onPressed: () => (timeTracking.isStarted
                                         ? _timeTrackingUseCase
-                                            .stopTrack(timeTrack.id!)
+                                            .stopTrack(timeTracking.id!)
                                         : _timeTrackingUseCase
-                                            .startTrack(timeTrack.id!)),
+                                            .startTrack(timeTracking.id!)),
                                     icon: Icon(
-                                      timeTrack.isStarted
+                                      timeTracking.isStarted
                                           ? Icons.stop
                                           : Icons.play_arrow,
-                                      color: timeTrack.isStarted
+                                      color: timeTracking.isStarted
                                           ? Theme.of(context)
                                               .colorScheme
                                               .tertiary
@@ -297,7 +299,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        prettyDuration(timeTrack.duration,
+                                        prettyDuration(timeTracking.duration,
                                             spacer: ' ',
                                             delimiter: ' ',
                                             conjunction: ' ',
@@ -421,7 +423,7 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                         onPressed: () =>
                                             GetIt.I<TimeTrackingUseCase>()
                                                 .deleteTrack(
-                                                    timeTrack.id!, track.id!),
+                                                    timeTracking.id!, track.id!),
                                         icon: const Icon(Icons.delete)),
                                   );
                                 },
@@ -442,9 +444,11 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
 
   void _updateTimeTracks() {
     if (!mounted) return;
-    _timeTrackingUseCase.getTimeTracks(limit: 5).then((value) => setState(() {
-          _timeTracks = _timeTracks.from(value);
-        }));
+    _timeTrackingUseCase
+        .getTimeTrackings(limit: 5)
+        .then((value) => setState(() {
+              _timeTracks = _timeTracks.from(value);
+            }));
   }
 
   void _updateTimeTrack(TimeTrackingModel timeTrack) {

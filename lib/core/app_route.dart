@@ -69,10 +69,10 @@ class AppRoute {
                   pageBuilder: (context, state) =>
                       _getTransition(state: state, child: const SignInScreen()),
                   redirect: (context, state) {
-                    if (state.location == route.namedLocation(authRouteName)) {
+                    if (state.uri.path == route.namedLocation(authRouteName)) {
                       return route.namedLocation(signInRouteName);
                     }
-                    return state.location;
+                    return state.uri.path;
                   },
                   routes: [
                     GoRoute(
@@ -187,12 +187,12 @@ class AppRoute {
       ],
       redirect: (BuildContext context, GoRouterState state) {
         GetIt.I<AnalyticsUseCase>().logScreenView(
-            name: state.path ?? state.location, path: state.location);
-        if (state.location != route.namedLocation(splashRouteName) &&
-            state.location != route.namedLocation(authRouteName) &&
-            state.location != route.namedLocation(signInRouteName) &&
-            state.location != route.namedLocation(signUpRouteName) &&
-            state.location != route.namedLocation(restorePasswordRouteName)) {
+            name: state.path ?? state.uri.path, path: state.uri.path);
+        if (state.uri.path != route.namedLocation(splashRouteName) &&
+            state.uri.path != route.namedLocation(authRouteName) &&
+            state.uri.path != route.namedLocation(signInRouteName) &&
+            state.uri.path != route.namedLocation(signUpRouteName) &&
+            state.uri.path != route.namedLocation(restorePasswordRouteName)) {
           final appCubit = GetIt.I<ApplicationCubit>();
           if (appCubit.state.auth != AuthState.authorized) {
             return route.namedLocation(authRouteName);

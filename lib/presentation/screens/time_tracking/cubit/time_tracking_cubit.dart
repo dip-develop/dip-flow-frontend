@@ -15,7 +15,7 @@ class TimeTrackingCubit extends Cubit<TimeTrackingState> {
   void loadData(
       {int? limit, int? offset, FilterTimeTracks? filter, bool clean = false}) {
     _timeTrackingUseCase
-        .getTimeTracks(
+        .getTimeTrackings(
           limit: limit,
           offset: offset,
           search: filter?.search ?? (!clean ? state.filter.search : null),
@@ -54,6 +54,8 @@ class TimeTrackingCubit extends Cubit<TimeTrackingState> {
   }
 
   void deleteTimeTrack(TimeTrackingModel timeTrack) {
-    _timeTrackingUseCase.deleteTimeTrack(timeTrack.id!).whenComplete(loadData);
+    _timeTrackingUseCase
+        .deleteTimeTracking(timeTrack.id!)
+        .whenComplete(loadData);
   }
 }

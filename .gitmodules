@@ -1,4 +1,0 @@
-[submodule "protos"]
-	path = protos
-	url = git@ssh.dev.azure.com:v3/dipdev/TheTeam/Protos
-	branch = main

@@ -95,12 +95,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState?.validate() ?? false) {
+                              final goRouter = GoRouter.of(context);
                               GetIt.I<AuthUseCase>()
                                   .signUpWithEmail(
                                       email: _emailController.text,
                                       password: _passwordController.text,
                                       name: _nameController.text)
-                                  .then((_) => context
+                                  .then((_) => goRouter
                                       .goNamed(AppRoute.dashboardRouteName));
                             }
                           },
