@@ -9,8 +9,8 @@ import 'package:injectable/injectable.dart';
 import 'package:logging/logging.dart';
 import 'package:window_manager/window_manager.dart';
 
-import 'core/application.dart';
 import 'main.config.dart';
+import 'src/core/application.dart';
 
 @InjectableInit()
 void _configureDependencies() => GetIt.I.init();

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_adaptive_scaffold/flutter_adaptive_scaffold.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/app_route.dart';
+import '../../core/generated/i18n/app_localizations.dart';
 import 'user_button_widget.dart';
 
 class NavigationWidget extends StatefulWidget {
@@ -38,7 +38,7 @@ class _NavigationWidgetState extends State<NavigationWidget> {
 
   void _selectMenu() {
     final route = GetIt.I<AppRoute>().route;
-    final location = route.state.uri.path ?? '';
+    final location = route.state.uri.path;
     if (location == route.namedLocation(AppRoute.dashboardRouteName)) {
       _selectedTab = 0;
     } else if (location

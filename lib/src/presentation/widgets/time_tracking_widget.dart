@@ -1,12 +1,12 @@
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
 import '../../core/cubits/content_changed_cubit.dart';
 import '../../core/cubits/timer_cubit.dart';
+import '../../core/generated/i18n/app_localizations.dart';
 import '../../domain/models/models.dart';
 import '../../domain/usecases/usecases.dart';
 
@@ -422,8 +422,8 @@ class TimeTrackingWidgetState extends State<TimeTrackingWidget> {
                                     trailing: IconButton(
                                         onPressed: () =>
                                             GetIt.I<TimeTrackingUseCase>()
-                                                .deleteTrack(
-                                                    timeTracking.id!, track.id!),
+                                                .deleteTrack(timeTracking.id!,
+                                                    track.id!),
                                         icon: const Icon(Icons.delete)),
                                   );
                                 },

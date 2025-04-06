@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../core/generated/i18n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../core/cubits/content_changed_cubit.dart';
@@ -10,16 +10,21 @@ import '../../core/cubits/timer_cubit.dart';
 import '../../domain/models/models.dart';
 import '../../domain/usecases/usecases.dart';
 
-class DailyTime extends StatefulWidget {
-  const DailyTime({super.key});
+class WeeklyTime extends StatefulWidget {
+  const WeeklyTime({super.key});
 
   @override
-  State<DailyTime> createState() => _DailyTimeState();
+  State<WeeklyTime> createState() => _WeeklyTimeState();
 }
 
-class _DailyTimeState extends State<DailyTime> {
-  final todayStart =
-      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+class _WeeklyTimeState extends State<WeeklyTime> {
+  final weekStart =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+          .subtract(Duration(
+              days: DateTime(DateTime.now().year, DateTime.now().month,
+                          DateTime.now().day)
+                      .weekday -
+                  1));
   final _timeTrackingUseCase = GetIt.I<TimeTrackingUseCase>();
 
   PaginationModel<TimeTrackingModel> _timeTracks =
@@ -58,7 +63,7 @@ class _DailyTimeState extends State<DailyTime> {
                 _timeTracks.items.any((element) => element.isStarted),
             builder: (context, state) {
               return Card(
-                color: Theme.of(context).colorScheme.primaryContainer,
+                color: Theme.of(context).colorScheme.tertiaryContainer,
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
@@ -69,7 +74,7 @@ class _DailyTimeState extends State<DailyTime> {
                             width: 8.0,
                           ),
                           Icon(
-                            Icons.work_history,
+                            Icons.av_timer,
                             color:
                                 Theme.of(context).textTheme.titleMedium!.color,
                           ),
@@ -77,7 +82,7 @@ class _DailyTimeState extends State<DailyTime> {
                             width: 8.0,
                           ),
                           Text(
-                            AppLocalizations.of(context)!.today,
+                            AppLocalizations.of(context)!.week,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ],
@@ -87,12 +92,13 @@ class _DailyTimeState extends State<DailyTime> {
                       ),
                       Text(
                         prettyDuration(
+                            tersity: DurationTersity.minute,
                             Duration(
                                 milliseconds: _timeTracks.items
                                     .expand((element) => element.tracks)
                                     .where((element) =>
-                                        element.start.isAfter(todayStart) ||
-                                        element.start == todayStart)
+                                        element.start.isAfter(weekStart) ||
+                                        element.start == weekStart)
                                     .map((e) => e.duration.inMilliseconds)
                                     .sum),
                             upperTersity: DurationTersity.hour,
@@ -114,7 +120,7 @@ class _DailyTimeState extends State<DailyTime> {
     _timeTracks = PaginationModel<TimeTrackingModel>.empty();
     _timeTrackingUseCase
         .getTimeTrackings(
-          start: todayStart,
+          start: weekStart,
         )
         .then((value) => setState(() {
               _timeTracks = _timeTracks.from(value);

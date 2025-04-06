@@ -4,9 +4,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get_it/get_it.dart';
 import 'package:retry/retry.dart';
-import '../exceptions/connection_exception.dart';
 
 import '../../core/cubits/application_cubit.dart';
+import '../exceptions/connection_exception.dart';
 
 export 'analytics_usecase.dart';
 export 'app_usecase.dart';

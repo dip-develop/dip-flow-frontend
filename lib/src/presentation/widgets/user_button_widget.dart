@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/app_route.dart';
+import '../../core/generated/i18n/app_localizations.dart';
 import '../../domain/usecases/usecases.dart';
 
 class UserButtonWidget extends StatelessWidget {

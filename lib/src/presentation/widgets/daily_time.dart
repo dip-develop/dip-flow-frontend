@@ -2,29 +2,24 @@ import 'package:collection/collection.dart';
 import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../core/cubits/content_changed_cubit.dart';
 import '../../core/cubits/timer_cubit.dart';
+import '../../core/generated/i18n/app_localizations.dart';
 import '../../domain/models/models.dart';
 import '../../domain/usecases/usecases.dart';
 
-class WeeklyTime extends StatefulWidget {
-  const WeeklyTime({super.key});
+class DailyTime extends StatefulWidget {
+  const DailyTime({super.key});
 
   @override
-  State<WeeklyTime> createState() => _WeeklyTimeState();
+  State<DailyTime> createState() => _DailyTimeState();
 }
 
-class _WeeklyTimeState extends State<WeeklyTime> {
-  final weekStart =
-      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
-          .subtract(Duration(
-              days: DateTime(DateTime.now().year, DateTime.now().month,
-                          DateTime.now().day)
-                      .weekday -
-                  1));
+class _DailyTimeState extends State<DailyTime> {
+  final todayStart =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   final _timeTrackingUseCase = GetIt.I<TimeTrackingUseCase>();
 
   PaginationModel<TimeTrackingModel> _timeTracks =
@@ -63,7 +58,7 @@ class _WeeklyTimeState extends State<WeeklyTime> {
                 _timeTracks.items.any((element) => element.isStarted),
             builder: (context, state) {
               return Card(
-                color: Theme.of(context).colorScheme.tertiaryContainer,
+                color: Theme.of(context).colorScheme.primaryContainer,
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Column(
@@ -74,7 +69,7 @@ class _WeeklyTimeState extends State<WeeklyTime> {
                             width: 8.0,
                           ),
                           Icon(
-                            Icons.av_timer,
+                            Icons.work_history,
                             color:
                                 Theme.of(context).textTheme.titleMedium!.color,
                           ),
@@ -82,7 +77,7 @@ class _WeeklyTimeState extends State<WeeklyTime> {
                             width: 8.0,
                           ),
                           Text(
-                            AppLocalizations.of(context)!.week,
+                            AppLocalizations.of(context)!.today,
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                         ],
@@ -92,13 +87,12 @@ class _WeeklyTimeState extends State<WeeklyTime> {
                       ),
                       Text(
                         prettyDuration(
-                            tersity: DurationTersity.minute,
                             Duration(
                                 milliseconds: _timeTracks.items
                                     .expand((element) => element.tracks)
                                     .where((element) =>
-                                        element.start.isAfter(weekStart) ||
-                                        element.start == weekStart)
+                                        element.start.isAfter(todayStart) ||
+                                        element.start == todayStart)
                                     .map((e) => e.duration.inMilliseconds)
                                     .sum),
                             upperTersity: DurationTersity.hour,
@@ -120,7 +114,7 @@ class _WeeklyTimeState extends State<WeeklyTime> {
     _timeTracks = PaginationModel<TimeTrackingModel>.empty();
     _timeTrackingUseCase
         .getTimeTrackings(
-          start: weekStart,
+          start: todayStart,
         )
         .then((value) => setState(() {
               _timeTracks = _timeTracks.from(value);

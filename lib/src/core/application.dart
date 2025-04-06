@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_flavor/flutter_flavor.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:mixpanel_analytics/mixpanel_analytics.dart';
@@ -14,6 +13,7 @@ import 'app_route.dart';
 import 'cubits/application_cubit.dart';
 import 'cubits/content_changed_cubit.dart';
 import 'cubits/timer_cubit.dart';
+import 'generated/i18n/app_localizations.dart';
 import 'resources/themes/color_schemes.dart';
 import 'resources/themes/custom_color.dart';
 
@@ -43,7 +43,8 @@ class Application extends StatelessWidget {
               previous.auth == AuthState.authorized,
           listener: (context, state) {
             final route = context.read<AppRoute>().route;
-            if (route.state.uri.path != route.namedLocation(AppRoute.authRouteName)) {
+            if (route.state.uri.path !=
+                route.namedLocation(AppRoute.authRouteName)) {
               route.goNamed(AppRoute.authRouteName);
             }
           },
