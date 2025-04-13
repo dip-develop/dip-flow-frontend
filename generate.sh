@@ -4,8 +4,8 @@ flutter pub get
 flutter pub upgrade
 flutter pub global activate protoc_plugin
 
-mkdir -p lib/data/entities/generated
-protoc --proto_path=../../protos/ --dart_out=grpc:lib/data/entities/generated -Iprotos \
+mkdir -p lib/src/data/entities/generated
+protoc --proto_path=../../protos/ --dart_out=grpc:lib/src/data/entities/generated -Iprotos \
     base_models.proto \
     gate_models.proto \
     gate_service.proto \
