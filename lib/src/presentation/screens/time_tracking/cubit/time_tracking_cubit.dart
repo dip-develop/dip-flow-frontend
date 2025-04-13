@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -30,32 +31,31 @@ class TimeTrackingCubit extends Cubit<TimeTrackingState> {
                 end: filter?.end ?? (!clean ? state.filter.end : null)))));
   }
 
-  void updateTimeTracking(TimeTrackingModel timeTrack) {
-    final items = List<TimeTrackingModel>.from(state.timeTracks.items);
-    final index = items.indexWhere((element) => element.id == timeTrack.id);
-    if (index >= 0) {
-      items[index] = timeTrack;
-      emit(TimeTracksUpdated(
-          PaginationModel<TimeTrackingModel>(
-              count: state.timeTracks.count,
-              limit: state.timeTracks.limit,
-              offset: state.timeTracks.offset,
-              items: items),
-          state.filter));
-    }
-  }
+  void startTrack(TimeTrackingModel timeTrack) =>
+      _timeTrackingUseCase.startTrack(timeTrack.id!).then(_updateTimeTracking);
 
-  void startTrack(TimeTrackingModel timeTrack) {
-    _timeTrackingUseCase.startTrack(timeTrack.id!).then(updateTimeTracking);
-  }
-
-  void stopTrack(TimeTrackingModel timeTrack) {
-    _timeTrackingUseCase.stopTrack(timeTrack.id!).then(updateTimeTracking);
-  }
+  void stopTrack(TimeTrackingModel timeTrack) =>
+      _timeTrackingUseCase.stopTrack(timeTrack.id!).then(_updateTimeTracking);
 
   void deleteTimeTrack(TimeTrackingModel timeTrack) {
     _timeTrackingUseCase
         .deleteTimeTracking(timeTrack.id!)
-        .whenComplete(loadData);
+        .then((_) => _deleteTimeTracking(timeTrack));
+  }
+
+  void deleteTrack(TimeTrackingModel timeTrack, TrackModel track) {
+    _timeTrackingUseCase.deleteTrack(timeTrack.id!, track.id!).then((_) =>
+        _updateTimeTracking(timeTrack.rebuild((p0) =>
+            p0.tracks = p0.tracks..removeWhere((p0) => p0.id == track.id))));
+  }
+
+  void _updateTimeTracking(TimeTrackingModel timeTrack) {
+    final timeTracks = state.timeTracks.update(timeTrack);
+    emit(TimeTracksUpdated(timeTracks, state.filter));
+  }
+
+  void _deleteTimeTracking(TimeTrackingModel timeTrack) {
+    final timeTracks = state.timeTracks.delete(timeTrack);
+    emit(TimeTracksUpdated(timeTracks, state.filter));
   }
 }

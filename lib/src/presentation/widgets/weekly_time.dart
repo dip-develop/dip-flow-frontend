@@ -130,7 +130,7 @@ class _WeeklyTimeState extends State<WeeklyTime> {
   void _updateTimeTrack(TimeTrackingModel timeTrack) {
     if (!mounted) return;
     setState(() {
-      _timeTracks.update(timeTrack);
+      _timeTracks = _timeTracks.update(timeTrack);
     });
   }
 }

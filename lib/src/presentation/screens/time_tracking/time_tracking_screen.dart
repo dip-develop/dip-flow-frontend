@@ -4,11 +4,9 @@ import 'package:duration/duration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/generated/i18n/app_localizations.dart';
-import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/cubits/timer_cubit.dart';
-import '../../../domain/usecases/usecases.dart';
 import 'cubit/time_tracking_cubit.dart';
 
 class TimeTrackingScreen extends StatefulWidget {
@@ -211,6 +209,10 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                             fixedWidth: 40.0,
                             label: SizedBox.shrink(),
                           ),
+                          const DataColumn2(
+                            fixedWidth: 40.0,
+                            label: SizedBox.shrink(),
+                          ),
                         ],
                         rows: List<DataRow2>.generate(
                             state.timeTracks.items.length, (index) {
@@ -226,31 +228,36 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                               specificRowHeight: isExpanded ? 400 : null,
                               cells: <DataCell>[
                                 DataCell(
-                                  Center(
-                                    child: IconButton(
-                                      onPressed: () => timeTracking.isStarted
-                                          ? context
-                                              .read<TimeTrackingCubit>()
-                                              .stopTrack(timeTracking)
-                                          : context
-                                              .read<TimeTrackingCubit>()
-                                              .startTrack(timeTracking),
-                                      icon: Icon(
-                                        timeTracking.isStarted
-                                            ? Icons.stop
-                                            : Icons.play_arrow,
-                                        color: timeTracking.isStarted
-                                            ? Theme.of(context)
-                                                .colorScheme
-                                                .tertiary
-                                            : null,
-                                        size: 32.0,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4.0),
+                                    child: Align(
+                                      alignment: Alignment.topCenter,
+                                      child: IconButton(
+                                        onPressed: () => timeTracking.isStarted
+                                            ? context
+                                                .read<TimeTrackingCubit>()
+                                                .stopTrack(timeTracking)
+                                            : context
+                                                .read<TimeTrackingCubit>()
+                                                .startTrack(timeTracking),
+                                        icon: Icon(
+                                          timeTracking.isStarted
+                                              ? Icons.stop
+                                              : Icons.play_arrow,
+                                          color: timeTracking.isStarted
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .tertiary
+                                              : null,
+                                          size: 32.0,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
                                 DataCell(
-                                  onTap: () {
+                                  /* onTap: () {
                                     setState(() {
                                       if (isExpanded) {
                                         _expandedTimeTrackId = null;
@@ -258,9 +265,10 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                         _expandedTimeTrackId = timeTracking.id;
                                       }
                                     });
-                                  },
+                                  }, */
                                   Container(
-                                    padding: const EdgeInsets.all(8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0, vertical: 20.0),
                                     decoration: BoxDecoration(
                                         border: timeTracking.isStarted
                                             ? Border.all(
@@ -269,7 +277,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                                     .tertiaryContainer,
                                               )
                                             : null),
-                                    alignment: Alignment.center,
+                                    alignment: Alignment.topCenter,
                                     child: Text(
                                       prettyDuration(timeTracking.duration,
                                           spacer: ' ',
@@ -290,8 +298,9 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                 ),
                                 DataCell(
                                   Container(
-                                    padding: const EdgeInsets.all(8.0),
-                                    alignment: Alignment.center,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0, vertical: 20.0),
+                                    alignment: Alignment.topCenter,
                                     child: Text(
                                         timeTracking.taskId != null
                                             ? '#${timeTracking.taskId}'
@@ -306,7 +315,7 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                   ),
                                 ),
                                 DataCell(
-                                  onTap: () {
+                                  /* onTap: () {
                                     setState(() {
                                       if (isExpanded) {
                                         _expandedTimeTrackId = null;
@@ -314,20 +323,16 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                         _expandedTimeTrackId = timeTracking.id;
                                       }
                                     });
-                                  },
+                                  }, */
                                   Padding(
                                     padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
+                                        horizontal: 8.0, vertical: 16.0),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          MainAxisAlignment.start,
                                       children: [
-                                        if (isExpanded)
-                                          const SizedBox(
-                                            height: 9.0,
-                                          ),
                                         Text(timeTracking.title ?? '',
                                             style: Theme.of(context)
                                                 .textTheme
@@ -340,21 +345,19 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                               overflow: TextOverflow.ellipsis),
                                         if (isExpanded)
                                           const SizedBox(
-                                            height: 9.0,
+                                            height: 8.0,
                                           ),
                                         if (isExpanded) const Divider(),
                                         if (isExpanded)
                                           Expanded(
                                             child: ListView.builder(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 16.0),
                                               scrollDirection: Axis.vertical,
                                               shrinkWrap: true,
                                               itemBuilder: (context, index) {
                                                 final track =
                                                     finishedTracks[index];
                                                 return ListTile(
+                                                  onTap: () {},
                                                   title: Text(
                                                     prettyDuration(
                                                         track.duration,
@@ -428,11 +431,12 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                                         ]),
                                                   ),
                                                   trailing: IconButton(
-                                                      onPressed: () => GetIt.I<
-                                                              TimeTrackingUseCase>()
+                                                      onPressed: () => context
+                                                          .read<
+                                                              TimeTrackingCubit>()
                                                           .deleteTrack(
-                                                              timeTracking.id!,
-                                                              track.id!),
+                                                              timeTracking,
+                                                              track),
                                                       icon: const Icon(
                                                           Icons.delete)),
                                                 );
@@ -444,30 +448,57 @@ class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
                                     ),
                                   ),
                                 ),
+                                DataCell(Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Align(
+                                    alignment: Alignment.topCenter,
+                                    child: IconButton(
+                                        onPressed: () => setState(() {
+                                              if (isExpanded) {
+                                                _expandedTimeTrackId = null;
+                                              } else {
+                                                _expandedTimeTrackId =
+                                                    timeTracking.id;
+                                              }
+                                            }),
+                                        icon: Icon(isExpanded
+                                            ? Icons.unfold_more
+                                            : Icons.unfold_less)),
+                                  ),
+                                )),
                                 DataCell(
-                                  PopupMenuButton<int>(
-                                    onSelected: (value) {
-                                      switch (value) {
-                                        case 1:
-                                          context
-                                              .read<TimeTrackingCubit>()
-                                              .deleteTimeTrack(timeTracking);
-                                          break;
-                                        default:
-                                      }
-                                    },
-                                    itemBuilder: (context) =>
-                                        <PopupMenuEntry<int>>[
-                                      PopupMenuItem<int>(
-                                        value: 1,
-                                        child: ListTile(
-                                          leading: const Icon(Icons.delete),
-                                          title: Text(
-                                              AppLocalizations.of(context)!
-                                                  .delete),
-                                        ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
+                                    child: Align(
+                                      alignment: Alignment.topCenter,
+                                      child: PopupMenuButton<int>(
+                                        onSelected: (value) {
+                                          switch (value) {
+                                            case 1:
+                                              context
+                                                  .read<TimeTrackingCubit>()
+                                                  .deleteTimeTrack(
+                                                      timeTracking);
+                                              break;
+                                            default:
+                                          }
+                                        },
+                                        itemBuilder: (context) =>
+                                            <PopupMenuEntry<int>>[
+                                          PopupMenuItem<int>(
+                                            value: 1,
+                                            child: ListTile(
+                                              leading: const Icon(Icons.delete),
+                                              title: Text(
+                                                  AppLocalizations.of(context)!
+                                                      .delete),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ]);

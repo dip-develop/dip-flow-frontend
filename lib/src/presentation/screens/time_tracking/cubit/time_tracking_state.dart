@@ -1,12 +1,15 @@
 part of 'time_tracking_cubit.dart';
 
 @immutable
-abstract class TimeTrackingState {
+abstract class TimeTrackingState extends Equatable {
   final FilterTimeTracks filter;
   final PaginationModel<TimeTrackingModel> timeTracks;
 
   const TimeTrackingState(this.timeTracks,
       {this.filter = const FilterTimeTracks()});
+
+  @override
+  List<Object?> get props => [filter, timeTracks];
 }
 
 class TimeTrackingInitial extends TimeTrackingState {
@@ -24,8 +27,7 @@ class TimeTrackingInitial extends TimeTrackingState {
 }
 
 class TimeTracksUpdated extends TimeTrackingState {
-  const TimeTracksUpdated(
-      super.timeTracks, FilterTimeTracks filter)
+  const TimeTracksUpdated(super.timeTracks, FilterTimeTracks filter)
       : super(filter: filter);
 }
 

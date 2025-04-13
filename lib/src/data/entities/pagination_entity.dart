@@ -1,3 +1,5 @@
+import 'package:built_collection/built_collection.dart';
+
 import '../../domain/models/models.dart';
 import 'entities.dart';
 import 'generated/time_tracking_models.pb.dart';
@@ -23,9 +25,9 @@ class PaginationEntity {
               .map((e) => TimeTrackingEntity.fromGrpc(e))
               .toList());
 
-  PaginationModel<TimeTrackingModel> toModel() => PaginationModel(
-      count: count,
-      limit: limit,
-      offset: offset,
-      items: items.map((e) => e.toModel()).toList());
+  PaginationModel<TimeTrackingModel> toModel() => PaginationModel((p0) => p0
+    ..count = count
+    ..limit = limit
+    ..offset = offset
+    ..items = ListBuilder(items.map((e) => e.toModel())));
 }

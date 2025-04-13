@@ -124,7 +124,7 @@ class _DailyTimeState extends State<DailyTime> {
   void _updateTimeTrack(TimeTrackingModel timeTrack) {
     if (!mounted) return;
     setState(() {
-      _timeTracks.update(timeTrack);
+    _timeTracks =  _timeTracks.update(timeTrack);
     });
   }
 }
