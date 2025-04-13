@@ -21,7 +21,7 @@ class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
   Future<void> _initApp(BuildContext context) async {
-    await Hive.initFlutter('theteam').catchError((onError) {});
+    await Hive.initFlutter('dip-flow').catchError((onError) {});
     if (!GetIt.I.isRegistered<PackageInfo>()) {
       await PackageInfo.fromPlatform().then((value) {
         GetIt.I.registerSingleton<PackageInfo>(value);
@@ -74,7 +74,7 @@ class SplashScreen extends StatelessWidget {
     return Material(
       child: Center(
           child: Text(
-        'TheTeam',
+        'DIP Flow',
         style: Theme.of(context).textTheme.headlineLarge,
       )),
     );

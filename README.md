@@ -1,19 +1,33 @@
-# TheTeam Frontend
+# DIP Flow - Frontend
+
+[![BuyMeACoffee][buy_me_a_coffee_badge]][buy_me_a_coffee]
 
 ## Stores
 
-[![Snap Store](docs/snap_store.png)](https://snapcraft.io/theteam)
-[![Microsoft Store](docs/microsoft_store.png)](https://www.microsoft.com/store/apps/9PHQZF2D9ZSW)
-[![App Store](docs/app_store.png)](https://itunes.apple.com/app/id1639115836)
-[![Google Play](docs/google_play.png)](https://play.google.com/store/apps/details?id=run.theteam.app)
+[![Snap Store](docs/snap_store.png)](https://snapcraft.io/todo)
+[![Microsoft Store](docs/microsoft_store.png)](https://www.microsoft.com/store/apps/todo)
+[![App Store](docs/app_store.png)](https://itunes.apple.com/app/todo)
+[![Google Play](docs/google_play.png)](https://play.google.com/store/apps/details?id=todo)
 
-**TheTeam** is the ultimate solution for team management. Whether you are a freelancer, a developer, an HR manager, or a headhunter, you can benefit from our powerful and user-friendly application that lets you track time, create reports, manage projects, and more. You can access our service from any device and any operating system, and enjoy our beautiful graphs that visualize your progress and performance. Plus, if you are an individual user or a small team, you can use our service for free forever. No hidden fees, no strings attached. Join **TheTeam** today and take your team to the next level.
+**DIP Flow** is the ultimate solution for team management. Whether you are a freelancer, a developer, an HR manager, or a headhunter, you can benefit from our powerful and user-friendly application that lets you track time, create reports, manage projects, and more. You can access our service from any device and any operating system, and enjoy our beautiful graphs that visualize your progress and performance. Plus, if you are an individual user or a small team, you can use our service for free forever. No hidden fees, no strings attached. Join **DIP Flow** today and take your team to the next level.
 
-#### Generate files
+## Links
 
-* [Install protobuf for your OS](https://github.com/protocolbuffers/protobuf/releases)
+#### [WIKI](https://github.com/dip-develop/dip-flow)
 
-## Getting Started
+#### [Backend](https://github.com/dip-develop/dip-flow-backend)
+
+#### [Protos](https://github.com/dip-develop/dip-flow-protos)
+
+### Pre start
+
+Install [Protocol Buffers](https://github.com/protocolbuffers/protobuf/releases) depends of your OS
+
+```bash
+dart pub global activate mono_repo
+dart pub global activate melos
+git submodule update --init --recursive
+```
 
 ## Quick start
 
@@ -29,35 +43,6 @@ Windows
 ./generate.bat
 ```
 
-## Or manual getting Started
-
-### Generate protos
-
-```bash
-flutter pub get
-```
-
-```bash
-git submodule update --init --recursive --remote --force 
-flutter pub global activate protoc_plugin
-mkdir -p lib/data/entities/generated
-protoc --dart_out=grpc:lib/data/entities/generated -Iprotos \
-    protos/base_models.proto \
-    protos/gate_models.proto \
-    protos/gate_service.proto \
-    protos/auth_models.proto \
-    protos/user_models.proto \
-    protos/project_models.proto \
-    protos/task_models.proto \
-    protos/time_tracking_models.proto \
-    protos/google/api/annotations.proto \
-    protos/google/api/http.proto \
-    protos/google/protobuf/struct.proto \
-    protos/google/protobuf/descriptor.proto \
-    protos/google/protobuf/empty.proto \
-    protos/google/protobuf/timestamp.proto
-```
-
 ### Generate other flutter files
 
 ```bash
@@ -71,24 +56,24 @@ flutter gen-l10n
 flutter run
 ```
 
-### Add flavors to VSCode
+#### VSCode config
 
 ```json
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "name": "Frontend PROD-Flavor",
-            "request": "launch",
-            "type": "dart"
-        },
-        {
-            "name": "Frontend DEV-Flavor",
-            "program": "lib/main_dev.dart",
-            "request": "launch",
-            "type": "dart"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Frontend PROD-Flavor",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "Frontend DEV-Flavor",
+      "program": "lib/main_dev.dart",
+      "request": "launch",
+      "type": "dart"
+    }
+  ]
 }
 ```
 
@@ -117,11 +102,29 @@ flutter pub run msix:publish
 
 ```bash
 snapcraft
-snapcraft upload --release=stable theteam_...._amd64.snap
+snapcraft upload --release=stable ...._amd64.snap
 ```
 
 ###### For linux - connect password-manager-service
 
 ```bash
-snap connect theteam:password-manager-service :password-manager-service
+snap connect dip-flow:password-manager-service :password-manager-service
 ```
+
+## Sponsoring
+
+I'm working on my packages on my free-time, but I don't have as much time as I would. If this package or any other package I created is helping you, please consider to sponsor me so that I can take time to read the issues, fix bugs, merge pull requests and add features to these packages.
+
+## Contributions
+
+Feel free to contribute to this project.
+
+If you find a bug or want a feature, but don't know how to fix/implement it, please fill an [issue][issue].  
+If you fixed a bug or implemented a feature, please send a [pull request][pr].
+
+<!-- Links -->
+
+[buy_me_a_coffee]: https://buymeacoffee.com/dip.dev
+[buy_me_a_coffee_badge]: https://img.buymeacoffee.com/button-api/?text=Donate&emoji=&slug=dip.dev&button_colour=29b6f6&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=FFDD00
+[issue]: https://github.com/dip-develop/dip-flow-frontend/issues
+[pr]: https://github.com/dip-develop/dip-flow-frontend/pulls

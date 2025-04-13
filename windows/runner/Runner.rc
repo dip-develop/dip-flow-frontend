@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "DipDev Studio" "\0"
-            VALUE "FileDescription", "TheTeam" "\0"
+            VALUE "FileDescription", "DIP Flow" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "TheTeam" "\0"
+            VALUE "InternalName", "DIP Flow" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 DipDev Studio. All rights reserved." "\0"
-            VALUE "OriginalFilename", "theteam.exe" "\0"
-            VALUE "ProductName", "TheTeam" "\0"
+            VALUE "OriginalFilename", "dip-flow.exe" "\0"
+            VALUE "ProductName", "DIP Flow" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

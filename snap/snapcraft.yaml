@@ -1,18 +1,18 @@
-name: theteam
+name: dip-flow
 version: 1.0.0
-summary: 'TheTeam: a tool for modern teams.'
+summary: "DIP Flow: a tool for modern teams."
 description: |
-  TheTeam is the ultimate solution for team management.
+  DIP Flow is the ultimate solution for team management.
   Whether you are a freelancer, a developer, an HR manager, or a headhunter, you can benefit from our powerful and user-friendly application that lets you track time, create reports, manage projects, and more.
   You can access our service from any device and any operating system, and enjoy our beautiful graphs that visualize your progress and performance.
   Plus, if you are an individual user or a small team, you can use our service for free forever. No hidden fees, no strings attached.
-  Join TheTeam today and take your team to the next level.
+  Join DIP Flow today and take your team to the next level.
 confinement: strict
-icon: snap/gui/theteam.png
+icon: snap/gui/dip-flow.png
 base: core18
 grade: stable
 adopt-info: desktop
-contact: theteam@dipdev.studio
+contact: info@dip.dev
 
 architectures:
   - build-on: amd64
@@ -20,14 +20,14 @@ architectures:
   - build-on: armhf
 
 slots:
-  dbus-theteam:
+  dbus-dip-flow:
     interface: dbus
     bus: session
-    name: run.theteam.app
+    name: dev.dip.flow
 
 apps:
-  theteam:
-    command: theteam
+  dip-flow:
+    command: dip-flow
     extensions: [flutter-master]
     plugs:
       - network
@@ -37,9 +37,9 @@ apps:
       - mount-observe
       - desktop
     slots:
-      - dbus-theteam
+      - dbus-dip-flow
 parts:
-  theteam:
+  dip-flow:
     source: .
     plugin: flutter
     flutter-target: lib/main.dart
@@ -60,4 +60,3 @@ parts:
       - libgnome-keyring0
       - libayatana-appindicator3-dev
       - libnotify-dev
-      

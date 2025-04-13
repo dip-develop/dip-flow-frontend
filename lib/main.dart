@@ -23,7 +23,7 @@ void main() async {
     Logger.root.level = Level.OFF;
     FlavorConfig(
       variables: {
-        'baseUrl': 'theteam.run',
+        'baseUrl': 'flow.dip.dev',
         'basePort': 8080,
       },
     );

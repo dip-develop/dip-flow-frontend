@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=DIP Flow
+Comment=DIP Flow
+Exec=dip-flow
+Icon=${SNAP}/meta/gui/dip-flow.png
+Terminal=false
+Type=Application
+Categories=Utility;
